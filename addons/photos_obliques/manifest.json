@@ -6,6 +6,8 @@
     "css": [
         "css/photos_obliques.css"
     ],
-	"default_options": {},
+	"default_options": {
+		"target": "tbar_12"
+	},
     "i18n": {}
 }
