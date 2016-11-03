@@ -1,0 +1,18 @@
+[{
+	"id": "photosobliques_0",
+	"name": "Photos_obliques",
+	"preloaded": "true",
+	"enabled": "true",
+	"title": {
+		"fr": "Photos obliques",
+		"en": "Oblique photos",
+		"es": "Oblique photos",
+		"de": "Oblique photos"
+	},
+	"description": {
+		"fr": "Une série d'outils pour exploiter pleinement des photos obliques aériennes",
+		"en": "A series of tools to fully exploit oblique aerial photos",
+		"es": "A series of tools to fully exploit oblique aerial photos",
+		"de": "A series of tools to fully exploit oblique aerial photos"
+	}
+}]

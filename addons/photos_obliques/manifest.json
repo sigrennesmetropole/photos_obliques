@@ -1,0 +1,11 @@
+{
+	"js": [ "js/build/photos_obliques.js" ],
+	"debugjs": [
+        "js/main.js"
+    ],    
+    "css": [
+        "css/photos_obliques.css"
+    ],
+	"default_options": {},
+    "i18n": {}
+}
