@@ -1,12 +1,21 @@
 .addon-photo-icon {
-  background-image: url(../img/icon.png) !important;
+	background-image: url(../img/icon.png) !important;
 }
-.action-attribut-icon{
-	  background-image: url(../img/pencil.png) !important;	
+
+.action-attribut-icon {
+	background-image: url(../img/pencil.png) !important;
 }
-.action-graph-icon{
-	  background-image: url(../img/square.png) !important;	
+
+.action-graph-icon {
+	background-image: url(../img/square.png) !important;
 }
-.action-basket-icon{
-	  background-image: url(../img/export.png) !important;	
+
+.action-basket-icon {
+	background-image: url(../img/export.png) !important;
+}
+
+ .grid-result-panel .x-panel-header,
+  .grid-result-panel .x-panel-body {
+	border-left: none !important;
+	border-right: none !important;
 }

@@ -1,7 +1,11 @@
 {
 	"js": [ "js/build/photos_obliques.js" ],
 	"debugjs": [
-        "js/main.js"
+        "js/main.js",
+        "js/spinnerField.js",
+        "js/spinner.js",
+        "js/searchByAttributes.js",
+        "js/searchResults.js"
     ],    
     "css": [
         "css/photos_obliques.css"

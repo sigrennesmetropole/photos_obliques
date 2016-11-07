@@ -12,6 +12,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      */
     init: function(record) {
 
+        // Set map object or create it
         if (this.map instanceof GeoExt.MapPanel) {
             this.map = this.map.map;
         }
@@ -20,27 +21,26 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             this.map = GeoExt.MapPanel.guess().map;
         }
 
-        // if no toggleGroup was defined, set to this.map.id
-        if (!this.toggleGroup) {
-            this.toggleGroup = this.map.id;
-        }
-
+        // Call non visible airphotos WFS 
+        
+        // Create main addon menu with actions
         var actionItems = [];
 
-        var attributesAction = new Ext.Action({
-            id: "attriMenuBtn",
-            iconCls: "action-graph-icon",
+        var attributesAction = new Ext.Button({
+            id: "phob_btn_attribut",
+            iconCls: "action-attribut-icon",
             text: "Attributaire",
             allowDepress: false,
             pressed: false,
             enableToggle: true,
             toggleGroup: "menuBtn",
             iconAlign: "top",
-            checked: false
+            checked: false,
+            handler: GEOR.Addons.Photos_obliques.onSearchByAttributes            
         });
 
-        var graphAction = new Ext.Action({
-            id: "graphMenuBtn",
+        var graphAction = new Ext.Button({
+            id: "phob_btn_graph",
             iconCls: "action-graph-icon",
             text: "Graphique",
             allowDepress: false,
@@ -51,8 +51,8 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             checked: false
         });
 
-        var basketAction = new Ext.Action({
-            id: "basketMenuBtn",
+        var basketAction = new Ext.Button({
+            id: "phob_btn_basket",
             iconCls: "action-basket-icon",
             text: "Panier",
             allowDepress: false,
@@ -71,7 +71,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
         this.window = new Ext.Window({
             title: "Outils pour photos obliques",
-            id: "photoOblique_window",
+            id: "phob_win_menu",
             closable: true,
             minWidth: 200,
             minHeight: 71,
@@ -82,6 +82,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             constrainHeader: true,
             items: [{
                 xtype: 'toolbar',
+                id: "phob_tbar_menu",
                 border: false,
                 buttonAlign: 'center',
                 items: actionItems
@@ -98,6 +99,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
             this.components = this.target.insertButton(this.position, {
                 xtype: 'button',
+                id: "phob_btn_tbar",
                 tooltip: this.getTooltip(record),
                 id: "component",
                 pressed: false,
@@ -110,6 +112,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
             // create a menu item for the "tools" menu:
             this.item = new Ext.menu.CheckItem({
+                id: "phot_chck_toolsMenu",
                 text: this.getText(record),
                 qtip: this.getQtip(record),
                 id: "item",

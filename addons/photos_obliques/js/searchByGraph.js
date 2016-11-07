@@ -1,0 +1,1 @@
+Ext.namespace("GEOR.Addons.Photos_obliques.search");
