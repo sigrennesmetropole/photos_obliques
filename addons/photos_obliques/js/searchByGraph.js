@@ -35,13 +35,13 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
 
     return new Ext.Container({
         id: "phob_form_mainSbg",
-        hidden:true,
-        border:true,
+        hidden: true,
+        border: true,
         autoHeight: true,
         anchor: "100%",
         items: [{
             xtype: 'toolbar',
-            anchor:"95%",
+            anchor: "95%",
             id: "phob_tbar_menuSbg",
             border: false,
             buttonAlign: 'left',

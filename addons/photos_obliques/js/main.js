@@ -27,6 +27,10 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             this.map = GeoExt.MapPanel.guess().map;
         }
 
+        console.log(this.map);
+        
+        var polygonLayer = new OpenLayers.Layer.Vector("phob_SearchByPolygon");
+
         // Call non visible airphotos WFS 
 
         // Create main addon menu with actions
@@ -38,7 +42,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             text: "Attributaire",
             iconAlign: "top",
             handler: function() {
-                if(Ext.getCmp("phob_win_search")){
+                if (Ext.getCmp("phob_win_search")) {
                     Ext.getCmp("phob_win_search").setTitle("Recherche attributaire");
                 }
                 if (Ext.getCmp("phob_form_mainSbg")) {
@@ -54,12 +58,12 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             text: "Graphique",
             iconAlign: "top",
             handler: function() {
-                if(Ext.getCmp("phob_win_search")){
+                if (Ext.getCmp("phob_win_search")) {
                     Ext.getCmp("phob_win_search").setTitle("Recherche graphique");
                 }
                 if (Ext.getCmp("phob_form_mainSbg") && Ext.getCmp("phob_form_mainSbg").hidden) {
                     Ext.getCmp("phob_form_mainSbg").show();
-                    
+
                 }
                 return GEOR.Addons.Photos_obliques.onSearch(this.id);
             }
@@ -70,7 +74,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             iconCls: "action-basket-icon",
             text: "Panier",
             iconAlign: "top",
-            handler:GEOR.Addons.Photos_obliques.onCart
+            handler: GEOR.Addons.Photos_obliques.onCart
         });
 
         actionItems.push(attributesAction);

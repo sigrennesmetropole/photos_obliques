@@ -10,6 +10,10 @@
 	background-image: url(../img/square.png) !important;
 }
 
+.action-del-icon {
+	background-image: url(../img/pencil.png) !important;
+}
+
 .action-basket-icon {
 	background-image: url(../img/export.png) !important;
 }
@@ -20,6 +24,3 @@
 	border-right: none !important;
 }
 	
-.action-del-icon {
-	background-image: url(../img/delete.css) !important;
-}
