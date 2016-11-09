@@ -1,5 +1,11 @@
 Ext.namespace("GEOR.Addons.Photos_obliques");
 
+/*
+ * ID SPECIFICATION : (addon)_(type)_(label or text or name if exist)_(container or
+ * name's function) ex: [phob_win_main_sba] is the id of the main window to
+ * search by attribute in oblique photo addon
+ */
+
 GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
     window: null,
@@ -22,7 +28,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         }
 
         // Call non visible airphotos WFS 
-        
+
         // Create main addon menu with actions
         var actionItems = [];
 
@@ -30,37 +36,41 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             id: "phob_btn_attribut",
             iconCls: "action-attribut-icon",
             text: "Attributaire",
-            allowDepress: false,
-            pressed: false,
-            enableToggle: true,
-            toggleGroup: "menuBtn",
             iconAlign: "top",
-            checked: false,
-            handler: GEOR.Addons.Photos_obliques.onSearchByAttributes            
+            handler: function() {
+                if(Ext.getCmp("phob_win_search")){
+                    Ext.getCmp("phob_win_search").setTitle("Recherche attributaire");
+                }
+                if (Ext.getCmp("phob_form_mainSbg")) {
+                    Ext.getCmp("phob_form_mainSbg").hide();
+                }
+                return GEOR.Addons.Photos_obliques.onSearch(this.id); //false to not show graphic search tools
+            }
         });
 
         var graphAction = new Ext.Button({
             id: "phob_btn_graph",
             iconCls: "action-graph-icon",
             text: "Graphique",
-            allowDepress: false,
-            pressed: false,
-            enableToggle: true,
-            toggleGroup: "menuBtn",
             iconAlign: "top",
-            checked: false
+            handler: function() {
+                if(Ext.getCmp("phob_win_search")){
+                    Ext.getCmp("phob_win_search").setTitle("Recherche graphique");
+                }
+                if (Ext.getCmp("phob_form_mainSbg") && Ext.getCmp("phob_form_mainSbg").hidden) {
+                    Ext.getCmp("phob_form_mainSbg").show();
+                    
+                }
+                return GEOR.Addons.Photos_obliques.onSearch(this.id);
+            }
         });
 
         var basketAction = new Ext.Button({
             id: "phob_btn_basket",
             iconCls: "action-basket-icon",
             text: "Panier",
-            allowDepress: false,
-            pressed: false,
-            enableToggle: true,
-            toggleGroup: "menuBtn",
             iconAlign: "top",
-            checked: false
+            handler:GEOR.Addons.Photos_obliques.onCart
         });
 
         actionItems.push(attributesAction);
@@ -80,13 +90,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             closeAction: "hide",
             border: false,
             constrainHeader: true,
-            items: [{
-                xtype: 'toolbar',
-                id: "phob_tbar_menu",
-                border: false,
-                buttonAlign: 'center',
-                items: actionItems
-            }],
+            tbar: actionItems,
             listeners: {
                 "hide": function() {},
                 "show": function() {}

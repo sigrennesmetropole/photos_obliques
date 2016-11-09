@@ -1,11 +1,17 @@
 {
 	"js": [ "js/build/photos_obliques.js" ],
 	"debugjs": [
+		"js/external/DataViewTransition.js",
+		"js/external/Reorderer.js",
+		"js/external/ToolbarReorderer.js",        
+        "js/external/SpinnerField.js",        
+        "js/external/Spinner.js",
         "js/main.js",
-        "js/spinnerField.js",
-        "js/spinner.js",
         "js/searchByAttributes.js",
-        "js/searchResults.js"
+        "js/searchResults.js",
+        "js/searchByGraph.js",
+        "js/searchWindow.js",
+        "js/cartWindow.js"
     ],    
     "css": [
         "css/photos_obliques.css"
