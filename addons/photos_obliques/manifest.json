@@ -3,9 +3,7 @@
 	"debugjs": [
 		"js/external/DataViewTransition.js",
 		"js/external/Reorderer.js",
-		"js/external/ToolbarReorderer.js",        
-        "js/external/SpinnerField.js",        
-        "js/external/Spinner.js",
+		"js/external/ToolbarReorderer.js",
         "js/main.js",
         "js/searchByAttributes.js",
         "js/searchResults.js",

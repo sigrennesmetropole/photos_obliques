@@ -9,7 +9,7 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
 GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     var actionSbg = [];
     var deleteDraw = new Ext.Button({
-        iconCls: "action-attribut-icon",
+        iconCls: "action-del-icon",
         text: "Effacer",
         allowDepress: false,
         pressed: false,
@@ -20,7 +20,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     });
 
     var drawPolygon = new Ext.Button({
-        iconCls: "action-attribut-icon",
+        iconCls: "action-graph-icon",
         text: "Polygon",
         allowDepress: false,
         pressed: false,
@@ -29,9 +29,9 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
         iconAlign: "top",
         checked: false
     });
-
-    actionSbg.push(deleteDraw);
     actionSbg.push(drawPolygon);
+    actionSbg.push("-");
+    actionSbg.push(deleteDraw);
 
     return new Ext.Container({
         id: "phob_form_mainSbg",
@@ -44,7 +44,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
             anchor:"95%",
             id: "phob_tbar_menuSbg",
             border: false,
-            buttonAlign: 'center',
+            buttonAlign: 'left',
             items: [actionSbg]
         }]
     });

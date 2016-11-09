@@ -22,13 +22,12 @@ GEOR.Addons.Photos_obliques.search.searchByAttributes = function(){
                     flex: 1
                 },
                 items: [{
-                    xtype: "spinnerfield",
-                    id: "phob_spinf_minSba",
-                    anchor: "50%"
-    
+                    xtype: "combo",
+                    id: "phob_cb_minSba",
+                    anchor: "50%"    
                 }, {
-                    xtype: "spinnerfield",
-                    id: "phob_spinf_maxSba",
+                    xtype: "combo",
+                    id: "phob_cb_maxSba",
                     anchor: "50%"
                 }]
             }, {

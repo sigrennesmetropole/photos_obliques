@@ -20,3 +20,6 @@
 	border-right: none !important;
 }
 	
+.action-del-icon {
+	background-image: url(../img/delete.css) !important;
+}
