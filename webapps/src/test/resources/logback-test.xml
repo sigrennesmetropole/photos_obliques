@@ -1,0 +1,23 @@
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.georchestra.photooblique" level="DEBUG" />
+	<logger name="org.springframework" level="DEBUG" />
+	
+	<!--  database -->
+	<logger name="org.hibernate" level="INFO" />	
+	
+	<!--  services -->
+	<logger name="org.apache.cxf" level="DEBUG" />
+	
+	<!-- image generation -->
+	<logger name="org.geotools" level="DEBUG" />
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
