@@ -39,5 +39,5 @@ GEOR.Addons.Photos_obliques.search.searchByAttributes = function() {
         }]
     }];
 
-    return cpField
+    return cpField;
 };

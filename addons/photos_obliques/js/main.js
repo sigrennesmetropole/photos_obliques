@@ -2,7 +2,7 @@ Ext.namespace("GEOR.Addons.Photos_obliques");
 
 /*
  * ID SPECIFICATION : (addon)_(type)_(label or text or name if exist)_(container or
- * name's function) ex: [phob_win_main_sba] is the id of the main window to
+ * name"s function) ex: [phob_win_main_sba] is the id of the main window to
  * search by attribute in oblique photo addon
  */
 
@@ -27,10 +27,6 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             this.map = GeoExt.MapPanel.guess().map;
         }
 
-        console.log(this.map);
-        
-        var polygonLayer = new OpenLayers.Layer.Vector("phob_SearchByPolygon");
-
         // Call non visible airphotos WFS 
 
         // Create main addon menu with actions
@@ -38,6 +34,10 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
         var attributesAction = new Ext.Button({
             id: "phob_btn_attribut",
+            enableToggle:true,
+            pressed: false,
+            checked:false,
+            toggleGroup:"phob_menuBtn",
             iconCls: "action-attribut-icon",
             text: "Attributaire",
             iconAlign: "top",
@@ -45,15 +45,23 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                 if (Ext.getCmp("phob_win_search")) {
                     Ext.getCmp("phob_win_search").setTitle("Recherche attributaire");
                 }
-                if (Ext.getCmp("phob_form_mainSbg")) {
+                if (Ext.getCmp("phob_form_mainSbg") && !Ext.getCmp("phob_form_mainSbg").hidden) {
                     Ext.getCmp("phob_form_mainSbg").hide();
                 }
-                return GEOR.Addons.Photos_obliques.onSearch(this.id); //false to not show graphic search tools
+                if(this.pressed){
+                    this.checked = true;
+                }else{
+                    this.checked=false;
+                }
+                return GEOR.Addons.Photos_obliques.onSearch(this.id,this.checked); //false to not show graphic search tools
             }
         });
 
         var graphAction = new Ext.Button({
             id: "phob_btn_graph",
+            enableToggle:true,
+            pressed: false,
+            toggleGroup:"phob_menuBtn",
             iconCls: "action-graph-icon",
             text: "Graphique",
             iconAlign: "top",
@@ -65,7 +73,12 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                     Ext.getCmp("phob_form_mainSbg").show();
 
                 }
-                return GEOR.Addons.Photos_obliques.onSearch(this.id);
+                if(this.pressed) {
+                    this.checked = true;
+                } else {
+                    this.checked=false;
+                }
+                return GEOR.Addons.Photos_obliques.onSearch(this.id,this.checked);
             }
         });
 
@@ -78,18 +91,17 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         });
 
         actionItems.push(attributesAction);
-        actionItems.push('-');
+        actionItems.push("-");
         actionItems.push(graphAction);
-        actionItems.push('-');
+        actionItems.push("-");
         actionItems.push(basketAction);
 
         this.window = new Ext.Window({
             title: "Outils pour photos obliques",
             id: "phob_win_menu",
             closable: true,
-            minWidth: 200,
-            minHeight: 71,
-            maxHeight: 100,
+            autoWidth:true,
+            autoHeight:true,
             maxWidth: 200,
             closeAction: "hide",
             border: false,
@@ -106,10 +118,10 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             // create a button to be inserted in toolbar:
 
             this.components = this.target.insertButton(this.position, {
-                xtype: 'button',
+                xtype: "button",
                 id: "phob_btn_tbar",
                 tooltip: this.getTooltip(record),
-                id: "component",
+                id: "phob_component",
                 pressed: false,
                 iconCls: "addon-photo-icon",
                 handler: this._onCheckchange,

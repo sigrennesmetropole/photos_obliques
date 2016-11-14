@@ -8,7 +8,7 @@ Ext.namespace("GEOR.Addons.Photos_obliques.cart");
 
 GEOR.Addons.Photos_obliques.onCart = function(){
     if (GEOR.Addons.Photos_obliques.cart.createCart == null || GEOR.Addons.Photos_obliques.cart.createCart.isDestroyed == true) {
-        GEOR.Addons.Photos_obliques.InitCart();
+        GEOR.Addons.Photos_obliques.initCart();
 
     } else if (GEOR.Addons.Photos_obliques.cart.createCart.isVisible()) {
         GEOR.Addons.Photos_obliques.cart.createCart.hide();
@@ -72,7 +72,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function (){
 };
 
 
-GEOR.Addons.Photos_obliques.InitCart = function(){
+GEOR.Addons.Photos_obliques.initCart = function(){
     GEOR.Addons.Photos_obliques.cart.createCart= new Ext.Window({
         title: "Panier",
         id: "phob_win_cart",
