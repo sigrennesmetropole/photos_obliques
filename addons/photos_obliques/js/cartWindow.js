@@ -19,14 +19,57 @@ GEOR.Addons.Photos_obliques.onCart = function(){
 
 GEOR.Addons.Photos_obliques.CreateDataView = function (){
     
-    var store = new Ext.data.ArrayStore({});
+    var store = new Ext.data.JsonStore({
+        id: "storeDataView",
+        proxy:new Ext.data.HttpProxy({
+            url:"http://cdn.sencha.com/ext/gpl/3.4.1.1/examples/view/get-images.php",
+            method:"GET"
+        }),
+        root: "images",
+        fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    });
+        
+    var tpl = new Ext.XTemplate(
+            '<tpl for=".">',
+                '<div class="thumb-wrap" id="{name}">',
+                '<div class="thumb"><img src="{url}" title="{name}"></div>',
+                '<span class="x-editable">{shortName}</span></div>',
+            '</tpl>',
+            '<div class="x-clear"></div>'
+        );
     
-    var dataview = new Ext.DataView({});
+    var dataViewer = new Ext.DataView({
+        store: store,
+        autoheight: true,
+        multiSelect: true,
+        overClass: "x-view-over",
+        itemSelector: "div-thumb-wrab",
+        emptyText: "No images to display",
+        plugins: [
+            new Ext.DataView.DragSelector(),
+            new Ext.DataView.LabelEditor({dataIndex: 'name'})
+        ],
+        prepareData: function(data){
+            data.shortName = Ext.util.Format.ellipsis(data.name, 15);
+            data.sizeString = Ext.util.Format.fileSize(data.size);
+            data.dateString = data.lastmod.format("m/d/Y g:i a");
+            return data;
+        },
+        listeners: {
+            selectionchange: {
+                fn: function(dv,nodes){
+                    var l = nodes.length;
+                    var s = l != 1 ? 's' : '';
+                    panel.setTitle('Simple DataView ('+l+' item'+s+' selected)');
+                }
+            }
+        }
+    });
     
     var dataViewPanel = new Ext.Panel({
-        items : dataview,
         height: 615,
         anchor: "99%",
+        items:[dataViewer]
     });
     
     return dataViewPanel;

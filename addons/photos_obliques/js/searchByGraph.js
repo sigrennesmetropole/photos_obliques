@@ -26,7 +26,6 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     );
     layer = new OpenLayers.Layer.Vector("phob_layer_sbg", layerOptions);
 
-
     /**
      *  Create draw control
      */ 

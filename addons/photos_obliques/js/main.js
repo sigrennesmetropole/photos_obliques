@@ -34,10 +34,10 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
         var attributesAction = new Ext.Button({
             id: "phob_btn_attribut",
-            enableToggle:true,
+            enableToggle: true,
             pressed: false,
-            checked:false,
-            toggleGroup:"phob_menuBtn",
+            checked: false,
+            toggleGroup: "phob_menuBtn",
             iconCls: "action-attribut-icon",
             text: "Attributaire",
             iconAlign: "top",
@@ -48,20 +48,20 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                 if (Ext.getCmp("phob_form_mainSbg") && !Ext.getCmp("phob_form_mainSbg").hidden) {
                     Ext.getCmp("phob_form_mainSbg").hide();
                 }
-                if(this.pressed){
+                if (this.pressed) {
                     this.checked = true;
-                }else{
-                    this.checked=false;
+                } else {
+                    this.checked = false;
                 }
-                return GEOR.Addons.Photos_obliques.onSearch(this.id,this.checked); //false to not show graphic search tools
+                return GEOR.Addons.Photos_obliques.onSearch(this,this.id, this.checked); //false to not show graphic search tools
             }
         });
 
         var graphAction = new Ext.Button({
             id: "phob_btn_graph",
-            enableToggle:true,
+            enableToggle: true,
             pressed: false,
-            toggleGroup:"phob_menuBtn",
+            toggleGroup: "phob_menuBtn",
             iconCls: "action-graph-icon",
             text: "Graphique",
             iconAlign: "top",
@@ -73,12 +73,12 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                     Ext.getCmp("phob_form_mainSbg").show();
 
                 }
-                if(this.pressed) {
+                if (this.pressed) {
                     this.checked = true;
                 } else {
-                    this.checked=false;
+                    this.checked = false;
                 }
-                return GEOR.Addons.Photos_obliques.onSearch(this.id,this.checked);
+                return GEOR.Addons.Photos_obliques.onSearch(this);
             }
         });
 
@@ -100,8 +100,8 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             title: "Outils pour photos obliques",
             id: "phob_win_menu",
             closable: true,
-            autoWidth:true,
-            autoHeight:true,
+            autoWidth: true,
+            autoHeight: true,
             maxWidth: 200,
             closeAction: "hide",
             border: false,

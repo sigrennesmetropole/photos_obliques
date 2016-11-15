@@ -37,6 +37,12 @@ GEOR.Addons.Photos_obliques.resultToolbar = function() {
     });
 };
 
+GEOR.Addons.Photos_obliques.updateShadow = function() {
+    if (Ext.getCmp("phob_win_search")) {
+        return Ext.getCmp("phob_win_search").syncShadow();
+    }
+};
+
 GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var gridStore = new Ext.data.ArrayStore({});
 
