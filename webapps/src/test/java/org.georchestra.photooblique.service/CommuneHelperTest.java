@@ -1,13 +1,11 @@
-/**
- * 
- */
+
 package org.georchestra.photooblique.service;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-
+import org.georchestra.photooblique.service.helper.CommuneHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

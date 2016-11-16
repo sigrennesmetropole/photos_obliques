@@ -24,7 +24,7 @@
 		class="org.georchestra.photooblique.configuration.POPlaceHolder">
 		<property name="locations">
 			<list>
-				<value>classpath:cadastrapp.properties</value>
+				<value>classpath:photooblique.properties</value>
 				<value>file:#{systemProperties['georchestra.datadir']}/photooblique/photoblique.properties
 				</value>
 			</list>
@@ -37,6 +37,7 @@
 	<jaxrs:server id="services" address="/">
 		<jaxrs:serviceBeans>
 			<bean class="org.georchestra.photooblique.service.CommuneController" />
+			<bean class="org.georchestra.photooblique.service.POController" />
 		</jaxrs:serviceBeans>
 		
 		<jaxrs:providers>

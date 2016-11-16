@@ -1,4 +1,4 @@
-package org.georchestra.photooblique.service;
+package org.georchestra.photooblique.service.helper;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
