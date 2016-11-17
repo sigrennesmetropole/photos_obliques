@@ -56,7 +56,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
      *  Create buttons
      */
     var deleteDraw = new Ext.Button({
-        iconCls: "action-del-icon",
+        iconCls: "phob-clean-icon",
         id: "phob_btn_delSbg",
         text: "Effacer",
         iconAlign: "top",
@@ -76,7 +76,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     });
 
     var drawPolygon = new Ext.Button({
-        iconCls: "action-graph-icon",
+        iconCls: "phob-draw-icon",
         id: "phob_btn_drawSbg",
         text: "Polygon",
         enableToggle:true,

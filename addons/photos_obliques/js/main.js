@@ -38,7 +38,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             pressed: false,
             checked: false,
             toggleGroup: "phob_menuBtn",
-            iconCls: "action-attribut-icon",
+            iconCls: "phob-att-icon",
             text: "Attributaire",
             iconAlign: "top",
             handler: function() {
@@ -62,7 +62,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             enableToggle: true,
             pressed: false,
             toggleGroup: "phob_menuBtn",
-            iconCls: "action-graph-icon",
+            iconCls: "phob-graph-icon",
             text: "Graphique",
             iconAlign: "top",
             handler: function() {
@@ -84,7 +84,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
         var basketAction = new Ext.Button({
             id: "phob_btn_basket",
-            iconCls: "action-basket-icon",
+            iconCls: "phob-cart-icon",
             text: "Panier",
             iconAlign: "top",
             handler: GEOR.Addons.Photos_obliques.onCart
@@ -121,9 +121,8 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                 xtype: "button",
                 id: "phob_btn_tbar",
                 tooltip: this.getTooltip(record),
-                id: "phob_component",
                 pressed: false,
-                iconCls: "addon-photo-icon",
+                iconCls: "phob-tbar-icon",
                 handler: this._onCheckchange,
                 scope: this
             });
@@ -135,8 +134,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                 id: "phot_chck_toolsMenu",
                 text: this.getText(record),
                 qtip: this.getQtip(record),
-                id: "item",
-                iconCls: "addon-photo-icon",
+                iconCls: "phob-tool-menu-icon",
                 checked: false,
                 listeners: {
                     "checkchange": this._onCheckchange,

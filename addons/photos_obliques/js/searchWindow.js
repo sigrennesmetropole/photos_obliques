@@ -74,20 +74,12 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
         Ext.getCmp("phob_fst_mainSba").disable();
         searchBtn.disable();
     }
-    
-    /**
-     * to update shadow when resize window
-     */
-    
-    function updateShadow() {
-        if (Ext.getCmp("phob_win_search_graph")) {
-            return Ext.getCmp("phob_win_search_graph").syncShadow();
-        }
-    }
 
     GEOR.Addons.Photos_obliques.search.mainWindow = new Ext.Window({
         title: winTitle,
-        id: "phob_win_search_graph",
+        id: "phob_win_search",
+        resizable:true,
+        constrainHeader:true,
         autoScroll: true,
         widht: 500,
         autoHeight: true,
@@ -96,8 +88,6 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
         closable: true,
         items: [formPanel],
         listeners: {
-            "expand": updateShadow,
-            "collapse": updateShadow,
             "hide": function() {
                 // unpressed all button and deactive all search by graphic content
                 Ext.getCmp("phob_btn_graph").toggle(false);
