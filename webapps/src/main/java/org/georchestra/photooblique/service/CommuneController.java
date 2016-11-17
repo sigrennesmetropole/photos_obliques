@@ -1,7 +1,5 @@
 package org.georchestra.photooblique.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -11,7 +9,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.apache.commons.lang3.StringUtils;
+import org.georchestra.photooblique.service.helper.CommuneHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class CommuneController {
 	
 	final static Logger logger = LoggerFactory.getLogger(CommuneController.class);
 	
-	@Path("/getCommune/")
+	@Path("/communes/")
     @GET
     @Produces("application/json")
     /**
@@ -43,13 +41,12 @@ public class CommuneController {
      * 
      * @throws SQLException
      */
-    public List<Map<String,Object>> getCommunesList(
+    public Map<String,Object> getCommuneByDate(
     			@Context HttpHeaders headers,
-    			@QueryParam("libcom") String libCom,
-    			@QueryParam("cgocommune") String cgoCommune){
+    			@QueryParam("anneeDeb") int anneeDeb,
+    			@QueryParam("anneeFin") int anneeFin){
     	
-    	List<Map<String,Object>> communes = new ArrayList<Map<String, Object>>();
-        
+    	Map<String,Object> communes = communeHelper.getCommunes(anneeDeb, anneeFin);
     	
     	// Return value providers will convert to JSON
         return communes;
