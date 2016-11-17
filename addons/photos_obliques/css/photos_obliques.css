@@ -1,26 +1,71 @@
-.addon-photo-icon {
-	background-image: url(../img/icon.png) !important;
-}
-
-.action-attribut-icon {
-	background-image: url(../img/pencil.png) !important;
-}
-
-.action-graph-icon {
-	background-image: url(../img/square.png) !important;
-}
-
-.action-del-icon {
-	background-image: url(../img/pencil.png) !important;
-}
-
-.action-basket-icon {
-	background-image: url(../img/export.png) !important;
-}
 
  .grid-result-panel .x-panel-header,
   .grid-result-panel .x-panel-body {
 	border-left: none !important;
 	border-right: none !important;
 }
-	
+
+
+.phob-tool-menu-icon{
+	background-image: url(../img/icons/phob-tool.png) !important;
+}	
+
+.phob-tbar-icon{
+	background-image: url(../img/icons/phob-tbar.png);
+}
+
+.phob-att-icon{
+	background-image: url(../img/icons/phob-att.png);
+}
+
+.phob-graph-icon{
+	background-image: url(../img/icons/phob-graph.png);
+}
+
+.phob-cart-icon{
+	background-image: url(../img/icons/phob-cart.png);
+}
+
+.phob-csv-icon{
+	background-image: url(../img/icons/phob-csv.png);
+}
+
+.phob-clean-icon{
+	background-image: url(../img/icons/phob-clean.png);
+}
+
+.x-action-col-cell img.phob-zoom-icon{
+	width:100%;
+	height:16px;
+	background-repeat:no-repeat;
+	background-image: url(../img/icons/phob-zoom.png);
+	background-position:center;
+}
+
+.x-action-col-cell img.phob-add-icon{
+	width:100%;
+	height:16px;
+	background-repeat:no-repeat;
+	background-image: url(../img/icons/phob-add.png);
+	background-position:center;
+}
+
+.x-action-col-cell img.phob-call-icon{
+	width:100%;
+	height:16px;
+	background-repeat:no-repeat;
+	background-image: url(../img/icons/phob-call.png);
+	background-position:center;
+}
+
+.phob-draw-icon{
+	background-image: url(../img/icons/phob-draw.png);
+}
+
+.phob-erase-icon{
+	background-image: url(../img/icons/phob-erase.png);
+}
+
+.phob-download-icon{
+	background-image: url(../img/icons/phob-download.png);
+}
