@@ -1,11 +1,12 @@
 
  .grid-result-panel .x-panel-header,
   .grid-result-panel .x-panel-body {
-	border-left: none !important;
-	border-right: none !important;
+	border-left: none;
+	border-right: none;
+	border-bottom: none;
 }
 
-
+/** Set icons style or URL **/
 .phob-tool-menu-icon{
 	background-image: url(../img/icons/phob-tool.png) !important;
 }	
@@ -68,4 +69,62 @@
 
 .phob-download-icon{
 	background-image: url(../img/icons/phob-download.png);
+}
+
+
+/* Set style for cart */
+
+#phob_pan_dataView .x-panel-mr{
+	background-image:none;	
+}
+#phob_pan_dataView .x-panel-mc{
+	background-color:white;	
+}
+
+#phob_dataView .x-panel-body{
+	background: white;
+	font: 11px Arial, Helvetica, sans-serif;
+}
+#phob_dataView .thumb{
+	background: #dddddd;
+	padding: 3px;
+}
+#phob_dataView .thumb img{
+	height: 60px;
+	width: 80px;
+}
+#phob_dataView .thumb-wrap{
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+	padding: 5px;
+}
+#phob_dataView .thumb-wrap span{
+	display: block;
+	overflow: hidden;
+	text-align: center;
+}
+
+#phob_dataView .x-view-over{
+    border:1px solid #dddddd;
+    background: #efefef url(../img/row-over.gif) repeat-x left top;
+	padding: 4px;
+}
+
+#phob_dataView .x-view-selected{
+	background: #eff5fb url(../img/selected.gif) no-repeat right bottom;
+	border:1px solid #99bbe8;
+	padding: 4px;
+}
+#phob_dataView .x-view-selected .thumb{
+	background:transparent;
+}
+
+#phob_dataView .loading-indicator {
+	font-size:11px;
+	background-image:url('../img/loading.gif');
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left:20px;
+	margin:10px;
 }

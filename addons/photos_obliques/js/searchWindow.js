@@ -18,10 +18,14 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
         if (button.id === "phob_btn_graph") {
             Ext.getCmp("phob_fst_mainSba").disable();
             Ext.getCmp("phob_btn_fire").disable();
+            GEOR.Addons.Photos_obliques.search.changeAttributesStore(true);
+            
         } else if (button.id === "phob_btn_attribut") {
+            var delBtn = Ext.getCmp("phob_btn_delSbg");
+            delBtn.fireEvent("click", delBtn);
             Ext.getCmp("phob_fst_mainSba").enable();
             Ext.getCmp("phob_btn_fire").enable();
-
+            GEOR.Addons.Photos_obliques.search.changeAttributesStore(false);
         }
         GEOR.Addons.Photos_obliques.search.mainWindow.show();
     }
@@ -92,8 +96,8 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                 // unpressed all button and deactive all search by graphic content
                 Ext.getCmp("phob_btn_graph").toggle(false);
                 Ext.getCmp("phob_btn_attribut").toggle(false);
-                var drawBtn = Ext.getCmp("phob_btn_delSbg");
-                drawBtn.fireEvent("click", drawBtn);
+                var delBtn = Ext.getCmp("phob_btn_delSbg");
+                delBtn.fireEvent("click", delBtn);
             },
             scope: this
         },

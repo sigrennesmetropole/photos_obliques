@@ -6,6 +6,120 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  * search by attribute in oblique photo addon
  */
 
+/**
+ *  create combo period for search by graph tool
+ */
+GEOR.Addons.Photos_obliques.search.cbGraphFrom = function (){
+    var store;
+    return  new Ext.form.ComboBox({    
+        id: "phob_cb_FromSbg",
+        store: store,
+        anchor: "50%",
+        fieldLabel: "Période ",
+        mode: "local",
+        editable: true,
+        selectOnFocus: true,
+        displayField: 'annee'
+    }); 
+};
+GEOR.Addons.Photos_obliques.search.cbGraphTo = function (){
+    var store;
+    return  new Ext.form.ComboBox({    
+        id: "phob_cb_ToSbg",
+        store: store,
+        anchor: "50%",
+        mode: "local",
+        editable: true,
+        selectOnFocus: true,
+        displayField: 'annee'
+    }); 
+};
+GEOR.Addons.Photos_obliques.search.cbGraphOwner = function (){
+    var store;
+    return  new Ext.form.ComboBox({    
+        id: "phob_cb_ToSbg",
+        store: store,
+        anchor: "99%",
+        fieldLabel: "Propriétaire ",
+        mode: "local",
+        editable: true,
+        selectOnFocus: true,
+        displayField: 'proprio'
+    }); 
+};
+GEOR.Addons.Photos_obliques.search.cbGraphCom = function (){
+    var store;
+    return  new Ext.form.ComboBox({    
+        id: "phob_cb_ownerSbg",
+        store: store,
+        anchor: "99%",
+        fieldLabel: "Communes ",
+        mode: "local",
+        editable: true,
+        selectOnFocus: true,
+        displayField: 'commune'
+    }); 
+};
+
+/**
+ *  Create combos container
+ */
+
+GEOR.Addons.Photos_obliques.search.searchBygraph = function() {
+    var nameSpace = GEOR.Addons.Photos_obliques.search;
+    var cpField = [{
+        xtype: "fieldset",
+        border: false,
+        id: "phob_fst_mainSbg",
+        anchor: "100%",
+        items: [{
+            xtype: "compositefield",
+            id: "phob_cpf_fstSbg",
+            fieldLabel: "Période ",
+            anchor: "99%",
+            defaults: {
+                flex: 1
+            },
+            items: [nameSpace.cbGraphFrom(), nameSpace.cbGraphTo()]
+        },nameSpace.cbGraphCom(), nameSpace.cbGraphOwner()]
+    }];
+
+    return cpField;
+};
+
+/**
+ *  replace attributes combo stores by resultPanel store  or defaults store
+ */
+/*GEOR.Addons.Photos_obliques.search.changeAttributesStore = function(graph){
+    if (graph){
+        //var resultStore = Ext.getCmp("phob_grid_resultPan") ? Ext.getCmp("phob_grid_resultPan").getStore() : null;
+        
+        var resultStore = new Ext.data.JsonStore({
+            id: "phob_store_graph",
+            root: "result.resultArray",
+            fields: ["annee", "commune", "proprio", "id"]
+        });
+        if (Ext.getCmp("phob_fst_mainSba")) {
+            Ext.getCmp("phob_cb_ownerSba").store = resultStore;
+            Ext.getCmp("phob_cb_comSba").store = resultStore;
+            Ext.getCmp("phob_cb_toSba").store = resultStore;
+            Ext.getCmp("phob_cb_fromSba").store = resultStore;
+        }
+        resultStore.data = Ext.getCmp("phob_grid_resultPan").getStore().data;          
+
+    } else {
+        var nameSpace = GEOR.Addons.Photos_obliques.search;
+        if (Ext.getCmp("phob_fst_mainSba")) {
+            Ext.getCmp("phob_cb_ownerSba").store = nameSpace.storeOwner();
+            Ext.getCmp("phob_cb_comSba").reset();
+            Ext.getCmp("phob_cb_toSba").store = nameSpace.storePeriodTo();
+            Ext.getCmp("phob_cb_fromSba").store = nameSpace.storePeriodFrom();
+        }
+    }
+};*/
+
+
+
 GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     var layer, polygonControl, polygonControlOptions, map, layerOptions;
     var drawPolygon, deleteDraw;
