@@ -58,41 +58,47 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var gridStore, gridPanel;
 
 
-    // TODO : erase sample static data for the store if service is ready
-    var myData = {
-        "result": {
-            "resultArray": [{
-                "photo": "16_0010.jpg",
-                "id": "16_0010",
-                "date": "2016-08-13 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1
-            }, {
-                "photo": "16_0033.jpg",
-                "id": "16_0033",
-                "date": "2016-07-07 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 0
-            }, {
-                "photo": "RM16_0002.jpg",
-                "id": "RM16_0002",
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1
-            }]
-        }
-    };
-
-    gridStore = new Ext.data.JsonStore({
+    GEOR.Addons.Photos_obliques.result.resultStore = new Ext.data.JsonStore({
         id: "phob_store_result",
-        root: "result.resultArray",
-        fields: ["photo", "id", "date", "proprio", "presta", "telecharg"]
+        url:"get-result.php",
+        root: "features",
+        fields: [
+            {name:"id",
+                convert: function(v,rec){
+                    return rec.properties.fichier;
+                }
+            },
+            {name:"date_",
+                convert: function(v,rec){
+                    return rec.properties.fichier;
+                }
+            },
+            {name:"proprio",
+                convert: function(v,rec){
+                    return rec.properties.proprio;
+                }
+            },
+            {name:"presta",
+                convert: function(v,rec){
+                    return rec.properties.presta;
+                }
+            },
+            {name:"telecharg",
+                convert: function(v,rec){
+                    return rec.properties.telecharg;
+                }
+            }
+        ],
+        listeners: {
+            "datachanged" : function(){
+                if(gridPanel != undefined){
+                    gridPanel.expand();
+                }                
+            }
+        }
     });
-
-    gridStore.loadData(myData);
+    
+    gridStore = GEOR.Addons.Photos_obliques.result.resultStore;
 
     function updateShadow() {
         if (Ext.getCmp("phob_win_search")) {
@@ -107,6 +113,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         title: "Résultat",
         stripeRows: true,
         maxHeigth: 400,
+        autoHeigth:true,
         stripeRows: true,
         collapsed: true,
         tbar: GEOR.Addons.Photos_obliques.resultToolbar(gridStore, gridPanel),

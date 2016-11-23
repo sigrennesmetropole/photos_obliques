@@ -18,14 +18,12 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
         if (button.id === "phob_btn_graph") {
             Ext.getCmp("phob_fst_mainSba").disable();
             Ext.getCmp("phob_btn_fire").disable();
-            GEOR.Addons.Photos_obliques.search.changeAttributesStore(true);
-            
+
         } else if (button.id === "phob_btn_attribut") {
             var delBtn = Ext.getCmp("phob_btn_delSbg");
             delBtn.fireEvent("click", delBtn);
             Ext.getCmp("phob_fst_mainSba").enable();
             Ext.getCmp("phob_btn_fire").enable();
-            GEOR.Addons.Photos_obliques.search.changeAttributesStore(false);
         }
         GEOR.Addons.Photos_obliques.search.mainWindow.show();
     }
@@ -33,7 +31,8 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
 
 GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
     var formItems = [];
-    var searchBtn, cancelBtn;
+    var searchBtn = false;
+    var cancelBtn;
 
     /**
      * Add panels to search window
@@ -46,17 +45,6 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
 
     var formPanel = new Ext.form.FormPanel({
         items: formItems
-    });
-
-    searchBtn = new Ext.Button({
-        labelAlign: "center",
-        id: "phob_btn_fire",
-        text: "Rechercher",
-        handler: function() {
-            if (!Ext.getCmp("phob_form_mainSbg").hidden) {
-                Ext.getCmp("phob_fst_mainSba").enable();
-            }
-        }
     });
 
     cancelBtn = new Ext.Button({
@@ -76,14 +64,14 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
         Ext.getCmp("phob_form_mainSbg").hidden = false;
         winTitle = "Recherche graphique";
         Ext.getCmp("phob_fst_mainSba").disable();
-        searchBtn.disable();
+        searchBtn = true;
     }
 
     GEOR.Addons.Photos_obliques.search.mainWindow = new Ext.Window({
         title: winTitle,
         id: "phob_win_search",
-        resizable:true,
-        constrainHeader:true,
+        resizable: true,
+        constrainHeader: true,
         autoScroll: true,
         widht: 500,
         autoHeight: true,
@@ -101,7 +89,44 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
             },
             scope: this
         },
-        buttons: [searchBtn, cancelBtn]
+        buttons: [{
+            labelAlign: "center",
+            id: "phob_btn_fire",
+            text: "Rechercher",
+            disabled: searchBtn,
+            listeners: {
+                "click": function() {
+                    if(!Ext.getCmp("phob_form_mainSbg").isVisible()){
+                        var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
+                        var searchParams = searchForm.getValues();
+                        var params = searchParams;
+                        Ext.Ajax.request({
+                            method: "GET",
+                            params:searchParams,
+                            url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php",
+                            success: function(response) {
+                                console.log("SUCCESS");
+                                GEOR.Addons.Photos_obliques.result.resultStore.loadData(Ext.util.JSON.decode(response.responseText));
+                            },
+                            failure: function(result) {
+                                console.log("FAILURE");
+                                
+                            }
+                        });
+                    } else {
+                        
+                    }
+                }
+            },
+            handler: function() {
+
+                // TODO : Si au moin un résultat ou si limit est dépassée
+                // On débloque la recherche attributaire
+                if (!Ext.getCmp("phob_form_mainSbg").hidden) {
+                    Ext.getCmp("phob_fst_mainSba").enable();
+                }
+            }
+        }, cancelBtn]
     });
 
     GEOR.Addons.Photos_obliques.search.mainWindow.show();
