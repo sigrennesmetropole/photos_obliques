@@ -20,14 +20,16 @@ GEOR.Addons.Photos_obliques.onCart = function() {
 GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     var tbar = [];
     var nbItems;
+    var tbText;
 
     if (dataView) {
         nbItems = dataView.getNodes().length;
-        tbar.push({
+        tbText = {
             xtype: "tbtext",
             text: nbItems > 0 ? ((nbResult < 2) ? nbItems + " Photo " : nbItems + " Photos") : "-",
             id: "phob_txt_cart"
-        });
+        }
+        tbar.push(tbText);
     }   
     
     tbar.push("->");
@@ -37,8 +39,10 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         iconCls: "phob-erase-icon",
         tooltip: "Delete all items",
         handler: function() {
-            if(Ext.getCmp("phob_store_dataView")){
-                Ext.getCmp("phob_store_dataView").removeAll();
+            if(Ext.getCmp("phob_dataView")){
+                Ext.getCmp("phob_dataView").getStore().removeAll();
+                Ext.getCmp("phob_txt_cart").setText("0 Photo");
+                
             }
         }
     });
@@ -73,7 +77,6 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
 
 
 GEOR.Addons.Photos_obliques.initCart = function() {
-    
     var photoStore = new Ext.data.JsonStore({
         url: 'http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-images.php',
         id: "phob_store_dataView",
@@ -135,7 +138,8 @@ GEOR.Addons.Photos_obliques.initCart = function() {
             }
         }
     });
-    console.log(photoStore);
+    
+
     var dataViewPanel = new Ext.Panel({
         id:"phob_pan_dataView",
         frame:true,
@@ -143,7 +147,6 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         layout:'fit',        
         items: [dataView]
     });
-
     
     GEOR.Addons.Photos_obliques.cart.createCart = new Ext.Window({
         title: "Panier",
@@ -157,16 +160,32 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         tbar: GEOR.Addons.Photos_obliques.cartToolbar(dataView),
         items: [dataViewPanel],
         buttons: [{
+            labelAlign:"center",
+            text: "Retirer",
+            tooltip: "Remove only selected items",
+            handler: function(){
+                var view = Ext.getCmp("phob_dataView") ? Ext.getCmp("phob_dataView") : null;
+                if(view != null){
+                    var records = view.getSelectedRecords();
+                    for(var i=0;i<records.length;i++){
+                        view.store.remove(records[i]); 
+                    }
+                    var nbItems = view.getStore().data.length;
+                    Ext.getCmp("phob_txt_cart").setText( nbItems + (nbItems > 1 ? " Photos" : " Photo"));
+                }
+
+            }
+        },{
             labelAlign: "center",
             id: "phob_btn_cartClose",
             text: "Annuler",
-            handler: function() {
-                GEOR.Addons.Photos_obliques.onCart();
+            handler: function(){
+                if(GEOR.Addons.Photos_obliques.cart.createCart){
+                    GEOR.Addons.Photos_obliques.cart.createCart.hide();
+                }
             }
         }]
     });
-    GEOR.Addons.Photos_obliques.cart.createCart.show();
-    console.log(photoStore);
-    console.log(dataView.getNodes());
     
+    GEOR.Addons.Photos_obliques.cart.createCart.show();   
 };

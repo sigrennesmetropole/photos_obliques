@@ -5,71 +5,41 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  * Could change if town selected is not included in the period selected  
  * 
  */
-GEOR.Addons.Photos_obliques.search.comStore = function () {
-    var comData = {
-        "result": {
-            "resultArray": [{
-                "photo": "16_0010.jpg",
-                "id": "16_0010",
-                "date": "2016-08-13 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "annee": 2010,
-                "telecharg": 1,
-                "commune": "35210"
-            }, {
-                "photo": "16_0033.jpg",
-                "id": "16_0033",
-                "annee": 2016,
-                "date": "2016-07-07 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 0,
-                "commune": "35275"
-            }, {
-                "photo": "RM16_0002.jpg",
-                "id": "RM16_0002",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }, {
-                "photo": "RM16_0007.jpg",
-                "id": "RM16_0039",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }]
-        }
-    };
+GEOR.Addons.Photos_obliques.search.comStore = function () {   
     
     var comStore = new Ext.data.JsonStore({
         id: "phob_store_com",
-        root: "result.resultArray",
-        fields: ["annee", "commune", "proprio", "id"]
+        root: "features",
+        fields: [{
+            name:"commune",
+            convert: function(v,rec){
+                return rec.properties.commune;
+            }
+        }],
+        sortInfo:{
+            field: "commune",
+            direction: "ASC"
+        },
+        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
     });
     
-    comStore.loadData(comData);
+    comStore.load();
     
     return comStore;
 };
 
 
-GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(){    
+GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){    
     return  new Ext.form.ComboBox({
-        id: "phob_cb_comSba",
+        id: id,
+        hiddenName:"commune",
         anchor: "99%",
         fieldLabel: "Communes ",
         editable: true,
         mode: "local",
         store: GEOR.Addons.Photos_obliques.search.comStore(),
         selectOnFocus: true,
-        displayField: 'commune'
+        displayField: "commune"
     });
 };
 /**
@@ -78,68 +48,38 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(){
  */
 
 GEOR.Addons.Photos_obliques.search.storePeriodFrom = function(){
-    var fromData = {
-        "result": {
-            "resultArray": [{
-                "photo": "16_0010.jpg",
-                "id": "16_0010",
-                "date": "2016-08-13 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "annee": 2010,
-                "telecharg": 1,
-                "commune": "35210"
-            }, {
-                "photo": "16_0033.jpg",
-                "id": "16_0033",
-                "annee": 2016,
-                "date": "2016-07-07 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 0,
-                "commune": "35275"
-            }, {
-                "photo": "RM16_0002.jpg",
-                "id": "RM16_0002",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }, {
-                "photo": "RM16_0007.jpg",
-                "id": "RM16_0039",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }]
-        }
-    };
     var storePeriodFrom = new Ext.data.JsonStore({
         id: "phob_store_from",
-        root: "result.resultArray",
-        fields: ["annee", "commune", "proprio", "id"]
+        root: "features",
+        fields: [{
+            name:"annee",
+            convert: function(v,rec){
+                return rec.properties.annee;
+            }
+        }],
+        sortInfo:{
+            field:"annee",
+            direction: "ASC"
+        },
+        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
     });
     
-    storePeriodFrom.loadData(fromData);
+    storePeriodFrom.load();
     
     return storePeriodFrom;
     
 };
 
-GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(){
+GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
     return  new Ext.form.ComboBox({
-        id: "phob_cb_fromSba",
+        id: id,
         editable: true,
         store: GEOR.Addons.Photos_obliques.search.storePeriodFrom(),
         anchor: "50%",
         mode: "local",
         selectOnFocus: true,
-        displayField: 'annee',
+        displayField: "annee",
+        hiddenName:"periodFrom",
         listeners: {
             scope: this,
             "select": function(combo, record) {
@@ -162,68 +102,37 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(){
  * 
  */
 GEOR.Addons.Photos_obliques.search.storePeriodTo = function() {
-    var toData = {
-        "result": {
-            "resultArray": [{
-                "photo": "16_0010.jpg",
-                "id": "16_0010",
-                "date": "2016-08-13 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "annee": 2010,
-                "telecharg": 1,
-                "commune": "35210"
-            }, {
-                "photo": "16_0033.jpg",
-                "id": "16_0033",
-                "annee": 2016,
-                "date": "2016-07-07 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 0,
-                "commune": "35275"
-            }, {
-                "photo": "RM16_0002.jpg",
-                "id": "RM16_0002",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }, {
-                "photo": "RM16_0007.jpg",
-                "id": "RM16_0039",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }]
-        }
-    };
-    
     var storePeriodTo = new Ext.data.JsonStore({
         id: "phob_store_to",
-        root: "result.resultArray",
-        fields: ["annee", "commune", "proprio", "id"]
+        root: "features",
+        fields: [{
+            name:"annee",
+            convert: function(v,rec){
+                return rec.properties.annee;
+            }
+        }],
+        sortInfo:{
+            field:"annee",
+            direction: "ASC"
+        },
+        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
     });
     
-    storePeriodTo.loadData(toData);
+    storePeriodTo.load();
     
     return storePeriodTo;
 };
 
-GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(){
+GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
     return  new Ext.form.ComboBox({
-        id: "phob_cb_toSba",
+        id: id,
+        hiddenName:"periodTo",
         store: GEOR.Addons.Photos_obliques.search.storePeriodTo(),
         anchor: "50%",
         mode: "local",
         editable: true,
         selectOnFocus: true,
-        displayField: 'annee',
+        displayField: "annee",
         listeners: {
             scope: this,
             "select": function(combo, record) {
@@ -250,82 +159,50 @@ GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(){
  * store and comboBox to select photos owner 
  */
 
-GEOR.Addons.Photos_obliques.search.storeOwner = function() {
-    var ownerData = {
-        "result": {
-            "resultArray": [{
-                "photo": "16_0010.jpg",
-                "id": "16_0010",
-                "date": "2016-08-13 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "annee": 2010,
-                "telecharg": 1,
-                "commune": "35210"
-            }, {
-                "photo": "16_0033.jpg",
-                "id": "16_0033",
-                "annee": 2016,
-                "date": "2016-07-07 00:00:00",
-                "proprio": "Ville de Rennes",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 0,
-                "commune": "35275"
-            }, {
-                "photo": "RM16_0002.jpg",
-                "id": "RM16_0002",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }, {
-                "photo": "RM16_0007.jpg",
-                "id": "RM16_0039",
-                "annee": 2015,
-                "date": "2016-07-05 00:00:00",
-                "proprio": "Rennes Métropole",
-                "presta": "MRW Zeppeline Bretagne",
-                "telecharg": 1,
-                "commune": "35238"
-            }]
-        }
-    };
+GEOR.Addons.Photos_obliques.search.storeOwner = function() {    
     var storeOwner = new Ext.data.JsonStore({
         id: "phob_store_owner",
-        root: "result.resultArray",
-        fields: ["annee", "commune", "proprio", "id"]
+        root: "features",
+        fields: [{
+            name:"proprio",
+            convert: function(v,rec){
+                return rec.properties.proprio;
+            }
+        }],
+        sortInfo:{
+            field:"proprio",
+            direction: "ASC"
+        },
+        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
     });
 
-    storeOwner.loadData(ownerData);
+    storeOwner.load();
     
     return storeOwner;
 };
-GEOR.Addons.Photos_obliques.search.comboOwner = function(){
+GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
     return  new Ext.form.ComboBox({    
-        id: "phob_cb_ownerSba",
+        id: id,
+        hiddenName:"proprio",
         store: GEOR.Addons.Photos_obliques.search.storeOwner(),
         anchor: "99%",
         fieldLabel: "Propriétaire ",
         mode: "local",
         editable: true,
         selectOnFocus: true,
-        displayField: 'proprio'
+        displayField: "proprio"
     });
 };
+
 /**
- *  Create fieldset to include in the window's research
+ *  Create fieldset to include in the main search window
  */
 
-GEOR.Addons.Photos_obliques.search.searchByAttributes = function() {
+GEOR.Addons.Photos_obliques.search.cpField = function(id) {
     var nameSpace = GEOR.Addons.Photos_obliques.search;
-    var cpField = [{
-        xtype: "fieldset",
-        border: false,
-        id: "phob_fst_mainSba",
-        anchor: "100%",
-        items: [{
+    var items;
+    var attributesItems = [
+        {
             xtype: "compositefield",
             id: "phob_cpf_fstSba",
             fieldLabel: "Période ",
@@ -333,8 +210,33 @@ GEOR.Addons.Photos_obliques.search.searchByAttributes = function() {
             defaults: {
                 flex: 1
             },
-            items: [nameSpace.comboPeriodFrom(), nameSpace.comboPeriodTo()]
-        },nameSpace.comboAttributesCom(), nameSpace.comboOwner()]
+            items: [nameSpace.comboPeriodFrom("phob_cb_fromSba"), nameSpace.comboPeriodTo("phob_cb_toSba")]
+        },nameSpace.comboAttributesCom("phob_cb_comSba"), nameSpace.comboOwner("phob_cb_ownerSba")];
+        
+    var graphItems = [
+        {
+            xtype: "compositefield",
+            id: "phob_cpf_fstSbg",
+            fieldLabel: "Période ",
+            anchor: "99%",
+            defaults: {
+                flex: 1
+            },
+            items: [nameSpace.comboPeriodFrom("phob_cb_fromSbg"), nameSpace.comboPeriodTo("phob_cb_toSbg")]
+        },nameSpace.comboAttributesCom("phob_cb_comSbg"), nameSpace.comboOwner("phob_cb_ownerSbg")];
+    
+    if(id === "phob_fst_mainSbg"){
+        items = graphItems;
+    } else {
+        items = attributesItems;
+    }
+        
+    var cpField = [{
+        xtype: "fieldset",
+        border: false,
+        id: id,
+        anchor: "100%",
+        items: items
     }];
 
     return cpField;

@@ -17,6 +17,10 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      * @param: record - {Ext.data.record} a record with the addon parameters
      */
     init: function(record) {
+        
+        
+        GEOR.Addons.Photos_obliques.globalOptions = this.options;
+        console.log(GEOR.Addons.Photos_obliques.globalOptions);
 
         // Set map object or create it
         if (this.map instanceof GeoExt.MapPanel) {

@@ -16,14 +16,19 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
     } else {
         // TODO : manage attributes fieldSet if last search was not null
         if (button.id === "phob_btn_graph") {
-            Ext.getCmp("phob_fst_mainSba").disable();
+            Ext.getCmp("phob_fst_mainSba").hide();
+            Ext.getCmp("phob_fst_mainSbg").show();
             Ext.getCmp("phob_btn_fire").disable();
+            Ext.getCmp("phob_fst_mainSbg").disable();
 
         } else if (button.id === "phob_btn_attribut") {
+            // on efface le dessin et on désactive le cpf
             var delBtn = Ext.getCmp("phob_btn_delSbg");
             delBtn.fireEvent("click", delBtn);
-            Ext.getCmp("phob_fst_mainSba").enable();
-            Ext.getCmp("phob_btn_fire").enable();
+            Ext.getCmp("phob_fst_mainSbg").hide();
+            Ext.getCmp("phob_fst_mainSba").show();
+            Ext.getCmp("phob_btn_fire").enable();           
+            
         }
         GEOR.Addons.Photos_obliques.search.mainWindow.show();
     }
@@ -33,20 +38,24 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
     var formItems = [];
     var searchBtn = false;
     var cancelBtn;
+    
+    var winTitle = "Outils de recherche attributaire";
 
     /**
      * Add panels to search window
      */
-
-    var winTitle = "Outils de recherche attributaire";
+    var idGraph = "phob_fst_mainSbg";
+    var idAtt = "phob_fst_mainSba";
     formItems.push(GEOR.Addons.Photos_obliques.search.sbgPanel());
-    formItems.push(GEOR.Addons.Photos_obliques.search.searchByAttributes());
+    formItems.push(GEOR.Addons.Photos_obliques.search.cpField(idGraph));
+    formItems.push(GEOR.Addons.Photos_obliques.search.cpField(idAtt));
     formItems.push(GEOR.Addons.Photos_obliques.result.gridPanel());
-
+    
     var formPanel = new Ext.form.FormPanel({
-        items: formItems
+        items: formItems,
+        id: "phob_form_winSearch"
     });
-
+        
     cancelBtn = new Ext.Button({
         labelAlign: "center",
         id: "phob_btn_cancel",
@@ -61,11 +70,14 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
      */
 
     if (id === "phob_btn_graph") {
-        Ext.getCmp("phob_form_mainSbg").hidden = false;
+        Ext.getCmp(idGraph).disable()
+        Ext.getCmp("phob_form_mainSbg").hidden = false;        
+        Ext.getCmp(idAtt).hide();        
         winTitle = "Recherche graphique";
-        Ext.getCmp("phob_fst_mainSba").disable();
         searchBtn = true;
-    }
+    } else {
+        Ext.getCmp(idGraph).hide();
+    }    
 
     GEOR.Addons.Photos_obliques.search.mainWindow = new Ext.Window({
         title: winTitle,
@@ -96,34 +108,61 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
             disabled: searchBtn,
             listeners: {
                 "click": function() {
-                    if(!Ext.getCmp("phob_form_mainSbg").isVisible()){
-                        var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
-                        var searchParams = searchForm.getValues();
-                        var params = searchParams;
+                    var params;
+                    var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
+                    var searchParams = searchForm.getValues();
+                    getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
+                    var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
+                    
+                    if(getTitle == "Recherche attributaire"){
+                        params = searchParams;
                         Ext.Ajax.request({
                             method: "GET",
                             params:searchParams,
+                            //url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php",
                             url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php",
                             success: function(response) {
-                                console.log("SUCCESS");
-                                GEOR.Addons.Photos_obliques.result.resultStore.loadData(Ext.util.JSON.decode(response.responseText));
+
+                                // TODO : uncomment this line an erase actual data store set manualy to load grid result by search
+                                //resultStore.loadData(Ext.util.JSON.decode(response.responseText));
                             },
                             failure: function(result) {
-                                console.log("FAILURE");
                                 
                             }
                         });
-                    } else {
+                    } else if (getTitle == "Recherche graphique"){
+                        if(Ext.getCmp("phob_fst_mainSbg").disabled){
+                            // requete à partir du dessin
+                            Ext.Ajax.request({
+                                method: "GET",
+                                //params:searchParams,
+                                url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/graphResult.php",
+                                success: function(response) {
+                                    // on ajoute la réponse au resultGrid
+                                    var result = Ext.util.JSON.decode(response.responseText);
+                                    var records = new resultStore.recordType(result);
+                                    resultStore.insert(resultStore.data.length, records);
+                                    console.log(resultStore);
+                                    // TODO : si plusieurs résultats
+                                    Ext.getCmp("phob_fst_mainSbg").enable();
+                                },
+                                failure: function(result) {
+
+                                }
+                            });
+                        }
+                        // feature = 
+                        // params = 
+                            // si on a une géométrie
+                                // on lance la requete
+                                    // si succes
+                                        // si réponse > 1 photo 
+                                        // on met la réponse dans le store de résultat
+                                        // mise a jour des données du store par champ
+                                        
+
                         
                     }
-                }
-            },
-            handler: function() {
-
-                // TODO : Si au moin un résultat ou si limit est dépassée
-                // On débloque la recherche attributaire
-                if (!Ext.getCmp("phob_form_mainSbg").hidden) {
-                    Ext.getCmp("phob_fst_mainSba").enable();
                 }
             }
         }, cancelBtn]
