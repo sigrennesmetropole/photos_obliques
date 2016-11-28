@@ -1,6 +1,5 @@
 {
-    "js": ["js/build/photos_obliques.js"],
-    "debugjs": [
+    "js":[
         "js/external/DataViewTransition.js",
         "js/external/Reorderer.js",
         "js/external/ToolbarReorderer.js",

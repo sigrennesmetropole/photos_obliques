@@ -5,11 +5,6 @@ Ext.namespace("GEOR.Addons.Photos_obliques.result");
  * name"s function) ex: [phob_win_main_sba] is the id of the main window to
  * search by attribute in oblique photo addon
  */
-GEOR.Addons.Photos_obliques.controlType = function(value){
-    if(/^(\-|\+)?([0-9]+|Infinity)$/.test(value))
-        return Number(value);
-      return false;
-};
 
 GEOR.Addons.Photos_obliques.resultToolbar = function(gridStore) {
     var tbar = [];
@@ -59,6 +54,30 @@ GEOR.Addons.Photos_obliques.resultToolbar = function(gridStore) {
     });
 };
 
+GEOR.Addons.Photos_obliques.result.createResultLayer = function(map) {
+    var tempLayer;
+
+    if(map){
+                
+        // if layer already exit, remove it
+        if(map.getLayersByName("phob_tempResultLayer").length == 0){
+         // create layer and add to map
+            var styleMap = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleMapOptions);
+            var layerOptions = OpenLayers.Util.applyDefaults(
+                    this.layerOptions, {
+                        displayInLayerSwitcher: false,                                    
+                        projection: map.getProjectionObject(),
+                        styleMap: styleMap
+                    }
+            );
+            
+            tempLayer = new OpenLayers.Layer.Vector("phob_tempResultLayer", layerOptions);
+            return map.addLayer(tempLayer);
+        }
+    }
+    
+};
+
 GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var gridStore, gridPanel;
 
@@ -77,7 +96,9 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             {name:"date_",
                 convert: function(v,rec){
                     return rec.properties.fichier;
-                }
+                },
+                type:"date",
+                dateFormat:'timestamp'
             },
             {name:"proprio",
                 convert: function(v,rec){
@@ -133,14 +154,13 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         stripeRows: true,
         maxHeigth: 400,
         autoHeigth:true,
-        stripeRows: true,
         collapsed: true,
         tbar: GEOR.Addons.Photos_obliques.resultToolbar(gridStore, gridPanel),
         colModel: new Ext.grid.ColumnModel({
             defaults: {
                 align: "center"
             },
-            columns: [new Ext.grid.RowNumberer(),{
+            columns: [{
                 xtype: "actioncolumn",
                 id: "phob_col_photoRes",
                 header: "Photo",
@@ -173,6 +193,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             }, {
                 id: "phob_col_prestRes",
                 header: "Prestataire",
+                sortable: true,
                 dataIndex: "presta"
             }, {
                 xtype: "actioncolumn",
@@ -183,12 +204,12 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                     if (rec.get("telecharg") < 1) {
                         this.tooltip = "Photo indisponible";
                         this.handler = function() {
-                        }
+                        };
                         return "phob-call-icon";
                     } else {
                         this.tooltip = "Télécharger";
                         this.handler = function() {
-                        }
+                        };
                         return "phob-add-icon";
                     }
                 }
@@ -202,34 +223,13 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             "expand": updateShadow,
             "collapse": updateShadow,
             "mouseover": function(e,t){
-
-                var tempLayer;
-
-                if(GeoExt.MapPanel.guess().map){
-                    var map = GeoExt.MapPanel.guess().map;
+                if (GeoExt.MapPanel.guess().map.getLayersByName("phob_tempResultLayer").length !== 0){
+                    var layer = GeoExt.MapPanel.guess().map.getLayersByName("phob_tempResultLayer")[0];
                     
-                    // if layer already exit, remove it
-                    if(map.getLayersByName("phob_tempResultLayer") != 0){
-                        map.getLayersByName("phob_tempResultLayer")[0].destroy();
-                    }
-                    
-                    // create layer and add to map
-                    var styleMap = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleMapOptions);
-                    var layerOptions = OpenLayers.Util.applyDefaults(
-                            this.layerOptions, {
-                                displayInLayerSwitcher: false,                                    
-                                projection: map.getProjectionObject(),
-                                styleMap: styleMap
-                            }
-                    );
-                    
-                    tempLayer = new OpenLayers.Layer.Vector("phob_tempResultLayer", layerOptions);
-                    map.addLayer(tempLayer)
-                    
-                    // search cell value in data store                
-                    var text = t.textContent;
-                    var searchTxt = gridPanel.getStore().findExact("id", text);
-                    var geomCoord = searchTxt != -1 ? gridPanel.getStore().data.items[searchTxt].data.geom.coordinates[0] : null;
+                 // get number of row and search this index in store data. Note that number change in store to if user sort column
+                    var rowIndex = gridPanel.getView().findRowIndex(t);
+                    var rec = gridPanel.getStore().getAt(rowIndex);
+                    var geomCoord = rec ? rec.data.geom.coordinates[0] : null;
                     var vertices = [];
                     // if value exist create polygon from reproject coordinates and add to layer 
                     if(geomCoord != null){
@@ -240,13 +240,21 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                         var ring = new OpenLayers.Geometry.LinearRing(vertices);
                         var createPolygon = new OpenLayers.Geometry.Polygon([ring]);
                         var feature = new OpenLayers.Feature.Vector(createPolygon);
-                        tempLayer.addFeatures(feature);
-                    }                    
-                }               
+                        layer.addFeatures(feature);
+                    }
+                }              
+            },
+            "mouseout": function(){
+                // destroy features if row is not over by mouse
+                GeoExt.MapPanel.guess().map.getLayersByName("phob_tempResultLayer")[0].destroyFeatures();
+                
             },
             scope: this
         }
     });
+    
+    var gridView = gridPanel.getView();
+    gridView.on("");
 
     return gridPanel;
 };

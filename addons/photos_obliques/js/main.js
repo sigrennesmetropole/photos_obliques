@@ -18,10 +18,6 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      */
     init: function(record) {
         
-        
-        GEOR.Addons.Photos_obliques.globalOptions = this.options;
-        console.log(GEOR.Addons.Photos_obliques.globalOptions);
-
         // Set map object or create it
         if (this.map instanceof GeoExt.MapPanel) {
             this.map = this.map.map;
@@ -30,6 +26,9 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         if (!this.map) {
             this.map = GeoExt.MapPanel.guess().map;
         }
+               
+        GEOR.Addons.Photos_obliques.globalOptions = this.options;
+        GEOR.Addons.Photos_obliques.result.createResultLayer(this.map);
 
         // Call non visible airphotos WFS 
 
@@ -133,7 +132,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
             this.target.doLayout();
 
-            // create a menu item for the "tools" menu:
+            // create a menu item for the "tools" menu
             this.item = new Ext.menu.CheckItem({
                 id: "phot_chck_toolsMenu",
                 text: this.getText(record),
