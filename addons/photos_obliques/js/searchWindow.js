@@ -147,7 +147,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                                     Ext.getCmp("phob_fst_mainSbg").enable();
                                 },
                                 failure: function(result) {
-
+                                    Ext.MessageBox.alert("Alert","Echec de la requête");
                                 }
                             });
                         }

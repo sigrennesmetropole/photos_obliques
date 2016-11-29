@@ -28,7 +28,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
             xtype: "tbtext",
             text: nbItems > 0 ? ((nbResult < 2) ? nbItems + " Photo " : nbItems + " Photos") : "-",
             id: "phob_txt_cart"
-        }
+        };
         tbar.push(tbText);
     }   
     
@@ -78,7 +78,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
 
 GEOR.Addons.Photos_obliques.initCart = function() {
     var photoStore = new Ext.data.JsonStore({
-        url: 'http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-images.php',
+        url: 'http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-thumb.json',
         id: "phob_store_dataView",
         root: 'images',
         fields: ['name', 'url', {
@@ -121,13 +121,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         plugins: [
             new Ext.DataView.DragSelector(),
             new Ext.DataView.LabelEditor({dataIndex: 'name'})
-        ],
-        prepareData: function(data){
-            data.shortName = Ext.util.Format.ellipsis(data.name, 15);
-            data.sizeString = Ext.util.Format.fileSize(data.size);
-            data.dateString = data.lastmod.format("m/d/Y g:i a");
-            return data;
-        },            
+        ],          
         listeners: {            
             selectionchange: {
                 fn: function(dv,nodes){

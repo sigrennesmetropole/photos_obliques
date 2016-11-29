@@ -5,12 +5,20 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  * Could change if town selected is not included in the period selected  
  * 
  */
+
+/* Create store*/
+
 GEOR.Addons.Photos_obliques.search.comStore = function () {   
     
     var comStore = new Ext.data.JsonStore({
         id: "phob_store_com",
         root: "features",
-        fields: [{
+        fields: [/*{ TODO : change name and path to field value
+            name:"code_com",
+            convert: function(v,rec){
+                return rec.properties.codeCOm;
+            }
+        },*/{
             name:"commune",
             convert: function(v,rec){
                 return rec.properties.commune;
@@ -28,24 +36,42 @@ GEOR.Addons.Photos_obliques.search.comStore = function () {
     return comStore;
 };
 
+/* Create combo*/
 
-GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){    
-    return  new Ext.form.ComboBox({
+GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
+    var store;
+    /*if(id === "phob_cb_comSba"){
+        var store = GEOR.Addons.Photos_obliques.search.storePeriodFrom();
+    } else {
+        if()
+    }*/
+    return new Ext.ux.form.LovCombo({
+        store:GEOR.Addons.Photos_obliques.search.comStore(),
+        // avoir un store de la sorte avec un champ numérique comme id de ligne, le code commune donc
+        /*store : [
+             [22300, 'Personnel []']
+            ,[22700, 'Finance (33)']
+        ],*/
         id: id,
-        hiddenName:"commune",
-        anchor: "99%",
-        fieldLabel: "Communes ",
-        editable: true,
-        mode: "local",
-        store: GEOR.Addons.Photos_obliques.search.comStore(),
+        displayField:"commune",
+        triggerAction:'all',
+        mode:"local",
+        anchor:"99%",
+        editable:true,
+        fieldLabel: "Communes",
         selectOnFocus: true,
-        displayField: "commune"
+        hideOnSelect:false,
+        hiddenName:"commune"
     });
 };
+
+
 /**
  * Store and comboBox to select included start period
  *    
  */
+
+/* Create store*/
 
 GEOR.Addons.Photos_obliques.search.storePeriodFrom = function(){
     var storePeriodFrom = new Ext.data.JsonStore({
@@ -70,11 +96,18 @@ GEOR.Addons.Photos_obliques.search.storePeriodFrom = function(){
     
 };
 
+
+/* Create combo*/
+
 GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
+    var store;
+    if(id === "phob_cb_fromSba"){
+        var store = GEOR.Addons.Photos_obliques.search.storePeriodFrom();
+    }
     return  new Ext.form.ComboBox({
         id: id,
         editable: true,
-        store: GEOR.Addons.Photos_obliques.search.storePeriodFrom(),
+        store: store,
         anchor: "50%",
         mode: "local",
         selectOnFocus: true,
@@ -101,6 +134,9 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
  * Store and comboBox to select end period 
  * 
  */
+
+/* Create store*/
+
 GEOR.Addons.Photos_obliques.search.storePeriodTo = function() {
     var storePeriodTo = new Ext.data.JsonStore({
         id: "phob_store_to",
@@ -123,11 +159,17 @@ GEOR.Addons.Photos_obliques.search.storePeriodTo = function() {
     return storePeriodTo;
 };
 
+/* Create combo*/
+
 GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
+    var store;
+    if(id === "phob_cb_toSba"){
+        var store = GEOR.Addons.Photos_obliques.search.storePeriodTo();
+    }
     return  new Ext.form.ComboBox({
         id: id,
         hiddenName:"periodTo",
-        store: GEOR.Addons.Photos_obliques.search.storePeriodTo(),
+        store: store,
         anchor: "50%",
         mode: "local",
         editable: true,
@@ -159,6 +201,8 @@ GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
  * store and comboBox to select photos owner 
  */
 
+/* Create store*/
+
 GEOR.Addons.Photos_obliques.search.storeOwner = function() {    
     var storeOwner = new Ext.data.JsonStore({
         id: "phob_store_owner",
@@ -180,7 +224,14 @@ GEOR.Addons.Photos_obliques.search.storeOwner = function() {
     
     return storeOwner;
 };
+
+/* Create combo*/
+
 GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
+    var store;
+    if(id === "phob_cb_ownerSba"){
+        var store = GEOR.Addons.Photos_obliques.search.storeOwner();
+    }
     return  new Ext.form.ComboBox({    
         id: id,
         hiddenName:"proprio",
@@ -190,7 +241,7 @@ GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
         mode: "local",
         editable: true,
         selectOnFocus: true,
-        displayField: "proprio"
+        displayField: "proprio",        
     });
 };
 
@@ -201,6 +252,7 @@ GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
 GEOR.Addons.Photos_obliques.search.cpField = function(id) {
     var nameSpace = GEOR.Addons.Photos_obliques.search;
     var items;
+    
     var attributesItems = [
         {
             xtype: "compositefield",
@@ -210,8 +262,13 @@ GEOR.Addons.Photos_obliques.search.cpField = function(id) {
             defaults: {
                 flex: 1
             },
-            items: [nameSpace.comboPeriodFrom("phob_cb_fromSba"), nameSpace.comboPeriodTo("phob_cb_toSba")]
-        },nameSpace.comboAttributesCom("phob_cb_comSba"), nameSpace.comboOwner("phob_cb_ownerSba")];
+            items: [
+                nameSpace.comboPeriodFrom("phob_cb_fromSba"),
+                nameSpace.comboPeriodTo("phob_cb_toSba")]
+        },
+        nameSpace.comboAttributesCom("phob_cb_comSba"),
+        nameSpace.comboOwner("phob_cb_ownerSba")
+    ];
         
     var graphItems = [
         {
@@ -222,21 +279,20 @@ GEOR.Addons.Photos_obliques.search.cpField = function(id) {
             defaults: {
                 flex: 1
             },
-            items: [nameSpace.comboPeriodFrom("phob_cb_fromSbg"), nameSpace.comboPeriodTo("phob_cb_toSbg")]
-        },nameSpace.comboAttributesCom("phob_cb_comSbg"), nameSpace.comboOwner("phob_cb_ownerSbg")];
-    
-    if(id === "phob_fst_mainSbg"){
-        items = graphItems;
-    } else {
-        items = attributesItems;
-    }
+            items: [
+                nameSpace.comboPeriodFrom("phob_cb_fromSbg"), 
+                nameSpace.comboPeriodTo("phob_cb_toSbg")]
+        },
+        nameSpace.comboAttributesCom("phob_cb_comSbg"),
+        nameSpace.comboOwner("phob_cb_ownerSbg")
+    ];
         
     var cpField = [{
         xtype: "fieldset",
         border: false,
         id: id,
         anchor: "100%",
-        items: items
+        items: id === "phob_fst_mainSbg" ? graphItems : attributesItems
     }];
 
     return cpField;

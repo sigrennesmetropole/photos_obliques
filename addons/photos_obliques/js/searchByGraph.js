@@ -14,7 +14,6 @@ GEOR.Addons.Photos_obliques.search.comboStore = new Ext.data.JsonStore({
     id: "phob_store_cbGraph",
     root: "features",
     fields: ["id",            
-        ,
         {name:"proprio",
             convert: function(v,rec){
                 return rec.proprio;

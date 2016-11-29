@@ -6,6 +6,28 @@ Ext.namespace("GEOR.Addons.Photos_obliques.result");
  * search by attribute in oblique photo addon
  */
 
+GEOR.Addons.Photos_obliques.result.createResultLayerExtend = function(map){
+    if(map){
+                
+        // if layer already exit, remove it
+        if(map.getLayersByName("phob_extendResultLayer").length == 0){
+         // create layer and add to map
+            var styleMap = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleMapOptions);
+            var layerOptions = OpenLayers.Util.applyDefaults(
+                    this.layerOptions, {
+                        displayInLayerSwitcher: false,                                    
+                        projection: map.getProjectionObject(),
+                        styleMap: styleMap
+                    }
+            );
+            
+            var extendLayer = new OpenLayers.Layer.Vector("phob_extendResultLayer", layerOptions);
+            return map.addLayer(extendLayer);
+        }
+    }
+};
+
+
 GEOR.Addons.Photos_obliques.resultToolbar = function(gridStore) {
     var tbar = [];
 
@@ -87,6 +109,10 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         // TODO : erase this url beacause of automatic load when search is fire
         url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/gridData.php",
         root: "features",
+        sortInfo:{
+            field: "date_",
+            direction: "ASC"
+        },
         fields: [
             {name:"id",
                 convert: function(v,rec){
@@ -95,7 +121,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             },
             {name:"date_",
                 convert: function(v,rec){
-                    return rec.properties.fichier;
+                    return rec.properties.date_;
                 },
                 type:"date",
                 dateFormat:'timestamp'
@@ -118,7 +144,11 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 convert: function(v,rec){                    
                     return rec.geometry;
                 }
-            }            
+            },{name:"url",
+                convert: function(v,rec){
+                    return rec.properties.url;
+                }
+            }                
         ],
         listeners: {
             "datachanged" : function(){
@@ -137,7 +167,30 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         }
     });
     
+    // voir reproj
     gridStore = GEOR.Addons.Photos_obliques.result.resultStore;
+    gridStore.on("load",function(){
+        if (gridStore.data.items.length > 0){
+            for(b=0;b<gridStore.data.items.length;b++){
+                var layer = GeoExt.MapPanel.guess().map.getLayersByName("phob_extendResultLayer")[0];
+                var rec = gridStore.data.items[b].data.geom;
+                var geomCoord = rec ? rec.coordinates[0] : null;
+                
+                if(geomCoord != null){
+                    var vertices = [];
+                    for(i=0 ; i < geomCoord.length ; i++){
+                        var point = new OpenLayers.Geometry.Point(geomCoord[i][0],geomCoord[i][1]).transform(new OpenLayers.Projection("EPSG:3948"),new OpenLayers.Projection("EPSG:3857"));
+                        vertices.push(point);
+                    }
+                    var ring = new OpenLayers.Geometry.LinearRing(vertices);
+                    var createPolygon = new OpenLayers.Geometry.Polygon([ring]);
+                    var feature = new OpenLayers.Feature.Vector(createPolygon);
+                    console.log(feature);
+                    layer.addFeatures(feature);
+                }
+            }
+        }
+    });    
     gridStore.load();
 
     function updateShadow() {
@@ -163,24 +216,42 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             columns: [{
                 xtype: "actioncolumn",
                 id: "phob_col_photoRes",
-                header: "Photo",
-                dataIndex: "photo"
+                header: 'Photo',
+                dataIndex: 'url',
+                renderer: function(value){
+                    return '<img src="' + value + '" width="50" height="40" borer="0" />';
+                },
             }, {
                 xtype: "actioncolumn",
                 id: "phob_col_zoomRes",
                 header: "Zoom",
+                dataIndex:'url',
                 items: [{
                     tooltip: "Aggrandir",
                     getClass: function(val, meta, rec) {
                         return "phob-zoom-icon";
                     },
-                    handler: function() {}
+                    handler: function(val,meta,rec) {
+                        var rowIndex = meta;
+                        var rec = gridPanel.getStore().getAt(rowIndex);
+                        var url = rec ? rec.data.url : null;
+                        var win = new Ext.Window({
+                            id:"phob_win_display",
+                            html:'<img src="' + url + '" borer="2" />',
+                            autoHeight: true,
+                            autoWidth:true,
+                            autoScroll:true,
+                            closable:true
+                        });                        
+                        win.show();
+                    }
                 }]
             }, {
                 id: "phob_col_dateRes",
                 header: "Date",
                 sortable: true,
-                dataIndex: "date"
+                dataIndex: "date_",
+                renderer: Ext.util.Format.dateRenderer('d-m-Y')
             }, {
                 id: "phob_col_IdRes",
                 header: "ID",
@@ -202,8 +273,9 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 header: "Panier",
                 getClass: function(val, meta, rec) {
                     if (rec.get("telecharg") < 1) {
-                        this.tooltip = "Photo indisponible";
+                        this.tooltip = GEOR.Addons.Photos_obliques.globalOptions.adminMsgTooltip;
                         this.handler = function() {
+                            Ext.MessageBox.alert("Contact",GEOR.Addons.Photos_obliques.globalOptions.adminMsgAlert );
                         };
                         return "phob-call-icon";
                     } else {
