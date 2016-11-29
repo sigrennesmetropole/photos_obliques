@@ -52,7 +52,7 @@ public class PhotoOblique implements Serializable{
 	private String origin;
 	
 	@Column(name="proprio")
-	private String owners;
+	private String owner;
 	
 	@Column(name="telecharg")
 	private int downloadable;
@@ -152,12 +152,12 @@ public class PhotoOblique implements Serializable{
 		this.origin = origin;
 	}
 
-	public String getOwners() {
-		return owners;
+	public String getOwner() {
+		return owner;
 	}
 
 	public void setOwners(String owners) {
-		this.owners = owners;
+		this.owner = owners;
 	}
 
 	public int getDownloadable() {
