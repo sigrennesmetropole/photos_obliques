@@ -1,6 +1,9 @@
 {
     "js":[
         "js/external/DataViewTransition.js",
+        "js/external/Ext.ux.ThemeCombo.js",        
+        "js/external/Ext.ux.utils.js",        
+        "js/external/Ext.ux.form.LovCombo.js",
         "js/external/Reorderer.js",
         "js/external/ToolbarReorderer.js",
         "js/external/DataView-more.js",
@@ -12,9 +15,12 @@
         "js/cartWindow.js"
     ],
     "css": [
-        "css/photos_obliques.css"
+        "css/photos_obliques.css",
+        "css/Ext.ux.form.LovCombo.css"
     ],
     "default_options": {
+    	"adminMsgTooltip":"Téléchargement impossible, cliquer pour obtenir les coordonnées",
+    	"adminMsgAlert":"Service à contacter : Service SIG - 0202020202' ",
         "target": "tbar_12",
         "styleMapOptions": {
             "fill": false,
