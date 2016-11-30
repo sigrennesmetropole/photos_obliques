@@ -18,35 +18,48 @@ public interface PORepository
     extends JpaRepository<PhotoOblique, Long>
 {
     
-	List<PhotoOblique> findByAnnee(int year);
+	List<PhotoOblique> findByYearGreaterThan(int year);
 	
-	List<PhotoOblique> findByAnneeBetween(int minYear, int maxYear);
+	List<PhotoOblique> findByYearBetween(int minYear, int maxYear);
 	
-	List<PhotoOblique> findByAnneeBetweenAndOwner(int minYear, int maxYear, String owner);
+	List<PhotoOblique> findByYearBetweenAndOwner(int minYear, int maxYear, String owner);
 	
-	List<PhotoOblique> findByAnneeBetweenAndOwnerAndTownsContains(int minYear, int maxYear, String owner, String citie);
+	List<PhotoOblique> findByYearBetweenAndOwnerAndTownsContains(int minYear, int maxYear, String owner, String cities);
 	
-	@Query("select distinct annee from PhotoOblique order by annee")
+	List<PhotoOblique> findByTownsContains(String cities);
+	
+	List<PhotoOblique> findByOwner(String owner);
+
+	List<PhotoOblique> findByYearGreaterThanAndTownsContains(int minYear, String cities);
+	
+	List<PhotoOblique> findByYearBetweenAndTownsContains(int startPeriod, int endPeriod, String createCities);
+	
+	List<PhotoOblique> findByOwnerAndTownsContains(String owner, String cities);
+
+	
+	@Query("select distinct year from PhotoOblique order by year")
 	List<Integer> selectDistinctYear();
 	
-	@Query("select distinct annee from PhotoOblique where commune= ?1 order by annee")
+	@Query("select distinct year from PhotoOblique where towns= ?1 order by year")
 	List<Integer> selectDistinctYearByCities(String cities);
 	
 	@Query("select distinct owner from PhotoOblique order by owner")
 	List<String> selectDistinctOwners();
 	
-	@Query("select distinct owner from PhotoOblique where annee > ?1 order by owner")
+	@Query("select distinct owner from PhotoOblique where year > ?1 order by owner")
 	List<String> selectDistinctOwnersAnneeGreaterThan(int annee);
 
-	@Query("select distinct owner from PhotoOblique where annee between ?1 and ?2 order by owner")
+	@Query("select distinct owner from PhotoOblique where year between ?1 and ?2 order by owner")
 	List<String> selectDistinctOwnersAnneeBetween(int startPeriod, int endPeriod);
 
-	@Query("select distinct owner from PhotoOblique where annee between ?1 and ?2 and commune= ?3 order by owner")
+	@Query("select distinct owner from PhotoOblique where year between ?1 and ?2 and towns= ?3 order by owner")
 	List<String> selectDistinctOwnersAnneeBetweenAndCities(int startPeriod, int endPeriod, String cities);
 	
-	@Query("select distinct owner from PhotoOblique where commune= ?1 order by owner")
+	@Query("select distinct owner from PhotoOblique where towns= ?1 order by owner")
 	List<String> selectDistinctOwnersByCities(String createCities);
 
-	@Query("select distinct owner from PhotoOblique where annee > ?1 and commune= ?2 order by owner")
+	@Query("select distinct owner from PhotoOblique where year > ?1 and towns= ?2 order by owner")
 	List<String> selectDistinctOwnersAnneeGreaterThanAndCities(int startPeriod, String createCities);
+
+
 }

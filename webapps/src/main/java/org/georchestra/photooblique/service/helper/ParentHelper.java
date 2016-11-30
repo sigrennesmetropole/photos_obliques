@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.CharSet;
 import org.georchestra.photooblique.configuration.POPlaceHolder;
 import org.georchestra.photooblique.exception.CityCodeFormatException;
 import org.slf4j.Logger;
@@ -20,6 +21,8 @@ public class ParentHelper {
 	
 	
 	final static Logger logger = LoggerFactory.getLogger(ParentHelper.class);
+
+	private static final String TOWNS_SEPARATOR = "|";
 	
 	@Resource(name = "dbDataSource")
 	protected DataSource dataSource;
@@ -49,7 +52,8 @@ public class ParentHelper {
 		
 		StringBuilder citiesSB = new StringBuilder();
 		
-		if (cities.get(0).length() != 5){
+		
+		if(cities.get(0).length() != 5 && cities.get(0).lastIndexOf(TOWNS_SEPARATOR) == -1){
 			throw new CityCodeFormatException(cities.get(0));
 		}
 		citiesSB.append(cities.get(0));

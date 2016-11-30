@@ -12,8 +12,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.georchestra.photooblique.exception.CityCodeFormatException;
+import org.georchestra.photooblique.exception.InputAttributException;
 import org.georchestra.photooblique.model.PhotoOblique;
-import org.georchestra.photooblique.repository.PORepository;
+import org.georchestra.photooblique.service.helper.POHelper;
 import org.georchestra.photooblique.service.helper.RechercheHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,25 +26,51 @@ public class POController {
 
 	@Autowired
 	RechercheHelper rechercheHelper;
-
+	
 	@Autowired
-	PORepository poRepository;
+	POHelper poHelper;
+
 
 	@Path("/getPhotoByAttribute/")
 	@GET
 	@Produces("application/json")
-	public List<PhotoOblique> getPOList(@Context HttpHeaders headers, 
+	public Map<String, Object> getPOList(@Context HttpHeaders headers, 
 			@QueryParam("cities") List<String> cities,
 			@QueryParam("startPeriod") int startPeriod, 
 			@QueryParam("endPeriod") int endPeriod,
 			@QueryParam("owner") String owner) {
 
-		logger.debug("Search photo by attrribute");
+		logger.debug("Search photo by attribute");
+		
+		Map<String, Object> results = new HashMap<String, Object>();
+		
+		// Check if period is good
+		if (endPeriod != 0 && endPeriod < startPeriod) {
+			results.put("success", false);
+			results.put("error", "endPeriod should be greater than startPeriod");
+				
+		} else {
 
-		List<PhotoOblique> photoObliques = poRepository.findByAnneeBetweenAndOwnerAndTownsContains(startPeriod, endPeriod, owner, "");
+			try {
+				List<PhotoOblique> photoObliques = poHelper.getPOList(startPeriod, endPeriod, owner, cities);
+		
+				results.put("success", true);
+				results.put("photos", photoObliques);
+			}// Thrown if city code is wrong
+			catch (CityCodeFormatException e) {
+				
+				results.put("success", false);
+				results.put("error", "City code format error - " + e.getMessage());
+			}// Thrown if city code is wrong
+			catch (InputAttributException e) {
+				
+				results.put("success", false);
+				results.put("error", e.getMessage());
+			}
+		}
 
 		// Return value providers will convert to JSON
-		return photoObliques;
+		return results;
 	}
 
 	@Path("/getYearsList/")
@@ -85,7 +112,7 @@ public class POController {
 		Map<String, Object> results = new HashMap<String, Object>();
 
 		// Check if period is good
-		if (endPeriod < startPeriod) {
+		if (endPeriod != 0 && endPeriod < startPeriod) {
 			results.put("success", false);
 			results.put("error", "endPeriod should be greater than startPeriod");
 
