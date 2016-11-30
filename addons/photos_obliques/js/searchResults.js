@@ -110,10 +110,11 @@ GEOR.Addons.Photos_obliques.resultToolbar = function(gridStore) {
 GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var epsg3948 = new OpenLayers.Projection("EPSG:3948");
     var gridStore, gridPanel;
+    var map = GeoExt.MapPanel.guess().map ? GeoExt.MapPanel.guess().map : null;
+    
     
     var createFeature = function(coordinates, layer){
         var vertices = [];
-        var map = GeoExt.MapPanel.guess().map;
         // if value exist create polygon from reproject coordinates and add to layer 
         if(coordinates != null){
             for(i=0 ; i < coordinates.length ; i++){
@@ -126,10 +127,18 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             if(layer){                
                 layer.addFeatures(feature);
             } else {
-                return feature;
+                var getVertices = feature.geometry.getVertices();
+                var transformedVertices = [];
+                for(var i=0; i < getVertices.length; i++){
+                    transformedVertices.push(getVertices[i].transform(epsg3948,map.getProjectionObject()));
+                }
+                var ringProj = new OpenLayers.Geometry.LinearRing(transformedVertices);
+                var createPolygonProj = new OpenLayers.Geometry.Polygon([ringProj]);
+                var featureProj = new OpenLayers.Feature.Vector(createPolygonProj);
+                return featureProj;
             }
         }  
-    };
+    };   
 
 
     GEOR.Addons.Photos_obliques.result.resultStore = new Ext.data.JsonStore({
@@ -195,23 +204,24 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         }
     });
     
-    // voir reproj
     gridStore = GEOR.Addons.Photos_obliques.result.resultStore;
+    
+    // zoom to result extent
     gridStore.on("load",function(){
-        var map = GeoExt.MapPanel.guess().map;
-        var layer = map.getLayersByName("phob_extendResultLayer")[0];
-        if (gridStore.data.items.length > 0){
-            for(b=0;b<gridStore.data.items.length;b++){                
-                var rec = gridStore.data.items[b].data.geom;
-                var geomCoord = rec ? rec.coordinates[0] : null;
-                var feature = createFeature(geomCoord,layer);
-                /*if(feature){
-                    layer.addFeatures(feature);
-                }*/
+        if(map){
+            var layer = map.getLayersByName("phob_extendResultLayer")[0];
+            if (gridStore.data.items.length > 0){
+                for(b=0;b<gridStore.data.items.length;b++){                
+                    var rec = gridStore.data.items[b].data.geom;
+                    var geomCoord = rec ? rec.coordinates[0] : null;
+                    var feature = createFeature(geomCoord,layer);
+                }
             }
+            map.zoomToExtent(layer.getDataExtent());
         }
-        map.zoomToExtent(layer.getDataExtent());
-    });    
+    });  
+    
+    // TODO : erase it -  just result of search load this store
     gridStore.load();
 
     function updateShadow() {
@@ -219,7 +229,28 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             return Ext.getCmp("phob_win_search").syncShadow();
         }
     }
-
+    var createWindow = function(htmlImg){
+        var window = new Ext.Window({
+            id:"phob_win_display",
+            autoHeight: true,
+            autoWidth:true,
+            autoScroll:true,
+            closable:true
+        });
+        window.html = htmlImg; 
+        return window;
+    };
+    var initWindow = function(htmlImg){    
+        
+        if(Ext.getCmp("phob_win_display")){
+            Ext.getCmp("phob_win_display").destroy();
+            createWindow(htmlImg).show();
+        } else {            
+            createWindow(htmlImg).show();
+        }
+    };
+    
+    // Create grid panel and items
     gridPanel = new Ext.grid.GridPanel({
         id: "phob_grid_resultPan",
         store: gridStore,
@@ -242,6 +273,15 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 renderer: function(value){
                     return '<img src="' + value + '" width="50" height="50" borer="0" />';
                 },
+                listeners:{
+                    "click":function(val,meta,rec){                        
+                        var rowIndex = rec;
+                        var record = gridPanel.getStore().getAt(rowIndex);
+                        var url = record ? record.data.url : null;
+                        var htmlImg = '<img src="' + url + '" borer="2" />';
+                        initWindow(htmlImg);                            
+                    }
+                }               
             }, {
                 xtype: "actioncolumn",
                 id: "phob_col_zoomRes",
@@ -253,24 +293,12 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                         return "phob-zoom-icon";
                     },
                     handler: function(val,meta,rec) {
-                        var rowIndex = meta;
-                        var rec = gridPanel.getStore().getAt(rowIndex);
-                        var url = rec ? rec.data.url : null;
-                        var win = new Ext.Window({
-                            id:"phob_win_display",
-                            html:'<img src="' + url + '" borer="2" />',
-                            autoHeight: true,
-                            autoWidth:true,
-                            autoScroll:true,
-                            closable:true
-                        });                        
-                        win.show();
-                        var geomCoord = rec ? rec.data.geom.coordinates[0] : null;
-                        var feature = createFeature(geomCoord,layer);
-                        if(feature){                            
-                            layer.addFeatures(feature);
-                        }
-                        var bound = rec.data;
+                    	var rowIndex = meta;
+                        var record = gridPanel.getStore().getAt(rowIndex);
+                        var geomCoord = record ? record.data.geom.coordinates[0] : null;
+
+                        var feature = createFeature(geomCoord,false);
+                        map.zoomToExtent(feature.geometry.getBounds());                                              
                     }
                 }]
             }, {
