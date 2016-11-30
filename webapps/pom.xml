@@ -228,12 +228,27 @@
 					<artifactId>maven-pmd-plugin</artifactId>
 					<version>2.4</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.3</version>
+					<configuration>
+						<docletArtifacts>
+							<docletArtifact>
+								<groupId>org.apache.cxf</groupId>
+								<artifactId>cxf-java2wadl-plugin</artifactId>
+								<version>3.0.0</version>
+							</docletArtifact>
+						</docletArtifacts>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.0</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -243,6 +258,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
+			
 
 			<!-- needed for jetty:run maven target -->
 			<plugin>
@@ -275,6 +291,65 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>build-javadocs</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-java2wadl-plugin</artifactId>
+				<version>${cxf.version}</version>
+				<executions>
+					<!-- Enable if support for Javadoc is required, not supported in CXF 
+						2.7.11 -->
+					<execution>
+						<id>parsejavadoc</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>parsejavadoc</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>process-classes</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>java2wadl</goal>
+						</goals>
+						<configuration>
+							<classResourceNames>
+								<classResourceName>org.georchestra.photooblique.service.POController</classResourceName>
+								<classResourceName>org.georchestra.photooblique.service.CommuneController</classResourceName>
+							</classResourceNames>
+							<docProvider>org.apache.cxf.maven_plugin.javatowadl.ResourceMapJavaDocProvider</docProvider>
+							<attachWadl>true</attachWadl>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>target/site</directory>
+						</resource>
+						<resource>
+							<directory>target/generated</directory>
+							<targetPath>apidocs</targetPath>
+						</resource>
+					</webResources>
+				</configuration>
 			</plugin>
 		</plugins>
 		<resources>

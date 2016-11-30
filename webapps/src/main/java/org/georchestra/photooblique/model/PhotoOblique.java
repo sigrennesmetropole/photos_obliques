@@ -28,25 +28,13 @@ public class PhotoOblique implements Serializable{
 	private String fileName;
 
 	@Column(name="annee")
-	private int annee;
+	private int year;
 	
 	@Column(name="date_")
 	private Date date;
-	
-	@Column(name="heure")
-	private String hours;
-	
+		
 	@Column(name="comment")
 	private String comment;
-	
-	@Column(name="angle_deg")
-	private BigDecimal angleDeg;
-	
-	@Column(name="angle_grd")
-	private BigDecimal angleGrd;
-	
-	@Column(name="id_archiv")
-	private String idArchiv;
 	
 	@Column(name="presta")
 	private String origin;
@@ -88,12 +76,12 @@ public class PhotoOblique implements Serializable{
 		this.fileName = fileName;
 	}
 
-	public int getAnnee() {
-		return annee;
+	public int getYear() {
+		return year;
 	}
 
-	public void setAnnee(int annee) {
-		this.annee = annee;
+	public void setYear(int year) {
+		this.year = year;
 	}
 
 	public Date getDate() {
@@ -104,14 +92,6 @@ public class PhotoOblique implements Serializable{
 		this.date = date;
 	}
 
-	public String getHours() {
-		return hours;
-	}
-
-	public void setHours(String hours) {
-		this.hours = hours;
-	}
-
 	public String getComment() {
 		return comment;
 	}
@@ -120,29 +100,6 @@ public class PhotoOblique implements Serializable{
 		this.comment = comment;
 	}
 
-	public BigDecimal getAngleDeg() {
-		return angleDeg;
-	}
-
-	public void setAngleDeg(BigDecimal angleDeg) {
-		this.angleDeg = angleDeg;
-	}
-
-	public BigDecimal getAngleGrd() {
-		return angleGrd;
-	}
-
-	public void setAngleGrd(BigDecimal angleGrd) {
-		this.angleGrd = angleGrd;
-	}
-
-	public String getIdArchiv() {
-		return idArchiv;
-	}
-
-	public void setIdArchiv(String idArchiv) {
-		this.idArchiv = idArchiv;
-	}
 
 	public String getOrigin() {
 		return origin;
