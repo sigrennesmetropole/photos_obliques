@@ -28,8 +28,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         }
                
         GEOR.Addons.Photos_obliques.globalOptions = this.options;
-        GEOR.Addons.Photos_obliques.result.createResultLayer(this.map);
-        GEOR.Addons.Photos_obliques.result.createResultLayerExtend(this.map);
+        GEOR.Addons.Photos_obliques.result.createResultLayers(this.map);
 
         // Call non visible airphotos WFS 
 

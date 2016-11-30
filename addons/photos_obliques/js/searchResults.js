@@ -5,31 +5,62 @@ Ext.namespace("GEOR.Addons.Photos_obliques.result");
  * name"s function) ex: [phob_win_main_sba] is the id of the main window to
  * search by attribute in oblique photo addon
  */
+GEOR.Addons.Photos_obliques.result.createResultLayers = function(map) {
+    var epsg3948 = new OpenLayers.Projection("EPSG:3948");
+    var tempLayer, extendLayer;
 
-GEOR.Addons.Photos_obliques.result.createResultLayerExtend = function(map){
     if(map){
                 
         // if layer already exit, remove it
-        if(map.getLayersByName("phob_extendResultLayer").length == 0){
+        if(map.getLayersByName("phob_tempResultLayer").length == 0 && map.getLayersByName("phob_extendResultLayer").length == 0){
          // create layer and add to map
             var styleMap = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleMapOptions);
-            var layerOptions = OpenLayers.Util.applyDefaults(
+            var templayerOptions = OpenLayers.Util.applyDefaults(
                     this.layerOptions, {
                         displayInLayerSwitcher: false,                                    
                         projection: map.getProjectionObject(),
-                        styleMap: styleMap
+                        styleMap: styleMap,
+                        preFeatureInsert: function(feature){
+                            feature.geometry.transform(epsg3948, map.getProjectionObject());
+                        }
                     }
-            );
+            );                       
+            tempLayer = new OpenLayers.Layer.Vector("phob_tempResultLayer", templayerOptions);
             
-            var extendLayer = new OpenLayers.Layer.Vector("phob_extendResultLayer", layerOptions);
-            return map.addLayer(extendLayer);
+            var extendStyleMap = new OpenLayers.StyleMap({
+                "fill": false,
+                "stroke": false
+              });
+            var extendlayerOptions = OpenLayers.Util.applyDefaults(
+                    this.layerOptions, {
+                        displayInLayerSwitcher: false,                                    
+                        projection: map.getProjectionObject(),
+                        styleMap: extendStyleMap,
+                        preFeatureInsert: function(feature){
+                            feature.geometry.transform(epsg3948, map.getProjectionObject());
+                        }
+                    }
+            );  
+            extendLayer = new OpenLayers.Layer.Vector("phob_extendResultLayer", extendlayerOptions);
+                       
+            var addLayers = function(map,tempLayer,extendLayer){                
+                map.addLayer(tempLayer)
+                extendLayer.styleMap.styles.default.defaultStyle.strokeOpacity = 0;
+                map.addLayer(extendLayer);
+            };
+            return addLayers(map,tempLayer,extendLayer);
         }
+        
     }
+    
 };
+
 
 
 GEOR.Addons.Photos_obliques.resultToolbar = function(gridStore) {
     var tbar = [];
+    
+    var map = GeoExt.MapPanel.guess().map;
 
     var nbResult;
 
@@ -76,32 +107,29 @@ GEOR.Addons.Photos_obliques.resultToolbar = function(gridStore) {
     });
 };
 
-GEOR.Addons.Photos_obliques.result.createResultLayer = function(map) {
-    var tempLayer;
-
-    if(map){
-                
-        // if layer already exit, remove it
-        if(map.getLayersByName("phob_tempResultLayer").length == 0){
-         // create layer and add to map
-            var styleMap = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleMapOptions);
-            var layerOptions = OpenLayers.Util.applyDefaults(
-                    this.layerOptions, {
-                        displayInLayerSwitcher: false,                                    
-                        projection: map.getProjectionObject(),
-                        styleMap: styleMap
-                    }
-            );
-            
-            tempLayer = new OpenLayers.Layer.Vector("phob_tempResultLayer", layerOptions);
-            return map.addLayer(tempLayer);
-        }
-    }
-    
-};
-
 GEOR.Addons.Photos_obliques.result.gridPanel = function() {
+    var epsg3948 = new OpenLayers.Projection("EPSG:3948");
     var gridStore, gridPanel;
+    
+    var createFeature = function(coordinates, layer){
+        var vertices = [];
+        var map = GeoExt.MapPanel.guess().map;
+        // if value exist create polygon from reproject coordinates and add to layer 
+        if(coordinates != null){
+            for(i=0 ; i < coordinates.length ; i++){
+                var point = new OpenLayers.Geometry.Point(coordinates[i][0],coordinates[i][1]);
+                vertices.push(point);
+            }
+            var ring = new OpenLayers.Geometry.LinearRing(vertices);
+            var createPolygon = new OpenLayers.Geometry.Polygon([ring]);
+            var feature = new OpenLayers.Feature.Vector(createPolygon);
+            if(layer){                
+                layer.addFeatures(feature);
+            } else {
+                return feature;
+            }
+        }  
+    };
 
 
     GEOR.Addons.Photos_obliques.result.resultStore = new Ext.data.JsonStore({
@@ -170,26 +198,19 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     // voir reproj
     gridStore = GEOR.Addons.Photos_obliques.result.resultStore;
     gridStore.on("load",function(){
+        var map = GeoExt.MapPanel.guess().map;
+        var layer = map.getLayersByName("phob_extendResultLayer")[0];
         if (gridStore.data.items.length > 0){
-            for(b=0;b<gridStore.data.items.length;b++){
-                var layer = GeoExt.MapPanel.guess().map.getLayersByName("phob_extendResultLayer")[0];
+            for(b=0;b<gridStore.data.items.length;b++){                
                 var rec = gridStore.data.items[b].data.geom;
                 var geomCoord = rec ? rec.coordinates[0] : null;
-                
-                if(geomCoord != null){
-                    var vertices = [];
-                    for(i=0 ; i < geomCoord.length ; i++){
-                        var point = new OpenLayers.Geometry.Point(geomCoord[i][0],geomCoord[i][1]).transform(new OpenLayers.Projection("EPSG:3948"),new OpenLayers.Projection("EPSG:3857"));
-                        vertices.push(point);
-                    }
-                    var ring = new OpenLayers.Geometry.LinearRing(vertices);
-                    var createPolygon = new OpenLayers.Geometry.Polygon([ring]);
-                    var feature = new OpenLayers.Feature.Vector(createPolygon);
-                    console.log(feature);
+                var feature = createFeature(geomCoord,layer);
+                /*if(feature){
                     layer.addFeatures(feature);
-                }
+                }*/
             }
         }
+        map.zoomToExtent(layer.getDataExtent());
     });    
     gridStore.load();
 
@@ -219,7 +240,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 header: 'Photo',
                 dataIndex: 'url',
                 renderer: function(value){
-                    return '<img src="' + value + '" width="50" height="40" borer="0" />';
+                    return '<img src="' + value + '" width="50" height="50" borer="0" />';
                 },
             }, {
                 xtype: "actioncolumn",
@@ -244,6 +265,12 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                             closable:true
                         });                        
                         win.show();
+                        var geomCoord = rec ? rec.data.geom.coordinates[0] : null;
+                        var feature = createFeature(geomCoord,layer);
+                        if(feature){                            
+                            layer.addFeatures(feature);
+                        }
+                        var bound = rec.data;
                     }
                 }]
             }, {
@@ -302,18 +329,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                     var rowIndex = gridPanel.getView().findRowIndex(t);
                     var rec = gridPanel.getStore().getAt(rowIndex);
                     var geomCoord = rec ? rec.data.geom.coordinates[0] : null;
-                    var vertices = [];
-                    // if value exist create polygon from reproject coordinates and add to layer 
-                    if(geomCoord != null){
-                        for(i=0 ; i < geomCoord.length ; i++){
-                            var point = new OpenLayers.Geometry.Point(geomCoord[i][0],geomCoord[i][1]).transform(new OpenLayers.Projection("EPSG:3948"),new OpenLayers.Projection("EPSG:3857"));
-                            vertices.push(point);
-                        }
-                        var ring = new OpenLayers.Geometry.LinearRing(vertices);
-                        var createPolygon = new OpenLayers.Geometry.Polygon([ring]);
-                        var feature = new OpenLayers.Feature.Vector(createPolygon);
-                        layer.addFeatures(feature);
-                    }
+                    createFeature(geomCoord,layer);
                 }              
             },
             "mouseout": function(){
