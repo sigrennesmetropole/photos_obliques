@@ -35,6 +35,8 @@ public interface PORepository
 	List<PhotoOblique> findByYearBetweenAndTownsContains(int startPeriod, int endPeriod, String createCities);
 	
 	List<PhotoOblique> findByOwnerAndTownsContains(String owner, String cities);
+	
+	List<PhotoOblique> findByPhotoIdIn(List<String> ids);
 
 	
 	@Query("select distinct year from PhotoOblique order by year")

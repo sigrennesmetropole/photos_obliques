@@ -38,6 +38,7 @@
 		<jaxrs:serviceBeans>
 			<bean class="org.georchestra.photooblique.service.CommuneController" />
 			<bean class="org.georchestra.photooblique.service.POController" />
+			<bean class="org.georchestra.photooblique.service.ExportController" />
 		</jaxrs:serviceBeans>
 		
 		<jaxrs:providers>
