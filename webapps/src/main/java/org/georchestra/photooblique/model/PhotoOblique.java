@@ -69,7 +69,7 @@ public class PhotoOblique implements Serializable{
 	
 	
 	public PhotoOblique(){
-		this.url = POPlaceHolder.getProperty("thumb.url");
+		this.url = POPlaceHolder.getProperty("photo.thumb.url");
 	}
 
 	public String getPhotoId() {

@@ -23,7 +23,7 @@ public class CommuneController {
 	
 	final static Logger logger = LoggerFactory.getLogger(CommuneController.class);
 	
-	@Path("/communes/")
+	@Path("/getCommunes/")
     @GET
     @Produces("application/json")
     /**
@@ -43,10 +43,10 @@ public class CommuneController {
      */
     public Map<String,Object> getCommuneByDate(
     			@Context HttpHeaders headers,
-    			@QueryParam("anneeDeb") int anneeDeb,
-    			@QueryParam("anneeFin") int anneeFin){
+    			@QueryParam("startPeriod") int startPeriod,
+    			@QueryParam("endPeriod") int endPeriod){
     	
-    	Map<String,Object> communes = communeHelper.getCommunes(anneeDeb, anneeFin);
+    	Map<String,Object> communes = communeHelper.getCommunes(startPeriod, endPeriod);
     	
     	// Return value providers will convert to JSON
         return communes;

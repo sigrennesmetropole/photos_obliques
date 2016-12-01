@@ -27,6 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+
 public class ExportController {
 
 	@Autowired
@@ -120,6 +124,34 @@ public class ExportController {
 		}
 
 		return response.build();
+	}
+	
+	
+	@Path("/createCSV/")
+	@GET
+	@Produces("text/csv")
+	public Response createCSV(@Context HttpHeaders headers, @QueryParam("photoId") List<String> photosIds) {
+
+		ResponseBuilder response = Response.noContent();
+
+		logger.info("Create CSV with given ids");
+
+		// Return empty reponse if no input
+		if (!photosIds.isEmpty()) {
+
+			List<PhotoOblique> photos = poRepository.findByPhotoIdIn(photosIds);
+			CsvMapper mapper = new CsvMapper();
+			CsvSchema schema = mapper.schemaFor(PhotoOblique.class).withHeader();
+			try {
+				String csv = mapper.writer(schema).writeValueAsString(photos);
+				response = Response.ok((String) csv);
+				response.header("Content-Disposition", "attachment; filename=export.csv");
+			} catch (JsonProcessingException e) {
+				logger.error("Error while creatin CSV file : " + e.getMessage());
+			}
+		}
+	    
+	    return response.build();
 	}
 	
 }
