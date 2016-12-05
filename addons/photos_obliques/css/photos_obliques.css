@@ -35,6 +35,15 @@
 	background-image: url(../img/icons/phob-clean.png);
 }
 
+.phob-clean-selection-icon{
+	background-image: url(../img/icons/phob-download-selection.png);
+}
+
+.phob-download-selection-icon{
+	background-image: url(../img/icons/phob-clean-selection.png);
+}
+
+
 .x-action-col-cell img.phob-zoom-icon{
 	width:100%;
 	height:16px;
