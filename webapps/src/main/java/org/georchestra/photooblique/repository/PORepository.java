@@ -35,6 +35,8 @@ public interface PORepository
 	List<PhotoOblique> findByYearBetweenAndTownsContains(int startPeriod, int endPeriod, String createCities);
 	
 	List<PhotoOblique> findByOwnerAndTownsContains(String owner, String cities);
+	
+	List<PhotoOblique> findByPhotoIdIn(List<String> ids);
 
 	
 	@Query("select distinct year from PhotoOblique order by year")
@@ -47,19 +49,28 @@ public interface PORepository
 	List<String> selectDistinctOwners();
 	
 	@Query("select distinct owner from PhotoOblique where year > ?1 order by owner")
-	List<String> selectDistinctOwnersAnneeGreaterThan(int annee);
+	List<String> selectDistinctOwnersByYearGreaterThan(int annee);
 
 	@Query("select distinct owner from PhotoOblique where year between ?1 and ?2 order by owner")
-	List<String> selectDistinctOwnersAnneeBetween(int startPeriod, int endPeriod);
+	List<String> selectDistinctOwnersByYearBetween(int startPeriod, int endPeriod);
 
 	@Query("select distinct owner from PhotoOblique where year between ?1 and ?2 and towns= ?3 order by owner")
-	List<String> selectDistinctOwnersAnneeBetweenAndCities(int startPeriod, int endPeriod, String cities);
+	List<String> selectDistinctOwnersByYearBetweenAndCities(int startPeriod, int endPeriod, String cities);
 	
 	@Query("select distinct owner from PhotoOblique where towns= ?1 order by owner")
 	List<String> selectDistinctOwnersByCities(String createCities);
 
 	@Query("select distinct owner from PhotoOblique where year > ?1 and towns= ?2 order by owner")
-	List<String> selectDistinctOwnersAnneeGreaterThanAndCities(int startPeriod, String createCities);
+	List<String> selectDistinctOwnersByYearGreaterThanAndCities(int startPeriod, String createCities);
+
+	@Query("select distinct towns from PhotoOblique where year between ?1 and ?2 order by towns")
+	List<String> selectDistinctCommuneByYearBetween(int startPeriod, int endPeriod);
+
+	@Query("select distinct towns from PhotoOblique order by towns")
+	List<String> selectDistinctCommune();
+
+	@Query("select distinct towns from PhotoOblique where year > ?1 order by towns")
+	List<String> selectDistinctCommuneByYearGreaterThan(int startPeriod);
 
 
 }

@@ -57,15 +57,15 @@ public class RechercheHelper extends ParentHelper{
 		if(cities.isEmpty() && startPeriod ==0 && endPeriod ==0){
 			ownersList = poRepository.selectDistinctOwners();
 		}else if(cities.isEmpty() && endPeriod == 0){
-			ownersList = poRepository.selectDistinctOwnersAnneeGreaterThan(startPeriod);
+			ownersList = poRepository.selectDistinctOwnersByYearGreaterThan(startPeriod);
 		}else if (cities.isEmpty()){
-			ownersList = poRepository.selectDistinctOwnersAnneeBetween(startPeriod, endPeriod);
+			ownersList = poRepository.selectDistinctOwnersByYearBetween(startPeriod, endPeriod);
 		}else if (startPeriod ==0 && endPeriod ==0) {
 			ownersList = poRepository.selectDistinctOwnersByCities(createCities(cities));
 		}else if (endPeriod ==0) {
-			ownersList = poRepository.selectDistinctOwnersAnneeGreaterThanAndCities(startPeriod, createCities(cities));
+			ownersList = poRepository.selectDistinctOwnersByYearGreaterThanAndCities(startPeriod, createCities(cities));
 		}else{
-			ownersList = poRepository.selectDistinctOwnersAnneeBetweenAndCities(startPeriod, endPeriod, createCities(cities));
+			ownersList = poRepository.selectDistinctOwnersByYearBetweenAndCities(startPeriod, endPeriod, createCities(cities));
 		}
 		
 		return ownersList;
