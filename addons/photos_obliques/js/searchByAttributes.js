@@ -29,7 +29,8 @@ GEOR.Addons.Photos_obliques.search.comStore = function () {
             direction: "ASC"
         },
         proxy: new Ext.data.HttpProxy({
-            url:"http://172.16.52.84:8080/photooblique/services/getYearsList",
+            //url:"http://172.16.52.84:8080/photooblique/services/getYearsList",
+            url:"http://cadastrapp-qualif.asogfi.fr/photooblique/services/getYearsList",
             method: 'GET',
             autoLoad:true
         }),
