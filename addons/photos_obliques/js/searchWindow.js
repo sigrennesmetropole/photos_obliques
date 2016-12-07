@@ -85,7 +85,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
         resizable: true,
         constrainHeader: true,
         autoScroll: true,
-        widht: 500,
+        width: 500,
         autoHeight: true,
         minWidth: 280,
         closeAction: "hide",
@@ -109,27 +109,34 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
             listeners: {
                 "click": function() {
                     var params;
+                    var nbResultMax = 100;
+                    var store;
                     var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
                     var searchParams = searchForm.getValues();
-                    getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
+                    var getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
                     var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
+                    console.log(resultStore);
                     
-                    if(getTitle == "Recherche attributaire"){
-                        params = searchParams;
+                    if (getTitle === "Outils de recherche attributaire"){
+                        delete searchParams["cities"];
+                        //searchParams.start= 0;
+                        //searchParams.limit= GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitResults : nbResultMax;
                         Ext.Ajax.request({
                             method: "GET",
                             params:searchParams,
-                            //url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php",
-                            url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php",
+                            url: "http://172.16.52.84:8080/photooblique/services/getPhotoByAttribute",
                             success: function(response) {
-
-                                // TODO : uncomment this line an erase actual data store set manualy to load grid result by search
-                                //resultStore.loadData(Ext.util.JSON.decode(response.responseText));
+                                resultStore.loadData(Ext.util.JSON.decode(response.responseText));
                             },
                             failure: function(result) {
-                                
+                                Ext.MessageBox.alert("Alert","Echec de la requête");
                             }
                         });
+                                                  
+                    } 
+                    
+                    
+                    /*if (getTitle == "Recherche attributaire"){
                     } else if (getTitle == "Recherche graphique"){
                         if(Ext.getCmp("phob_fst_mainSbg").disabled){
                             // requete à partir du dessin
@@ -150,19 +157,8 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                                     Ext.MessageBox.alert("Alert","Echec de la requête");
                                 }
                             });
-                        }
-                        // feature = 
-                        // params = 
-                            // si on a une géométrie
-                                // on lance la requete
-                                    // si succes
-                                        // si réponse > 1 photo 
-                                        // on met la réponse dans le store de résultat
-                                        // mise a jour des données du store par champ
-                                        
-
-                        
-                    }
+                        }                        
+                    }*/
                 }
             }
         }, cancelBtn]
