@@ -111,7 +111,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             constrainHeader: true,
             tbar: actionItems,
             listeners: {
-                "hide": function() {},
+                "hide": function() {console.log("hide");},
                 "show": function() {}
             }
         });
