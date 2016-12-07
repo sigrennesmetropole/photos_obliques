@@ -73,6 +73,7 @@
 
 				<!-- dialect -->
 				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+				<!-- uncomment if use geom <prop key="hibernate.dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect</prop> -->
 				<prop key="hibernate.connection.useUnicode">true</prop>
 				<prop key="hibernate.connection.charSet">UTF-8</prop>
 

@@ -4,16 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Converter;
 import javax.persistence.Entity;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.georchestra.photooblique.configuration.POPlaceHolder;
-import org.georchestra.photooblique.converter.URLConverter;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 @Entity
@@ -61,15 +58,16 @@ public class PhotoOblique implements Serializable{
 	@Column(name="commune")
 	private String towns;
 	
-//	@Column(name="shape")
-//	private byte[] geometry;
+	//@Column(name="shape")
+	//private Geometry geometry;
 	
 	@Column(name="objectid")
 	private int objectid;
 	
+	@Column(name="taille_fichier")
+	private int size;
 	
 	public PhotoOblique(){
-		this.url = POPlaceHolder.getProperty("photo.thumb.url");
 	}
 
 	public String getPhotoId() {
@@ -117,7 +115,18 @@ public class PhotoOblique implements Serializable{
 	}
 
 	public String getUrl() {
-		return url + fileName;
+		return fileName;
 	}
+
+/** Geometry is not well given via GeoJSON  do not get it use WFS for geoserver
+ * 	public Geometry getGeometry() {
+		return geometry;
+	}
+	*/
+
+	public int getSize() {
+		return size;
+	}
+
 
 }
