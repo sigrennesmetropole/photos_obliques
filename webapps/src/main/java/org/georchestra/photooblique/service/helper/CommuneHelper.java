@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.georchestra.photooblique.exception.InputAttributException;
 import org.georchestra.photooblique.repository.PORepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

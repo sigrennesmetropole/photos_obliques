@@ -49,11 +49,11 @@ public class CommunesList {
 			for (int i = 0; i < features.size(); i++) {
 				JSONObject firstCommune = (JSONObject) features.get(i);
 				JSONObject communeProperties = (JSONObject) firstCommune.get("properties");
-				String code_insee = (String) communeProperties.get("code_insee");
+				Long code_insee = (Long) communeProperties.get("code_insee");
 				String nom = (String) communeProperties.get("nom");
 				logger.debug(" Code : " + code_insee + "-  nom : " + nom);
 				
-				communes.put(code_insee, nom);
+				communes.put((String) Long.toString(code_insee), nom);
 			}
 
 		} catch (IOException e) {
