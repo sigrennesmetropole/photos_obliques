@@ -14,7 +14,6 @@ import javax.ws.rs.core.HttpHeaders;
 
 import org.georchestra.photooblique.exception.CityCodeFormatException;
 import org.georchestra.photooblique.exception.InputAttributException;
-import org.georchestra.photooblique.model.PhotoOblique;
 import org.georchestra.photooblique.service.helper.POHelper;
 import org.georchestra.photooblique.service.helper.RechercheHelper;
 import org.slf4j.Logger;
@@ -37,11 +36,18 @@ public class POController {
 	@Produces("application/json")
 	public Map<String, Object> getPOList(@Context HttpHeaders headers, 
 			@QueryParam("cities") List<String> cities,
-			@QueryParam("startPeriod") int startPeriod, 
-			@QueryParam("endPeriod") int endPeriod,
-			@QueryParam("owner") String owner) {
+			@QueryParam("startPeriod")String StringStartPeriod, 
+			@QueryParam("endPeriod") String StringEndPeriod,
+			@QueryParam("owner") String owner,
+			@QueryParam("start") String StringPagingStart,
+			@QueryParam("limit") String StringElementByPage) {
 
 		logger.debug("Search photo by attribute");
+		
+		int startPeriod = convertToInt(StringStartPeriod);
+		int endPeriod = convertToInt(StringEndPeriod);
+		int pagingStart = convertToInt(StringPagingStart);
+		int elementByPage = convertToInt(StringElementByPage);
 		
 		Map<String, Object> results = new HashMap<String, Object>();
 		
@@ -53,10 +59,9 @@ public class POController {
 		} else {
 
 			try {
-				List<PhotoOblique> photoObliques = poHelper.getPOList(startPeriod, endPeriod, owner, cities);
-		
+				results = poHelper.getPOList(startPeriod, endPeriod, owner, cities, pagingStart, elementByPage);		
 				results.put("success", true);
-				results.put("photos", photoObliques);
+
 			}// Thrown if city code is wrong
 			catch (CityCodeFormatException e) {
 				
@@ -72,6 +77,22 @@ public class POController {
 
 		// Return value providers will convert to JSON
 		return results;
+	}
+
+	/**
+	 * 
+	 * @param stringToConvert
+	 * @return
+	 */
+	private int convertToInt(String stringToConvert) {
+		
+		int i = 0;
+		//Parse String to int to avoir numberformatexception
+		if(stringToConvert != null && !stringToConvert.isEmpty()){
+			i = Integer.parseInt(stringToConvert);
+		}
+		
+		return i;
 	}
 
 	@Path("/getYearsList/")

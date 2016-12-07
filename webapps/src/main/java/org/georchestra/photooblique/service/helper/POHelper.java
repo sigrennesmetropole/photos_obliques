@@ -1,8 +1,9 @@
 package org.georchestra.photooblique.service.helper;
 
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.georchestra.photooblique.exception.CityCodeFormatException;
@@ -12,6 +13,8 @@ import org.georchestra.photooblique.repository.PORepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 
@@ -23,47 +26,50 @@ public class POHelper extends ParentHelper{
 	
 	final static Logger logger = LoggerFactory.getLogger(POHelper.class);
 
-	public List<PhotoOblique> getPOList(int startPeriod, int endPeriod, String owner, List<String> cities) throws InputAttributException, CityCodeFormatException {
+	public Map<String, Object> getPOList(int startPeriod, int endPeriod, String owner, List<String> cities, int start, int limit) throws InputAttributException, CityCodeFormatException {
 		
-		List<PhotoOblique> photosList = new ArrayList<PhotoOblique>();
+		Map<String, Object> resultat = new HashMap<String, Object>();
+		
+		Page<PhotoOblique> photoPage = null;
+		Pageable pageRequest = createPageRequest(start, limit);
 		
 		if(cities.isEmpty() && startPeriod ==0 && endPeriod ==0 && StringUtils.isBlank(owner)){
 			throw new InputAttributException("Missing input argument");
 		}else if(cities.isEmpty() && endPeriod == 0 && StringUtils.isBlank(owner)){
 			logger.debug("Search by start period");
-			photosList = poRepository.findByYearGreaterThan(startPeriod);
+			photoPage = poRepository.findByYearGreaterThan(startPeriod -1, pageRequest);		 			 
 		}else if (cities.isEmpty() && StringUtils.isBlank(owner)){
 			logger.debug("Search by period");
-			photosList = poRepository.findByYearBetween(startPeriod, endPeriod);		
+			photoPage = poRepository.findByYearBetween(startPeriod, endPeriod, pageRequest);	    
 		}else if (cities.isEmpty() && endPeriod != 0) {
 			logger.debug("Search by period and owner");
-			photosList = poRepository.findByYearBetweenAndOwner(startPeriod, endPeriod, owner);
+			photoPage = poRepository.findByYearBetweenAndOwner(startPeriod, endPeriod, owner, pageRequest);    
 		}else if (startPeriod ==0 && endPeriod ==0 && StringUtils.isBlank(owner)) {
 			logger.debug("Search by towns");
-			photosList = poRepository.findByTownsContains(createCities(cities));
+			photoPage = poRepository.findByTownsContains(createCities(cities), pageRequest);   
 		}else if (endPeriod ==0 && StringUtils.isBlank(owner)) {
 			logger.debug("Search by start period and towns");
-			photosList = poRepository.findByYearGreaterThanAndTownsContains(startPeriod, createCities(cities));
+			photoPage = poRepository.findByYearGreaterThanAndTownsContains(startPeriod, createCities(cities), pageRequest);    
 		}else if (StringUtils.isBlank(owner)) {
 			logger.debug("Search by period and towns");
-			photosList = poRepository.findByYearBetweenAndTownsContains(startPeriod, endPeriod, createCities(cities));
+			photoPage = poRepository.findByYearBetweenAndTownsContains(startPeriod, endPeriod, createCities(cities), pageRequest);    
 		}else if (startPeriod ==0 && endPeriod ==0) {
 			logger.debug("Search by owner and towns");
-			photosList = poRepository.findByOwnerAndTownsContains(owner, createCities(cities));
+			photoPage = poRepository.findByOwnerAndTownsContains(owner, createCities(cities), pageRequest);   
 		}else if (cities.isEmpty() && startPeriod ==0 && endPeriod ==0 ) {
 			logger.debug("Search by owner");
-			photosList = poRepository.findByOwner(owner);
+			photoPage = poRepository.findByOwner(owner, pageRequest);    
 		}else{
 			logger.debug("Search with all params");
-			photosList = poRepository.findByYearBetweenAndOwnerAndTownsContains(startPeriod, endPeriod, owner, createCities(cities));
+			photoPage = poRepository.findByYearBetweenAndOwnerAndTownsContains(startPeriod, endPeriod, owner, createCities(cities), pageRequest);    
 		}
 		
-		return photosList;
-	}
-
-
-
-	
-	
+		if(photoPage != null){
+			resultat.put("results", photoPage.getTotalElements());
+			resultat.put("rows", photoPage.getContent());	 
+		}
+		
+		return resultat;
+	}	
     
 }
