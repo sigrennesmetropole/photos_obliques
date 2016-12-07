@@ -28,11 +28,13 @@ GEOR.Addons.Photos_obliques.search.comStore = function () {
             field: "commune",
             direction: "ASC"
         },
-        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
+        proxy: new Ext.data.HttpProxy({
+            url:"http://172.16.52.84:8080/photooblique/services/getYearsList",
+            method: 'GET',
+            autoLoad:true
+        }),
     });
-    
-    comStore.load();
-    
+        
     return comStore;
 };
 
@@ -55,13 +57,13 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
         id: id,
         displayField:"commune",
         triggerAction:'all',
-        mode:"local",
+        emptyText: "Code ou nom de commune...",
         anchor:"99%",
         editable:true,
         fieldLabel: "Communes",
         selectOnFocus: true,
         hideOnSelect:false,
-        hiddenName:"commune"
+        hiddenName:"cities"
     });
 };
 
@@ -73,28 +75,23 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
 
 /* Create store*/
 
-GEOR.Addons.Photos_obliques.search.storePeriodFrom = function(){
-    var storePeriodFrom = new Ext.data.JsonStore({
+GEOR.Addons.Photos_obliques.search.storePeriodFrom = new Ext.data.JsonStore({
         id: "phob_store_from",
-        root: "features",
-        fields: [{
-            name:"annee",
-            convert: function(v,rec){
-                return rec.properties.annee;
+        root: "annees",
+        proxy: new Ext.data.HttpProxy({
+            url:"http://172.16.52.84:8080/photooblique/services/getYearsList",
+            method: 'GET',
+            autoLoad:true
+        }),
+        fields:[
+            {
+                name:"annee",
+                convert: function(value,record){
+                    return record;
+                }
             }
-        }],
-        sortInfo:{
-            field:"annee",
-            direction: "ASC"
-        },
-        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
-    });
-    
-    storePeriodFrom.load();
-    
-    return storePeriodFrom;
-    
-};
+        ]
+});
 
 
 /* Create combo*/
@@ -102,18 +99,22 @@ GEOR.Addons.Photos_obliques.search.storePeriodFrom = function(){
 GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
     var store;
     if(id === "phob_cb_fromSba"){
-        var store = GEOR.Addons.Photos_obliques.search.storePeriodFrom();
+        var store = GEOR.Addons.Photos_obliques.search.storePeriodFrom;
     }
     return  new Ext.form.ComboBox({
-        id: id,
+        id: id,        
         editable: true,
         store: store,
         anchor: "50%",
-        mode: "local",
         selectOnFocus: true,
         displayField: "annee",
-        hiddenName:"periodFrom",
-        listeners: {
+        triggerAction: 'all',
+        hiddenName:"startPeriod",
+        maskRe:/[0-9]/,
+        maxLength:4,
+        emptyText:"Début de période...",
+        minchar:2,
+        listeners: {            
             scope: this,
             "select": function(combo, record) {
                 // control value for end period
@@ -124,6 +125,8 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
                         cbTo.setValue(val);
                     }
                 }
+            },
+            "beforequery":function(){
             }
         }
     });
@@ -137,46 +140,46 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
 
 /* Create store*/
 
-GEOR.Addons.Photos_obliques.search.storePeriodTo = function() {
-    var storePeriodTo = new Ext.data.JsonStore({
-        id: "phob_store_to",
-        root: "features",
-        fields: [{
+GEOR.Addons.Photos_obliques.search.storePeriodTo = new Ext.data.JsonStore({
+    id: "phob_store_to",
+    root: "annees",
+    fields:[
+        {
             name:"annee",
-            convert: function(v,rec){
-                return rec.properties.annee;
+            convert: function(value,record){
+                return record;
             }
-        }],
-        sortInfo:{
-            field:"annee",
-            direction: "ASC"
-        },
-        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
-    });
-    
-    storePeriodTo.load();
-    
-    return storePeriodTo;
-};
+        }
+    ],    
+    proxy: new Ext.data.HttpProxy({
+        url:"http://172.16.52.84:8080/photooblique/services/getYearsList",
+        method: 'GET',
+        autoLoad:true
+    })
+});
+
 
 /* Create combo*/
 
 GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
     var store;
     if(id === "phob_cb_toSba"){
-        var store = GEOR.Addons.Photos_obliques.search.storePeriodTo();
+        var store = GEOR.Addons.Photos_obliques.search.storePeriodTo;
     }
     return  new Ext.form.ComboBox({
         id: id,
-        hiddenName:"periodTo",
+        hiddenName:"endPeriod",
         store: store,
         anchor: "50%",
-        mode: "local",
         editable: true,
+        triggerAction: 'all',
         selectOnFocus: true,
         displayField: "annee",
+        emptyText:"Fin de période...",
+        maskRe:/[0-9]/,
+        maxLength:4,
+        minchar:2,
         listeners: {
-            scope: this,
             "select": function(combo, record) {
                 // control value for start period
                 var val = combo.getValue();
@@ -191,7 +194,7 @@ GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
                 if(Ext.getCmp("phob_cb_comSba")){
                     var cb = Ext.getCmp("phob_cb_comSba");                    
                 }
-            }
+            },scope: this,
         }
     });
 };
@@ -201,58 +204,58 @@ GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
  * store and comboBox to select photos owner 
  */
 
-/* Create store*/
+/* Create store */
 
-GEOR.Addons.Photos_obliques.search.storeOwner = function() {    
-    var storeOwner = new Ext.data.JsonStore({
-        id: "phob_store_owner",
-        root: "features",
-        fields: [{
-            name:"proprio",
-            convert: function(v,rec){
-                return rec.properties.proprio;
+GEOR.Addons.Photos_obliques.search.storeOwner = new Ext.data.JsonStore({
+    id: "phob_store_owner",
+    root: "owners",
+    proxy: new Ext.data.HttpProxy({
+        url:"http://172.16.52.84:8080/photooblique/services/getOwnersList",
+        method: 'GET',
+        autoLoad:true
+    }),
+    fields:[
+        {
+            name:"owners",
+            convert: function(value,record){
+                return record;
             }
-        }],
-        sortInfo:{
-            field:"proprio",
-            direction: "ASC"
-        },
-        url:"http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-result.php"
-    });
+        }
+    ]
+});
 
-    storeOwner.load();
-    
-    return storeOwner;
-};
-
-/* Create combo*/
+/* Create combo */
 
 GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
     var store;
-    if(id === "phob_cb_ownerSba"){
-        var store = GEOR.Addons.Photos_obliques.search.storeOwner();
-    }
-    return  new Ext.form.ComboBox({    
+    return  new Ext.form.ComboBox({        
+        name:"proprietaire",
         id: id,
-        hiddenName:"proprio",
-        store: GEOR.Addons.Photos_obliques.search.storeOwner(),
+        hiddenName:"owners",
+        store: GEOR.Addons.Photos_obliques.search.storeOwner,
         anchor: "99%",
         fieldLabel: "Propriétaire ",
-        mode: "local",
+        emptyText:"Nom du propriétaire...",
+        maskRe: /[A-z ]/,
         editable: true,
         selectOnFocus: true,
-        displayField: "proprio",        
+        displayField: "owners",
+        minChars:5,
+        triggerAction: 'all'
     });
 };
 
 /**
- *  Create fieldset to include in the main search window
+ *  Create fieldset to be include in the main search window
  */
 
 GEOR.Addons.Photos_obliques.search.cpField = function(id) {
     var nameSpace = GEOR.Addons.Photos_obliques.search;
     var items;
     
+    
+    // create items to be insert in panel
+    // TODO : could be better with simple array
     var attributesItems = [
         {
             xtype: "compositefield",
@@ -286,7 +289,9 @@ GEOR.Addons.Photos_obliques.search.cpField = function(id) {
         nameSpace.comboAttributesCom("phob_cb_comSbg"),
         nameSpace.comboOwner("phob_cb_ownerSbg")
     ];
-        
+    
+    
+    // create compositfe field wich contains all tools to search items by attributes
     var cpField = [{
         xtype: "fieldset",
         border: false,
