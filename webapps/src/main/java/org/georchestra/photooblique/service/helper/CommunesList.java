@@ -1,6 +1,7 @@
 package org.georchestra.photooblique.service.helper;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +22,11 @@ public class CommunesList {
 	
 	 private Map<String,String> communes = new HashMap<String,String>();
 
-	/** Constructeur privé */
-	private CommunesList() {
+	/** Constructeur privé 
+	 * @throws IOException 
+	 * @throws MalformedURLException 
+	 * @throws ParseException */
+	private CommunesList() throws MalformedURLException, IOException, ParseException {
 
 		logger.debug("Intialize commune list");
 		
@@ -35,7 +39,6 @@ public class CommunesList {
 		 * "Saint-Aubin-du-Pavail","objectid":42,"commune_agglo":0,"x_centrbrg":
 		 * 1367561,"y_centrbrg":7214472}},
 		 */
-		try {
 			logger.debug("Call WFS Service");
 			String communeGeoJson = IOUtils.toString(new URL(url));
 			logger.debug("Create JsonObject");
@@ -56,18 +59,12 @@ public class CommunesList {
 				communes.put((String) Long.toString(code_insee), nom);
 			}
 
-		} catch (IOException e) {
-			logger.error("JSON not available " + e.getMessage());
-		}
-		catch (ParseException e) {
-			logger.error("Parsin errors : " + e.getMessage());
-		}
 	}
 
 	/** Singleton **/
 	private static CommunesList INSTANCE = null;
 
-	public static CommunesList getInstance() {
+	public static CommunesList getInstance() throws MalformedURLException, IOException, ParseException {
 		if (INSTANCE == null) {
 			synchronized (CommunesList.class) {
 				if (INSTANCE == null) {

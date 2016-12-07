@@ -1,12 +1,15 @@
 package org.georchestra.photooblique.service.helper;
 
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.georchestra.photooblique.repository.PORepository;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ public class CommuneHelper extends ParentHelper{
 	public Map<String, Object> getCommunes(int startPeriod, int endPeriod) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> communesMap = new HashMap<String, Object>();
 		
 		// get Commune code_insee list
 		List<String> codeCommunes  = null;
@@ -38,27 +42,44 @@ public class CommuneHelper extends ParentHelper{
 		}
 		
 		// Add name for each code commune
-		Map communes = CommunesList.getInstance().getCommunes();
+		Map communes;
+		try {
+			communes = CommunesList.getInstance().getCommunes();
 		
-		if(communes != null && !communes.isEmpty()){
-			// For each commune found add label if exist, code otherwise
-			for (String code : codeCommunes){
-				
-				if(!StringUtils.isBlank(code)){
-					// if contains |
-					if (code.indexOf('|') != -1){
-						String[] codes = code.split("|");
-						
-						for( String newCode : codes){
-							result.put(newCode, (communes.get(newCode) != null) ? communes.get(newCode) : newCode);
+			if(communes != null && !communes.isEmpty()){
+				// For each commune found add label if exist, code otherwise
+				for (String code : codeCommunes){
+					
+					if(!StringUtils.isBlank(code)){
+						// if contains |
+						if (code.indexOf('|') != -1){
+							String[] codes = code.split("|");
+							
+							for( String newCode : codes){
+								communesMap.put(newCode, (communes.get(newCode) != null) ? communes.get(newCode) : newCode);
+							}
+						}else{
+							communesMap.put(code, (communes.get(code) != null) ? communes.get(code) : code);
 						}
-					}else{
-						result.put(code, (communes.get(code) != null) ? communes.get(code) : code);
 					}
 				}
 			}
+			result.put("succes", true);
+			result.put("communes", communesMap);
+		} catch (MalformedURLException e) {
+			result.put("succes", false);
+			result.put("error", e.getMessage());
+			logger.error(e.getMessage());
+		} catch (IOException e) {
+			result.put("succes", false);
+			result.put("error",  e.getMessage());
+			logger.error(e.getMessage());
+		} catch (ParseException e) {
+			result.put("succes", false);
+			result.put("error", e.getMessage());
+			logger.error(e.getMessage());
 		}
-		
+			
 		return result;
 	}
 	

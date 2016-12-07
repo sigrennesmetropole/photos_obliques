@@ -43,13 +43,33 @@ public class CommuneController {
      */
     public Map<String,Object> getCommuneByDate(
     			@Context HttpHeaders headers,
-    			@QueryParam("startPeriod") int startPeriod,
-    			@QueryParam("endPeriod") int endPeriod){
+    			@QueryParam("startPeriod") String stringStartPeriod,
+    			@QueryParam("endPeriod") String stringEndPeriod){
     	
+		int startPeriod = convertToInt(stringStartPeriod);
+		int endPeriod = convertToInt(stringEndPeriod);
+				
     	Map<String,Object> communes = communeHelper.getCommunes(startPeriod, endPeriod);
     	
     	// Return value providers will convert to JSON
         return communes;
     }
+	
+
+	/**
+	 * 
+	 * @param stringToConvert
+	 * @return
+	 */
+	private int convertToInt(String stringToConvert) {
+		
+		int i = 0;
+		//Parse String to int to avoir numberformatexception
+		if(stringToConvert != null && !stringToConvert.isEmpty()){
+			i = Integer.parseInt(stringToConvert);
+		}
+		
+		return i;
+	}
     
 }
