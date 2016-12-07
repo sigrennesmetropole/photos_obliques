@@ -94,14 +94,7 @@
 	background: white;
 	font: 11px Arial, Helvetica, sans-serif;
 }
-#phob_dataView .thumb{
-	background: #dddddd;
-	padding: 3px;
-}
-#phob_dataView .thumb img{
-	height: 60px;
-	width: 80px;
-}
+
 #phob_dataView .thumb-wrap{
 	float: left;
 	margin: 4px;
@@ -125,9 +118,6 @@
 	border:1px solid #99bbe8;
 	padding: 4px;
 }
-#phob_dataView .x-view-selected .thumb{
-	background:transparent;
-}
 
 #phob_dataView .loading-indicator {
 	font-size:11px;
@@ -136,4 +126,34 @@
 	background-position: left;
 	padding-left:20px;
 	margin:10px;
+}
+
+
+#phob_dataView .thumbMin, #phob_dataView .thumbMax, #phob_dataView .thumbMidlMin,#phob_dataView .thumbMidlMax{
+	background: #dddddd;
+	padding: 3px;
+}
+
+#phob_dataView .x-view-selected .thumbMin, #phob_dataView .x-view-selected .thumbMax, #phob_dataView .x-view-selected .thumbMidlMin, #phob_dataView .x-view-selected .thumbMidlMax{
+	background:transparent;
+}
+
+#phob_dataView .thumbMin img, #phob_dataView .thumbD img {
+	height: 60px;
+	width: 80px;
+}
+
+#phob_dataView .thumbMax img{
+	height: 300px;
+	width: 400px;
+}
+
+#phob_dataView .thumbMidlMax img{
+	height: 200px;
+	width: 250px;
+}
+
+#phob_dataView .thumbMidlMin img{
+	height: 100px;
+	width: 150px;
 }
