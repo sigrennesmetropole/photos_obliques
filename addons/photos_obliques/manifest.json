@@ -19,6 +19,9 @@
         "css/Ext.ux.form.LovCombo.css"
     ],
     "default_options": {
+    	"servicesUrl":"http://172.16.52.84:8080//photooblique/services/",
+    	"photoUrl":"https://cadastrapp-qualif.asogfi.fr/photos/mini/",
+    	"thumbUrl":"https://cadastrapp-qualif.asogfi.fr/photos/thumb/",
     	"limitByPage":50,
     	"limitResults":200,
     	"adminMsgTooltip":"Téléchargement impossible, cliquer pour obtenir les coordonnées",
@@ -28,8 +31,7 @@
             "fill": false,
             "strokeColor": "#00FFFF",
             "strokeOpacity": 0.7
-        },
-        "servicesUrl":"http://172.16.52.84:8080/photooblique/services/"
-    },
+        }
+   },
     "i18n": {}
 }
