@@ -8,10 +8,6 @@ import javax.persistence.Entity;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 
 @Entity
 @Table(name="photooblique_emprise")
@@ -29,10 +25,7 @@ public class PhotoOblique implements Serializable{
 
 	@Column(name="fichier")
 	private String fileName;
-	
-	@Transient
-	private String url;
-	
+
 	@Column(name="annee")
 	private int year;
 	
@@ -114,12 +107,8 @@ public class PhotoOblique implements Serializable{
 		return objectid;
 	}
 
-	public String getUrl() {
-		return fileName;
-	}
-
-/** Geometry is not well given via GeoJSON  do not get it use WFS for geoserver
- * 	public Geometry getGeometry() {
+	/** Geometry is not well given via GeoJSON  do not get it use WFS for geoserver
+	 * 	public Geometry getGeometry() {
 		return geometry;
 	}
 	*/
