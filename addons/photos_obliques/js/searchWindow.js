@@ -7,14 +7,15 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  */
 
 GEOR.Addons.Photos_obliques.onSearch = function(button) {
+    // Creation de la la fenetre si non existante
     if (GEOR.Addons.Photos_obliques.search.mainWindow == null || GEOR.Addons.Photos_obliques.search.mainWindow.isDestroyed == true) {
         GEOR.Addons.Photos_obliques.initSearchWindow(button.id);
-
+    // si l'outil demandé est déjà ouvert, le fermer
     } else if (GEOR.Addons.Photos_obliques.search.mainWindow.isVisible() && !button.checked) {
         GEOR.Addons.Photos_obliques.search.mainWindow.hide();
         button.toggle(false);
+    // sinon, ouverture de l'autre outil de recherche
     } else {
-        // TODO : manage attributes fieldSet if last search was not null
         if (button.id === "phob_btn_graph") {
             Ext.getCmp("phob_fst_mainSba").hide();
             Ext.getCmp("phob_fst_mainSbg").show();
@@ -22,7 +23,7 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
             Ext.getCmp("phob_fst_mainSbg").disable();
 
         } else if (button.id === "phob_btn_attribut") {
-            // on efface le dessin et on désactive le cpf
+            // on efface le dessin et on désactive le composite field
             var delBtn = Ext.getCmp("phob_btn_delSbg");
             delBtn.fireEvent("click", delBtn);
             Ext.getCmp("phob_fst_mainSbg").hide();
@@ -30,7 +31,12 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
             Ext.getCmp("phob_btn_fire").enable();           
             
         }
-        GEOR.Addons.Photos_obliques.search.mainWindow.show();
+        GEOR.Addons.Photos_obliques.search.mainWindow.show();        
+    }
+    // dans tous les cas, nettoyer la liste de résultat
+    if(GEOR.Addons.Photos_obliques.result.gridPanel){
+        GEOR.Addons.Photos_obliques.result.gridPanel.getStore().removeAll();
+        GEOR.Addons.Photos_obliques.result.gridPanel.collapse();
     }
 };
 
@@ -39,7 +45,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
     var searchBtn = false;
     var cancelBtn;
     
-    var winTitle = "Outils de recherche attributaire";
+    var winTitle = "Recherche attributaire";
 
     /**
      * Add panels to search window
@@ -66,7 +72,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
     });
 
     /**
-     * Manage items if window should display graphic research tools first
+     * Manage items for the first display
      */
 
     if (id === "phob_btn_graph") {
@@ -88,6 +94,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
         width: 500,
         autoHeight: true,
         minWidth: 280,
+        maxHeigth:500,
         closeAction: "hide",
         closable: true,
         items: [formPanel],
@@ -117,14 +124,14 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                     var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
                     console.log(resultStore);
                     
-                    if (getTitle === "Outils de recherche attributaire"){
+                    if (getTitle === "Recherche attributaire"){
                         delete searchParams["cities"];
-                        //searchParams.start= 0;
-                        //searchParams.limit= GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitResults : nbResultMax;
+                        searchParams.start = 0;
+                        searchParams.limit = GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitResults : nbResultMax;
                         Ext.Ajax.request({
                             method: "GET",
                             params:searchParams,
-                            url: "http://172.16.52.84:8080/photooblique/services/getPhotoByAttribute",
+                            url: GEOR.Addons.Photos_obliques.globalOptions.servicesUrl+"/getPhotoByAttribute",
                             success: function(response) {
                                 resultStore.loadData(Ext.util.JSON.decode(response.responseText));
                             },
@@ -132,6 +139,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                                 Ext.MessageBox.alert("Alert","Echec de la requête");
                             }
                         });
+                        GEOR.Addons.Photos_obliques.search.mainWindow.doLayout();
                                                   
                     } 
                     

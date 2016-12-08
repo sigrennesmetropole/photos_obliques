@@ -59,9 +59,10 @@ GEOR.Addons.Photos_obliques.result.createResultLayers = function(map) {
 /**
  * Create window to display image
  */
-GEOR.Addons.Photos_obliques.createResulttWindow = function(htmlImg) {
+GEOR.Addons.Photos_obliques.createResulttWindow = function(htmlImg,name) {
     var window = new Ext.Window({
         id: "phob_win_display",
+        title:name,
         autoHeight: true,
         modal: true,
         autoWidth: true,
@@ -72,12 +73,12 @@ GEOR.Addons.Photos_obliques.createResulttWindow = function(htmlImg) {
     return window;
 };
 
-GEOR.Addons.Photos_obliques.manageResulttWindow = function(htmlImg){
+GEOR.Addons.Photos_obliques.manageResultWindow = function(htmlImg,name){
     if (Ext.getCmp("phob_win_display")) {
         Ext.getCmp("phob_win_display").destroy();
-        GEOR.Addons.Photos_obliques.createResulttWindow(htmlImg).show();
+        GEOR.Addons.Photos_obliques.createResulttWindow(htmlImg,name).show();
     } else {
-        GEOR.Addons.Photos_obliques.createResulttWindow(htmlImg).show();
+        GEOR.Addons.Photos_obliques.createResulttWindow(htmlImg,name).show();
     }
 }  
 
@@ -86,11 +87,11 @@ GEOR.Addons.Photos_obliques.manageResulttWindow = function(htmlImg){
  * Create grid panel wich contain all result find by geographic or attributes tools
  */
 
-GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
+GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var epsg3948 = new OpenLayers.Projection("EPSG:3948");
     var gridStore, gridPanel;
-    var nbElementByPage = 50;
-    var nbResultMax = 100;
+    var nbElementByPage = 10;
+    var nbResultMax = 20;
     var map = GeoExt.MapPanel.guess().map ? GeoExt.MapPanel.guess().map : null;
 
 
@@ -120,11 +121,16 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
             }
         }
     };
-
+    
+    
+    /**
+     * Create grid panel store
+     **/
+    
     GEOR.Addons.Photos_obliques.result.resultStore = new Ext.data.JsonStore({
-        id: "phob_store_" + typeTool,
+        id: "phob_store_",
         proxy: new Ext.data.HttpProxy({
-            url: "http://172.16.52.84:8080/photooblique/services/getPhotoByAttribute",
+            url: GEOR.Addons.Photos_obliques.globalOptions.servicesUrl+"/getPhotoByAttribute",
             method: 'GET',
             autoLoad: true
         }),
@@ -134,7 +140,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
             direction: "ASC"
         },
         fields: [
-            "photoId", "url", "owner", "origin", "geom", "downloadable", {
+            "photoId", "url", "owner", "origin", "geom", "downloadable",{
                 name: "date",
                 convert: function(v, rec) {
                     return rec.date;
@@ -142,12 +148,18 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
                 type: "date",
                 dateFormat: 'timestamp'
             }, {
-                name: "size",
+                name: "taille",
                 convert: function(val, rec) {
-                    return rec.size;
+                    return rec.taille_fichier;
                 }
             }
         ],
+        autoLoad: {
+            params:{
+                start: 0, 
+                limit: GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitByPage : nbElementByPage                        
+            }
+        },
         listeners: {
             "datachanged": function() {
                 if (gridPanel != undefined) {
@@ -173,7 +185,8 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
     });
 
     gridStore = GEOR.Addons.Photos_obliques.result.resultStore;
-
+    
+    // Correction d'anomalie : forcer la mise à jour de l'ombre de la fenêtre
     function updateShadow() {
         if (Ext.getCmp("phob_win_search")) {
             return Ext.getCmp("phob_win_search").syncShadow();
@@ -203,7 +216,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
 
     // Create grid panel and items
     gridPanel = new Ext.grid.GridPanel({
-        id: "phob_grid_resultPan" + typeTool,
+        id: "phob_grid_resultPan",
         store: gridStore,
         collapsible: true,
         title: "Résultat",
@@ -214,14 +227,14 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
             items: [sizeBar,"-",nbBar,"->", {
                 xtype: "button",
                 iconCls: "phob-clean-icon",
-                id: "phob_btn_clRes" + typeTool,
+                id: "phob_btn_clRes",
                 handler: function() {
                     gridStore.removeAll();
                     gridPanel.collapse();
                 }
             }, {
                 xtype: "button",
-                id: "phob_btn_csvRes" + typeTool,
+                id: "phob_btn_csvRes",
                 iconCls: "phob-csv-icon"
             }]
         }),
@@ -229,7 +242,6 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
         minHeigth: 200,
         autoHeigth: true,
         collapsed: true,
-        //tbar: GEOR.Addons.Photos_obliques.resultToolbar(gridStore, gridPanel),
         colModel: new Ext.grid.ColumnModel({
             defaults: {
                 align: "center"
@@ -246,14 +258,15 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
                     "click": function(val, meta, rec) {
                         var rowIndex = rec;
                         var record = gridPanel.getStore().getAt(rowIndex);
-                        var url = record ? record.data.url : null;
+                        var photoName = record ? record.data.photoId : null;
+                        var url = GEOR.Addons.Photos_obliques.globalOptions.photoUrl + photoName+".jpg";
                         var htmlImg = '<img src="' + url + '" borer="2" />';
-                        GEOR.Addons.Photos_obliques.manageResulttWindow(htmlImg);
+                        GEOR.Addons.Photos_obliques.manageResultWindow(htmlImg,photoName);
                     }
                 }
             }, {
                 xtype: "actioncolumn",
-                id: "phob_col_zoomRes" + typeTool,
+                id: "phob_col_zoomRes",
                 header: "Zoom",
                 dataIndex: 'geometry',
                 items: [{
@@ -271,33 +284,33 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
                     }
                 }]
             }, {
-                id: "phob_col_dateRes" + typeTool,
+                id: "phob_col_dateRes",
                 header: "Date",
                 sortable: true,
                 dataIndex: "date",
                 renderer: Ext.util.Format.dateRenderer("d-m-Y")
             }, {
-                id: "phob_col_IdRes" + typeTool,
+                id: "phob_col_IdRes",
                 header: "ID",
                 dataIndex: "photoId"
             }, {
-                id: "phob_col_ownerRes" + typeTool,
+                id: "phob_col_ownerRes",
                 header: "Propriétaire",
                 sortable: true,
                 dataIndex: "owner"
             }, {
-                id: "phob_col_sizeRes" + typeTool,
+                id: "phob_col_sizeRes",
                 header: "Taille",
                 sortable: true,
-                dataIndex: "size"
+                dataIndex: "taille"
             }, {
-                id: "phob_col_prestRes" + typeTool,
+                id: "phob_col_prestRes",
                 header: "Prestataire",
                 sortable: true,
                 dataIndex: "origin"
             }, {
                 xtype: "actioncolumn",
-                id: "phob_col_cartRes" + typeTool,
+                id: "phob_col_cartRes",
                 tooltip: "Ajouter au panier", // TODO : Créer une variable de conf dans le config.json
                 header: "Panier",
                 getClass: function(val, meta, rec) {
@@ -322,7 +335,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
         listeners: {
             "expand": updateShadow,
             "collapse": updateShadow,
-            "mouseover": function(e, t) {
+            /*"mouseover": function(e, t) {
                 if (GeoExt.MapPanel.guess().map.getLayersByName("phob_tempResultLayer").length !== 0) {
                     var layer = GeoExt.MapPanel.guess().map.getLayersByName("phob_tempResultLayer")[0];
 
@@ -332,7 +345,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
                     var geomCoord = rec ? rec.data.geom.coordinates[0] : null;
                     createFeature(geomCoord, layer);
                 }
-            },
+            },*/
             "mouseout": function() {
                 // destroy features if row is not over by mouse
                 GeoExt.MapPanel.guess().map.getLayersByName("phob_tempResultLayer")[0].destroyFeatures();
@@ -345,6 +358,8 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function(typeTool) {
 
     var gridView = gridPanel.getView();
     gridView.on("");
+    
+    GEOR.Addons.Photos_obliques.result.gridPanel = gridPanel;
 
-    return gridPanel;
+    return  GEOR.Addons.Photos_obliques.result.gridPanel;
 };

@@ -19,10 +19,10 @@
         "css/Ext.ux.form.LovCombo.css"
     ],
     "default_options": {
-    	"servicesUrl":"http://172.16.52.84:8080//photooblique/services/",
+    	"servicesUrl":"https://cadastrapp-qualif.asogfi.fr/photooblique/services/",
     	"photoUrl":"https://cadastrapp-qualif.asogfi.fr/photos/mini/",
     	"thumbUrl":"https://cadastrapp-qualif.asogfi.fr/photos/thumb/",
-    	"limitByPage":50,
+    	"limitByPage":5,
     	"limitResults":200,
     	"adminMsgTooltip":"Téléchargement impossible, cliquer pour obtenir les coordonnées",
     	"adminMsgAlert":"Service à contacter : Service SIG - 0202020202' ",

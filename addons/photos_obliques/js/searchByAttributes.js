@@ -241,7 +241,6 @@ GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
         anchor: "99%",
         fieldLabel: "Propriétaire ",
         emptyText:"Nom du propriétaire...",
-        maskRe: /[A-z ]/,
         editable: true,
         selectOnFocus: true,
         displayField: "owners",
