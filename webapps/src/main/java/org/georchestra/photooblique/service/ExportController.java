@@ -52,7 +52,7 @@ public class ExportController {
 		// Return empty reponse if no input
 		if (!photosIds.isEmpty()) {
 
-			String zipTempFolder = POPlaceHolder.getProperty("zip.folder");
+			String zipTempFolder = POPlaceHolder.getProperty("temp.folder");
 			String zipFileName = "zipTest.zip";
 			String photoFolder = POPlaceHolder.getProperty("photo.folder");
 			boolean atLeastOneFileAdded = false;
