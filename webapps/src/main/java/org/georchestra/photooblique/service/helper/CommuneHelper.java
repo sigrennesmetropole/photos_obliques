@@ -54,18 +54,26 @@ public class CommuneHelper extends ParentHelper{
 						// if contains |
 						if (code.indexOf('|') != -1){
 							String[] codes = code.split("|");
-							
+
 							for( String newCode : codes){
-								communesMap.put(newCode, (communes.get(newCode) != null) ? communes.get(newCode) : newCode);
+								if(newCode.length()>4){
+									communesMap.put(newCode, (communes.get(newCode) != null) ? communes.get(newCode) : newCode);
+								}
 							}
 						}else{
-							communesMap.put(code, (communes.get(code) != null) ? communes.get(code) : code);
+							if(code.length()>4){
+								communesMap.put(code, (communes.get(code) != null) ? communes.get(code) : code);
+							}
 						}
 					}
 				}
 			}
+			
+			// Convert Map to Array to fit with ExtJs LoveCombo Store
+			Object[] communeArray = communesMap.entrySet().toArray(); 
+			
 			result.put("succes", true);
-			result.put("communes", communesMap);
+			result.put("communes", communeArray);
 		} catch (MalformedURLException e) {
 			result.put("succes", false);
 			result.put("error", e.getMessage());
