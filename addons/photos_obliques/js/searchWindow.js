@@ -122,22 +122,13 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                     var searchParams = searchForm.getValues();
                     var getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
                     var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
-                    console.log(resultStore);
-                    
+                    resultStore.baseParams = searchParams;
                     if (getTitle === "Recherche attributaire"){
-                        delete searchParams["cities"];
                         searchParams.start = 0;
-                        searchParams.limit = GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitResults : nbResultMax;
-                        Ext.Ajax.request({
-                            method: "GET",
-                            params:searchParams,
-                            url: GEOR.Addons.Photos_obliques.globalOptions.servicesUrl+"/getPhotoByAttribute",
-                            success: function(response) {
-                                resultStore.loadData(Ext.util.JSON.decode(response.responseText));
-                            },
-                            failure: function(result) {
-                                Ext.MessageBox.alert("Alert","Echec de la requête");
-                            }
+                        searchParams.limit = 5
+                        
+                        GEOR.Addons.Photos_obliques.result.resultStore.load({
+                            params:searchParams
                         });
                         GEOR.Addons.Photos_obliques.search.mainWindow.doLayout();
                                                   

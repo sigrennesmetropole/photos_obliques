@@ -132,9 +132,9 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         proxy: new Ext.data.HttpProxy({
             url: GEOR.Addons.Photos_obliques.globalOptions.servicesUrl+"/getPhotoByAttribute",
             method: 'GET',
-            autoLoad: true
+            //autoLoad: true
         }),
-        root: "photos",
+        root: "rows",
         sortInfo: {
             field: "date",
             direction: "ASC"
@@ -157,8 +157,11 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         autoLoad: {
             params:{
                 start: 0, 
-                limit: GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitByPage : nbElementByPage                        
+                limit: GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitByPage : nbElementByPage
             }
+        },
+        baseParams:{
+            action:"YAYA"
         },
         listeners: {
             "datachanged": function() {
