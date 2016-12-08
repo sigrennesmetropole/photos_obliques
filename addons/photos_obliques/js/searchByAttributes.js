@@ -16,7 +16,10 @@ GEOR.Addons.Photos_obliques.search.comStore = function (id,url) {
         fields: [{
             name:"communes",
             convert: function(v,rec){
-                return rec;
+                var name = rec.value;
+                var code = rec.key;
+                var display = name+", ("+code+")";
+                return display;
             }
         }],
         proxy: new Ext.data.HttpProxy({
