@@ -22,6 +22,7 @@
     	"servicesUrl":"http://localhost:8080/photooblique/services/",
     	"photoUrl":"http://localhost:8080/photos/mini/",
     	"thumbUrl":"http://localhost:8080/photos/thumb/",
+    	"cartSize": 6000,
     	"limitReturns":200,
     	"limitByPage":5,
     	"limitResults":5,

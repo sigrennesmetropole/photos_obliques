@@ -329,18 +329,32 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                     } else {
                         this.tooltip = "Ajouter au panier";
                         this.handler = function(val,meta,rec) {
-                            var resultStore = Ext.getCmp("phob_dataView").getStore();
-                            // meta is index of row, store chnge dynamicaly if column is sort
-                            var photoName = gridPanel.getStore().getAt(meta).data.photoId;
-                            var urlMini =  GEOR.Addons.Photos_obliques.globalOptions.photoUrl + photoName + ".jpg"; 
-                            var data = gridPanel.getStore().getAt(meta).data;
-                            data.url = urlMini;
-                            delete data["downloadable"];
-                            delete data["geom"];
-                            delete data["origin"];
-                            delete data["owner"];
-                            var newRecord = new resultStore.recordType(data);
-                            resultStore.insert(resultStore.data.length, newRecord);
+                            
+                            // control size of cart
+                            var cartStore = Ext.getCmp("phob_dataView").getStore();
+                            var sumSize = 0;
+                            for (i=0; i < cartStore.data.items.length; i++){
+                                sumSize = sumSize + cartStore.data.items[i].data.size;
+                            }
+                            var photoSize = gridPanel.getStore().getAt(meta).data.size;
+                            var sizeAfterAdd = sumSize + photoSize;
+                            
+                            if (sizeAfterAdd > GEOR.Addons.Photos_obliques.globalOptions.cartSize.cartSize ){
+                                Ext.MessageBox.alert("Limite du panier atteinte", "Impossible d'ajouter la sélection");
+                                
+                            } else {
+                                var resultStore = Ext.getCmp("phob_dataView").getStore();
+                                var photoName = gridPanel.getStore().getAt(meta).data.photoId;
+                                var urlMini =  GEOR.Addons.Photos_obliques.globalOpstions.photoUrl + photoName + ".jpg"; 
+                                var data = gridPanel.getStore().getAt(meta).data;
+                                data.url = urlMini;
+                                delete data["downloadable"];
+                                delete data["geom"];
+                                delete data["origin"];
+                                delete data["owner"];
+                                var newRecord = new resultStore.recordType(data);
+                                resultStore.insert(resultStore.data.length, newRecord);
+                            }
                         };
                         return "phob-add-icon";
                     }
