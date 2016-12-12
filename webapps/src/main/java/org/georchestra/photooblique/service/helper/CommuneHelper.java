@@ -42,12 +42,12 @@ public class CommuneHelper extends ParentHelper{
 		}
 		
 		// Add name for each code commune
-		Map communes;
+		Map<String,String> communes;
 		try {
 			communes = CommunesList.getInstance().getCommunes();
 		
 			if(communes != null && !communes.isEmpty()){
-				// For each commune found add label if exist, code otherwise
+				// For each commune found add label if exist, do not add it otherwise
 				for (String code : codeCommunes){
 					
 					if(!StringUtils.isBlank(code)){
@@ -56,13 +56,13 @@ public class CommuneHelper extends ParentHelper{
 							String[] codes = code.split("|");
 
 							for( String newCode : codes){
-								if(newCode.length()>4){
-									communesMap.put(newCode, (communes.get(newCode) != null) ? communes.get(newCode) : newCode);
+								if(newCode.length()>4 && communes.get(newCode) != null){
+									communesMap.put(newCode, communes.get(newCode));
 								}
 							}
 						}else{
-							if(code.length()>4){
-								communesMap.put(code, (communes.get(code) != null) ? communes.get(code) : code);
+							if(code.length()>4 && communes.get(code) != null){
+								communesMap.put(code, communes.get(code));
 							}
 						}
 					}
