@@ -92,6 +92,8 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var gridStore, gridPanel;
     var nbElementByPage = 10;
     var nbResultMax = 20;
+    var defaultMaxReponse = 200;
+    var indexLine;
     var map = GeoExt.MapPanel.guess().map ? GeoExt.MapPanel.guess().map : null;
 
 
@@ -140,17 +142,17 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             direction: "ASC"
         },
         fields: [
-            "photoId", "url", "owner", "origin", "geom", "downloadable",{
+            "photoId", "owner", "origin","size", "downloadable","geom",{
                 name: "date",
                 convert: function(v, rec) {
-                    return rec.date;
-                },
-                type: "date",
-                dateFormat: 'timestamp'
-            }, {
-                name: "taille",
-                convert: function(val, rec) {
-                    return rec.taille_fichier;
+                    var dt = new Date(rec.date);
+                    return dt;
+                }
+            },{
+                name:"url",
+                convert:function(v,rec){
+                    var urlThumb = GEOR.Addons.Photos_obliques.globalOptions.thumbUrl + (rec.photoId + ".jpg");
+                    return urlThumb;
                 }
             }
         ],
@@ -159,29 +161,30 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 start: 0, 
                 limit: GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitByPage : nbElementByPage
             }
-        },
-        baseParams:{
-            action:"YAYA"
-        },
+        },        
         listeners: {
-            "datachanged": function() {
-                if (gridPanel != undefined) {
-                    gridPanel.expand();
-                }
-            },
             "load": function() {
-                // zoom sur l'étendue de la couche
-                if (map) {
-                    var layer = map.getLayersByName("phob_extendResultLayer")[0];
-                    if (gridStore.data.items.length > 0) {
-                        for (b = 0; b < gridStore.data.items.length; b++) {
-                            var rec = gridStore.data.items[b].data.geom;
-                            var geomCoord = rec ? rec.coordinates[0] : null;
-                            var feature = createFeature(geomCoord, layer);
-                        }
+                var gridPanel = Ext.getCmp("phob_grid_resultPan");
+                var limit = GEOR.Addons.Photos_obliques.globalOptions.limitReturns ?  GEOR.Addons.Photos_obliques.globalOptions.limitReturns : defaultMaxReponse;
+                if(this.totalLength > limit){                    
+                    gridPanel.collapse();
+                    gridPanel.getStore().removeAll();
+                    Ext.Msg.alert("Echec de la requête", "Résultat trop important, veuillez modifier vos critères de recherche");
+                } else {
+                    gridPanel.expand();
+                    // zoom sur l'étendue de la couche
+                    if (map) {                   
+                        if (gridStore.data.items.length > 0) {
+                            var layer = map.getLayersByName("phob_extendResultLayer")[0];
+                            for (b = 0; b < gridStore.data.items.length; b++) {
+                                var rec = gridStore.data.items[b].data.geom;
+                                var geomCoord = rec ? rec.coordinates[0] : null;
+                                var feature = createFeature(geomCoord, layer);
+                            }
+                            map.zoomToExtent(layer.getDataExtent());
+                        }                    
                     }
-                    map.zoomToExtent(layer.getDataExtent());
-                }
+                }                
             }
         },
         totalProperty: 'results'
@@ -305,7 +308,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 id: "phob_col_sizeRes",
                 header: "Taille",
                 sortable: true,
-                dataIndex: "taille"
+                dataIndex: "size"
             }, {
                 id: "phob_col_prestRes",
                 header: "Prestataire",
@@ -324,11 +327,24 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                         };
                         return "phob-call-icon";
                     } else {
-                        this.tooltip = "Télécharger";
-                        this.handler = function() {};
+                        this.tooltip = "Ajouter au panier";
+                        this.handler = function(val,meta,rec) {
+                            var resultStore = Ext.getCmp("phob_dataView").getStore();
+                            // meta is index of row, store chnge dynamicaly if column is sort
+                            var photoName = gridPanel.getStore().getAt(meta).data.photoId;
+                            var urlMini =  GEOR.Addons.Photos_obliques.globalOptions.photoUrl + photoName + ".jpg"; 
+                            var data = gridPanel.getStore().getAt(meta).data;
+                            data.url = urlMini;
+                            delete data["downloadable"];
+                            delete data["geom"];
+                            delete data["origin"];
+                            delete data["owner"];
+                            var newRecord = new resultStore.recordType(data);
+                            resultStore.insert(resultStore.data.length, newRecord);
+                        };
                         return "phob-add-icon";
                     }
-                }
+                }                
             }]
         }),
         viewConfig: {

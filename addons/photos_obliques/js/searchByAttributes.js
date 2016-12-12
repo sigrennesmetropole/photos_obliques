@@ -9,24 +9,54 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
 /* Create store*/
 
 GEOR.Addons.Photos_obliques.search.comStore = function (id,url) {   
-    
     var comStore = new Ext.data.JsonStore({
         id: "phob_store_com",
         root: "communes",
         fields: [{
+            name:"code",
+            convert: function(v,rec){
+                var intValue = parseInt(rec.key,10);
+                return intValue
+            }
+        },{
             name:"communes",
             convert: function(v,rec){
                 var name = rec.value;
                 var code = rec.key;
-                var display = name+", ("+code+")";
+                var display = name+" ("+code+")";
                 return display;
             }
         }],
         proxy: new Ext.data.HttpProxy({
-            url:GEOR.Addons.Photos_obliques.servicesURL+"/getCommunes",
+            url:url + "/getCommunes",
+            //url:"http://localhost:8080/mapfishapp/ws/addons/photos_obliques/communes.json",
             method: 'GET',
             autoLoad:true
         }),
+        lsiteners:{
+            "beforeload": function(){
+                console.log("beforeload");
+                var searchWinForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm(); 
+                var searchParams = searchWinForm.getValues();
+                console.log(searchParams);
+                if (searchParams.endPeriod != ""){
+                    this.baseParams.endPeriod = searchParams.endPeriod;                    
+                }
+                if (searchParams.startPeriod !=""){
+                    this.baseParams.startPeriod= searchParams.endPeriod;
+                }
+            },
+            "select":function(){
+                if(Ext.getCmp("phob_store_toSba").getValues() != ""){
+                    Ext.getCmp("phob_store_fromSba").load();
+                    console.log("loadFrom");
+                }
+                if(Ext.getCmp("phob_store_fromSba").getValues() != ""){
+                    Ext.getCmp("phob_store_toSba").load();
+                    console.log("loadTo");
+                }
+            }
+        }
     });
         
     return comStore;
@@ -43,21 +73,38 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
     }
     return new Ext.ux.form.LovCombo({
         store:store,
-        // avoir un store de la sorte avec un champ numérique comme id de ligne, le code commune donc
-        /*store : [
-             [22300, 'Personnel []']
-            ,[22700, 'Finance (33)']
-        ],*/
         id: id,
         displayField:"communes",
         triggerAction:'all',
         emptyText: "Code ou nom de commune...",
         anchor:"99%",
-        editable:true,
         fieldLabel: "Communes",
-        selectOnFocus: true,
+        valueField:"code",
+        selectOnFocus: false,
         hideOnSelect:false,
-        hiddenName:"cities"
+        hiddenName:"cities",
+        assertValue : Ext.emptyFn,
+        listeners:{
+            "beforequery": function(){
+                console.log("beforeload");
+                var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm(); 
+                var searchParams = searchForm.getValues();                
+                if (searchParams.endPeriod != ""){
+                    store.baseParams.endPeriod = searchParams.endPeriod;                    
+                }
+                if (searchParams.startPeriod !=""){
+                    store.baseParams.startPeriod= searchParams.startPeriod;
+                }
+            },
+            "change": function(){                
+                // to do this, insert assert param in this lovBox or insert beforeBlur method in library
+                console.log(this.getRawValue());
+                var selectVal = this.getRawValue();
+                var splitVal = selectVal.split(/[,]/);
+               console.log(splitVal[1]);
+                
+            }
+        }
     });
 };
 
@@ -71,7 +118,7 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
 
 GEOR.Addons.Photos_obliques.search.storePeriodFrom = function(id, url){ 
     return new Ext.data.JsonStore({
-        id: "phob_store_from",
+        id: "phob_store_fromSba",
         root: "annees",
         proxy: new Ext.data.HttpProxy({
             url: url + "/getYearsList",
@@ -103,14 +150,12 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
         editable: true,
         store: store,
         anchor: "50%",
-        selectOnFocus: true,
         displayField: "annee",
-        triggerAction: 'all',
         hiddenName:"startPeriod",
         maskRe:/[0-9]/,
         maxLength:4,
         emptyText:"Début de période...",
-        minchar:2,
+        minchar:4,
         listeners: {            
             scope: this,
             "select": function(combo, record) {
@@ -123,8 +168,13 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
                     }
                 }
             },
-            "beforequery":function(){
-            }
+            "beforequery": function(){
+                var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm(); 
+                var searchParams = searchForm.getValues();                
+                if (searchParams.cities != ""){
+                    store.baseParams.cities = searchParams.cities;                    
+                }
+            },
         }
     });
 };
@@ -169,17 +219,16 @@ GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
     }
     return  new Ext.form.ComboBox({
         id: id,
+        editable: true,
         hiddenName:"endPeriod",
         store: store,
         anchor: "50%",
-        editable: true,
-        triggerAction: 'all',
         selectOnFocus: true,
         displayField: "annee",
         emptyText:"Fin de période...",
         maskRe:/[0-9]/,
         maxLength:4,
-        minchar:2,
+        minchar:4,
         listeners: {
             "select": function(combo, record) {
                 // control value for start period
@@ -248,7 +297,6 @@ GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
         selectOnFocus: true,
         displayField: "owners",
         minChars:5,
-        triggerAction: 'all'
     });
 };
 

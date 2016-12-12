@@ -130,34 +130,9 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                         GEOR.Addons.Photos_obliques.result.resultStore.load({
                             params:searchParams
                         });
-                        GEOR.Addons.Photos_obliques.search.mainWindow.doLayout();
-                                                  
+                        GEOR.Addons.Photos_obliques.search.mainWindow.doLayout();                                                  
                     } 
-                    
-                    
-                    /*if (getTitle == "Recherche attributaire"){
-                    } else if (getTitle == "Recherche graphique"){
-                        if(Ext.getCmp("phob_fst_mainSbg").disabled){
-                            // requete à partir du dessin
-                            Ext.Ajax.request({
-                                method: "GET",
-                                //params:searchParams,
-                                url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/graphResult.php",
-                                success: function(response) {
-                                    // on ajoute la réponse au resultGrid
-                                    var result = Ext.util.JSON.decode(response.responseText);
-                                    var records = new resultStore.recordType(result);
-                                    resultStore.insert(resultStore.data.length, records);
-                                    console.log(resultStore);
-                                    // TODO : si plusieurs résultats
-                                    Ext.getCmp("phob_fst_mainSbg").enable();
-                                },
-                                failure: function(result) {
-                                    Ext.MessageBox.alert("Alert","Echec de la requête");
-                                }
-                            });
-                        }                        
-                    }*/
+
                 }
             }
         }, cancelBtn]
