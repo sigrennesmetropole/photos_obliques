@@ -23,6 +23,7 @@
     	"photoUrl":"https://cadastrapp-qualif.asogfi.fr/photos/mini/",
     	"thumbUrl":"https://cadastrapp-qualif.asogfi.fr/photos/thumb/",
     	"cartSize": 6000,
+        "cartNb" : 10,
     	"limitReturns":200,
     	"limitByPage":5,
     	"limitResults":5,
