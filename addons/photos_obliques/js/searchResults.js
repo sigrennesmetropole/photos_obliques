@@ -55,6 +55,38 @@ GEOR.Addons.Photos_obliques.result.createResultLayers = function(map) {
 
 };
 
+/**
+ *  Method to update progress bar
+ */
+GEOR.Addons.Photos_obliques.result.updateBar = function(currentNb, currentSz, maxCartNb, maxCartSize){
+    // get current progress width
+    var nbProgress = document.getElementById("phob_nbBarProg").offsetWidth;
+    var szProgress = document.getElementById("phob_sizeBarProg").offsetWidth;
+    // get current bar Width
+    var xSzWidth = document.getElementById("phob_sizeBar").offsetWidth;
+    var xNbWidth = document.getElementById("phob_nbBar").offsetWidth;
+
+    // calcul new width for progress bar
+    var nbProgressTo = xSzWidth * ( currentNb / maxCartNb );
+    var szProgressTo = xNbWidth * ( currentSz / maxCartSize );
+
+    // udpate progress bars 
+    //for(i=nbProgress; i<nbProgressTo; i=i+1){
+        if(i<xNbWidth){
+            document.getElementById("phob_nbBarProg").style.width = nbProgressTo + "px";                
+        }            
+    //}
+
+    //for(i=szProgress; i<szProgressTo; i = i + 1){
+        if(i<xSzWidth){
+            document.getElementById("phob_sizeBarProg").style.width = szProgressTo + "px";
+        }            
+    //}
+
+    // udpate labels
+    document.getElementById("phob_nbBarLabel").innerHTML = currentNb + " / " + maxCartNb;
+    document.getElementById("phob_sizeBarLabel").innerHTML = currentSz + " / " + maxCartSize + "Mo";                        
+};
 
 /**
  * Create window to display image
@@ -267,38 +299,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             items:items
         }
     };
-    
-    var updateBar = function(currentNb, currentSz, maxCartNb, maxCartSize){
-        // get current progress width
-        var nbProgress = document.getElementById("phob_nbBarProg").offsetWidth;
-        var szProgress = document.getElementById("phob_sizeBarProg").offsetWidth;
-        // get current bar Width
-        var xSzWidth = document.getElementById("phob_sizeBar").offsetWidth;
-        var xNbWidth = document.getElementById("phob_nbBar").offsetWidth;
-
-        // calcul new width for progress bar
-        var nbProgressTo = xSzWidth * ( currentNb / maxCartNb );
-        var szProgressTo = xNbWidth * ( currentSz / maxCartSize );
         
-        // udpate progress bars 
-        for(i=nbProgress; i<nbProgressTo; i=i+1){
-            if(i<xNbWidth){
-                document.getElementById("phob_nbBarProg").style.width = i + "px";                
-            }            
-        }
-        
-        for(i=szProgress; i<szProgressTo; i = i + 1){
-            if(i<xSzWidth){
-                document.getElementById("phob_sizeBarProg").style.width = i + "px";
-                document.getElementById("phob_nbBarLabel").innerHTML = i + "/" + maxCartNb;
-            }            
-        }
-        
-        // udpate labels
-        document.getElementById("phob_nbBarLabel").innerHTML = currentNb + " / " + maxCartNb;
-        document.getElementById("phob_sizeBarLabel").innerHTML = currentSz + " / " + maxCartSize + "Mo";                        
-    };
-    
     // Create grid panel and items
     gridPanel = new Ext.grid.GridPanel({
         id: "phob_grid_resultPan",
@@ -425,7 +426,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                                     resultStore.insert(resultStore.data.length, newRecord);                                
                                     
                                     //update progress bar
-                                    updateBar(countAfterAdd,sizeAfterAdd,maxCartNb,maxCartSize);
+                                    GEOR.Addons.Photos_obliques.result.updateBar(countAfterAdd,sizeAfterAdd,maxCartNb,maxCartSize);
                                     
                                 }
                             } else {

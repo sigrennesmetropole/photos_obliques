@@ -6,6 +6,10 @@ Ext.namespace("GEOR.Addons.Photos_obliques.cart");
  * search by attribute in oblique photo addon
  */
 
+/**
+ * Method to managing the display of the dataviewer
+ */
+
 GEOR.Addons.Photos_obliques.onCart = function() {
     if (GEOR.Addons.Photos_obliques.cart.createCart == null || GEOR.Addons.Photos_obliques.cart.createCart.isDestroyed == true) {
         GEOR.Addons.Photos_obliques.initCart();
@@ -114,8 +118,14 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     return tbar;
 };
 
+/**
+ * Method to init dataview and parent window
+ */
 
 GEOR.Addons.Photos_obliques.initCart = function() {
+    
+    var maxCartNb = GEOR.Addons.Photos_obliques.globalOptions.cartNb;
+    var maxCartSize = GEOR.Addons.Photos_obliques.globalOptions.cartSize;        
     
     var photoStore = new Ext.data.JsonStore({
         id: "phob_store_dataView",
@@ -133,12 +143,27 @@ GEOR.Addons.Photos_obliques.initCart = function() {
             }            
         }],
         listeners: {
+            "clear":function(){
+                GEOR.Addons.Photos_obliques.result.updateBar(0,0,maxCartNb,maxCartSize);
+            },
+            "remove": function(){
+                //update progress bar
+                var newSize = function(){
+                    var dtItems = Ext.getCmp("phob_dataView").getStore().data.items;
+                    var size = 0;
+                    for( i = 0 ; i < dtItems.length ; i++){
+                        size = size + dtItems[i].data.size;
+                    }
+                    return size;
+                };
+                GEOR.Addons.Photos_obliques.result.updateBar(this.getCount(),newSize(),maxCartNb,maxCartSize);
+            },
             "datachanged": function(){
                 GEOR.Addons.Photos_obliques.updateCartTitle("phob_dataView","phob_win_cart");
+                console.log("data change");
             }
         }
     });
-    console.log(photoStore);
     
  
     var tplArr = [];
@@ -184,6 +209,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
     tplArr.push(tplMidlMax);
     tplArr.push(tplMax);
     
+    // create dataviewer to display air photos
     var dataView = new Ext.DataView({
         id:"phob_dataView",
         store: photoStore,
@@ -211,7 +237,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
     });
     
 
-    
+    // create Panel to welcome dataview
     var dataViewPanel = new Ext.Panel({
         id:"phob_pan_dataView",
         autoHeight:true,
@@ -219,6 +245,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         items: [dataView]
     });
     
+    // create global window to welcome dataview panel and others items
     GEOR.Addons.Photos_obliques.cart.createCart = new Ext.Window({
         title: "Panier",
         id: "phob_win_cart",
@@ -264,5 +291,5 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         }]
     });
     
-    GEOR.Addons.Photos_obliques.cart.createCart;   
+    return GEOR.Addons.Photos_obliques.cart.createCart;   
 };
