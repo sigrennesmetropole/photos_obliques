@@ -189,7 +189,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         store: photoStore,
         width:535,
         autoHeight:true,
-        tpl: tplMax,
+        tpl: tplMidlMin,
         multiSelect: true,
         simpleSelect:true,
         overClass:'x-view-over',
@@ -231,7 +231,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         tbar: GEOR.Addons.Photos_obliques.cartToolbar(dataView),
         items: [dataViewPanel],
         bbar:[
-            {xtype:"tbtext",text:"Vue Min"},
+            {xtype:"tbtext", text:"Vue Min"},
             {xtype:"tbspacer"},
             {
             xtype:"sliderfield",
