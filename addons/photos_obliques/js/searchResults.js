@@ -95,6 +95,9 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var defaultMaxReponse = 200;
     var indexLine;
     var map = GeoExt.MapPanel.guess().map ? GeoExt.MapPanel.guess().map : null;
+    var maxCartSize = GEOR.Addons.Photos_obliques.globalOptions.cartSize;
+    var maxCartNb = GEOR.Addons.Photos_obliques.globalOptions.cartNb;
+
 
 
     var createFeature = function(coordinates, layer) {
@@ -208,18 +211,94 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         emptyMsg: "Pas d'images a afficher",
     });
     
-    var sizeBar =  new Ext.ProgressBar({
-        id:"phob_size_pBar",
-        width:80,        
-        cls:"pbar-size-body"
+    var sizeBar = new Ext.ProgressBar({
+        id:"phob_size_pBar"
+
      });
     
     var nbBar = new Ext.ProgressBar({
         text:'Ready',
         id:"phob_nb_pbar",
-        width:80
-     });
+        width: 100,
+        maxWidth:100
+    });
+    
+    
+    var createBbar = function(){
+        var div;
+        var items = [];                        
+        
+        items.push({
+            html: '<div id="phob_sizeBar"><div id="phob_sizeBarProg"><div id="phob_sizeBarLabel">0/0</div></div></div>',
+            xtype: "panel",
+            width:100,
+            id:"panelsizeBar"
+        });        
+        
+        items.push("-");
+        items.push({
+            html: '<div id="phob_nbBar"><div id="phob_nbBarProg"><div id="phob_nbBarLabel">0/0</div></div></div>',
+            xtype: "panel",
+            width:100,
+            id:"panelNbBar"
+        });        
+    
+            
+        items.push("->");
+        
+        items.push({
+            xtype: "button",
+            iconCls: "phob-clean-icon",
+            id: "phob_btn_clRes",
+            handler: function() {
+                gridStore.removeAll();
+                gridPanel.collapse();
+            }
+        });
+        
+        items.push({
+            xtype: "button",
+            id: "phob_btn_csvRes",
+            iconCls: "phob-csv-icon"
+        });
+        
+        return {
+            id:"tb_result",
+            items:items
+        }
+    };
+    
+    var updateBar = function(currentNb, currentSz, maxCartNb, maxCartSize){
+        // get current progress width
+        var nbProgress = document.getElementById("phob_nbBarProg").offsetWidth;
+        var szProgress = document.getElementById("phob_sizeBarProg").offsetWidth;
+        // get current bar Width
+        var xSzWidth = document.getElementById("phob_sizeBar").offsetWidth;
+        var xNbWidth = document.getElementById("phob_nbBar").offsetWidth;
 
+        // calcul new width for progress bar
+        var nbProgressTo = xSzWidth * ( currentNb / maxCartNb );
+        var szProgressTo = xNbWidth * ( currentSz / maxCartSize );
+        
+        // udpate progress bars 
+        for(i=nbProgress; i<nbProgressTo; i=i+1){
+            if(i<xNbWidth){
+                document.getElementById("phob_nbBarProg").style.width = i + "px";                
+            }            
+        }
+        
+        for(i=szProgress; i<szProgressTo; i = i + 1){
+            if(i<xSzWidth){
+                document.getElementById("phob_sizeBarProg").style.width = i + "px";
+                document.getElementById("phob_nbBarLabel").innerHTML = i + "/" + maxCartNb;
+            }            
+        }
+        
+        // udpate labels
+        document.getElementById("phob_nbBarLabel").innerHTML = currentNb + " / " + maxCartNb;
+        document.getElementById("phob_sizeBarLabel").innerHTML = currentSz + " / " + maxCartSize + "Mo";                        
+    };
+    
     // Create grid panel and items
     gridPanel = new Ext.grid.GridPanel({
         id: "phob_grid_resultPan",
@@ -227,23 +306,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         collapsible: true,
         title: "Résultat",
         stripeRows: true,
-        tbar: new Ext.Toolbar({
-            cls: "grid-result-tbar",
-            anchor: "100%",
-            items: [sizeBar,"-",nbBar,"->", {
-                xtype: "button",
-                iconCls: "phob-clean-icon",
-                id: "phob_btn_clRes",
-                handler: function() {
-                    gridStore.removeAll();
-                    gridPanel.collapse();
-                }
-            }, {
-                xtype: "button",
-                id: "phob_btn_csvRes",
-                iconCls: "phob-csv-icon"
-            }]
-        }),
+        tbar: new Ext.Toolbar(createBbar()),
         maxHeigth: 400,
         minHeigth: 200,
         autoHeigth: true,
@@ -306,7 +369,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 dataIndex: "owner"
             }, {
                 id: "phob_col_sizeRes",
-                header: "Taille",
+                header: "Taille Mo",
                 sortable: true,
                 dataIndex: "size"
             }, {
@@ -328,33 +391,47 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                         return "phob-call-icon";
                     } else {
                         this.tooltip = "Ajouter au panier";
-                        this.handler = function(val,meta,rec) {
-                            
+                        this.handler = function(val,meta,rec) {                            
                             // control size of cart
+                            var photoDt = gridPanel.getStore().getAt(meta).data;
                             var cartStore = Ext.getCmp("phob_dataView").getStore();
+                            var dbl;
                             var sumSize = 0;
                             for (i=0; i < cartStore.data.items.length; i++){
-                                sumSize = sumSize + cartStore.data.items[i].data.size;
-                            }
-                            var photoSize = gridPanel.getStore().getAt(meta).data.size;
-                            var sizeAfterAdd = sumSize + photoSize;
+                                var dt = cartStore.data.items[i].data;
+                                sumSize = sumSize + dt.size;
+                                dbl = (photoDt.photoId !== dt.photoId ) ? false : true ;
+                            }                            
                             
-                            if (sizeAfterAdd > GEOR.Addons.Photos_obliques.globalOptions.cartSize.cartSize ){
-                                Ext.MessageBox.alert("Limite du panier atteinte", "Impossible d'ajouter la sélection");
+                            // on vérifie que l'image n'est pas déjà dans le panier
+                            if(!dbl){
+                                var sizeAfterAdd = sumSize + photoDt.size;
+                                var countAfterAdd = cartStore.getCount() + 1 ;
                                 
+                                // on vérifie que les capacités du panier ne sont pas atteintes
+                                if (sizeAfterAdd > maxCartSize || countAfterAdd > maxCartNb){
+                                    Ext.MessageBox.alert("Limite du panier atteinte", "Impossible d'ajouter la sélection");                                
+                                } else {
+                                    var resultStore = Ext.getCmp("phob_dataView").getStore();
+                                    var photoName = gridPanel.getStore().getAt(meta).data.photoId;
+                                    var urlMini =  GEOR.Addons.Photos_obliques.globalOptions.photoUrl + photoName + ".jpg"; 
+                                    var data = gridPanel.getStore().getAt(meta).data;
+                                    data.url = urlMini;
+                                    delete data["downloadable"];
+                                    delete data["geom"];
+                                    delete data["origin"];
+                                    delete data["owner"];
+                                    var newRecord = new resultStore.recordType(data);
+                                    resultStore.insert(resultStore.data.length, newRecord);                                
+                                    
+                                    //update progress bar
+                                    updateBar(countAfterAdd,sizeAfterAdd,maxCartNb,maxCartSize);
+                                    
+                                }
                             } else {
-                                var resultStore = Ext.getCmp("phob_dataView").getStore();
-                                var photoName = gridPanel.getStore().getAt(meta).data.photoId;
-                                var urlMini =  GEOR.Addons.Photos_obliques.globalOpstions.photoUrl + photoName + ".jpg"; 
-                                var data = gridPanel.getStore().getAt(meta).data;
-                                data.url = urlMini;
-                                delete data["downloadable"];
-                                delete data["geom"];
-                                delete data["origin"];
-                                delete data["owner"];
-                                var newRecord = new resultStore.recordType(data);
-                                resultStore.insert(resultStore.data.length, newRecord);
-                            }
+                                Ext.MessageBox.alert("Doublon", "Cette image est déjà ajoutée");
+                            } 
+
                         };
                         return "phob-add-icon";
                     }
