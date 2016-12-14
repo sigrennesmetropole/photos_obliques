@@ -34,7 +34,17 @@
             "fill": false,
             "strokeColor": "#00FFFF",
             "strokeOpacity": 0.7
-        }
+        },
+        "WFSLayerName":"test:photooblique_emprise",
+        "WFSLayerUrl":"https://cadastrapp-qualif.asogfi.fr/geoserver/wfs",
+        "WFSLayerId":"id",
+		"WFSLayerSetting": {
+			"request" : "getfeature",
+			"version" : "1.0.0",
+			"service" : "wfs",
+			"outputFormat" : "application/json",
+			"geometryField":"geom"
+		}
    },
     "i18n": {}
 }
