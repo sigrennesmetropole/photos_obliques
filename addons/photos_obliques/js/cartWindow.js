@@ -42,7 +42,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         id: "phob_bnt_unitCl",
         
         iconCls: "phob-clean-selection-icon",
-        tooltip: "Enlever du panier",
+        tooltip: "Supprimer la sélection",
         handler: function(){
             
             var view = Ext.getCmp("phob_dataView") ? Ext.getCmp("phob_dataView") : null;
@@ -81,7 +81,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     });
     var exportCsvBtn = new Ext.Button({
         id: "phob_bnt_csvCartB",
-        tooltip: "Exporter la liste en CSV",
+        tooltip: "Exporter en CSV",
         iconCls: "phob-csv-icon",
         handler: function() {
             //document.location=GEOR.Addons.Photos_obliques.globalOptions.servicesUrls+"/createCSV"
@@ -129,19 +129,13 @@ GEOR.Addons.Photos_obliques.initCart = function() {
     
     var photoStore = new Ext.data.JsonStore({
         id: "phob_store_dataView",
-        fields: ["photoId","size","url" ,           
+        fields: ["photoId","size","url","tooltip",           
             {
                 name:"date",
-                type:"date",
-                dateFormat: "d-m-Y"                
-            },
-            {
-            name: 'tooltip',
-            convert:function(val,rec){
-                var textTip = "id: "+rec.photoId+"\n"+"date: "+rec.date; 
-                return textTip;
+                type:"timestamp",
+                dateFormat: ('Y-m-d')               
             }            
-        }],
+        ],
         listeners: {
             "clear":function(){
                 GEOR.Addons.Photos_obliques.result.updateBar(0,0,maxCartNb,maxCartSize);
@@ -170,36 +164,36 @@ GEOR.Addons.Photos_obliques.initCart = function() {
     
     var tplMax = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMax"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );
         
     var tplMidlMax = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMidlMax"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );
     
     var tplMidlMin = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMidlMin"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );
     
     var tplMin = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMin"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );

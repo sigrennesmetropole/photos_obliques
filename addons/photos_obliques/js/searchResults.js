@@ -451,6 +451,9 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                                     var urlMini = globalOptions.photoUrl + photoName + ".jpg";
                                     var data = gridPanel.getStore().getAt(meta).data;
                                     data.url = urlMini;
+                                    var dateStr = gridPanel.getStore().getAt(meta).data.date;
+                                    var dateFormat = new Date(dateStr).getDate() + "/" + (new Date(dateStr).getMonth()+1) + "/" +new Date(dateStr).getFullYear();
+                                    data.tooltip = "id : "+photoName+"\n"+"date : "+dateFormat;
                                     delete data["downloadable"];
                                     delete data["geom"];
                                     delete data["origin"];
