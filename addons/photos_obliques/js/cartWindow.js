@@ -42,7 +42,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         id: "phob_bnt_unitCl",
         
         iconCls: "phob-clean-selection-icon",
-        tooltip: "Supprimer la sélection",
+        tooltip: "Enlever du panier",
         handler: function(){
             
             var view = Ext.getCmp("phob_dataView") ? Ext.getCmp("phob_dataView") : null;
@@ -81,7 +81,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     });
     var exportCsvBtn = new Ext.Button({
         id: "phob_bnt_csvCartB",
-        tooltip: "Exporter en CSV",
+        tooltip: "Exporter la liste en CSV",
         iconCls: "phob-csv-icon",
         handler: function() {
             //document.location=GEOR.Addons.Photos_obliques.globalOptions.servicesUrls+"/createCSV"
