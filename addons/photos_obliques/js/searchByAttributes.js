@@ -49,11 +49,9 @@ GEOR.Addons.Photos_obliques.search.comStore = function (id,url) {
             "select":function(){
                 if(Ext.getCmp("phob_store_toSba").getValues() != ""){
                     Ext.getCmp("phob_store_fromSba").load();
-                    console.log("loadFrom");
                 }
                 if(Ext.getCmp("phob_store_fromSba").getValues() != ""){
                     Ext.getCmp("phob_store_toSba").load();
-                    console.log("loadTo");
                 }
             }
         }
@@ -163,7 +161,7 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
                 var val = combo.getValue();
                 var cbTo = Ext.getCmp("phob_cb_toSba") ? Ext.getCmp("phob_cb_toSba") : null;
                 if (cbTo !== null) {
-                    if (cbTo.getValue() != 0 && (val > cbTo.getValue())) {
+                    if (cbTo.getValue() !== 0 && (val > cbTo.getValue())) {
                         cbTo.setValue(val);
                     }
                 }
@@ -171,7 +169,7 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
             "beforequery": function(){
                 var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm(); 
                 var searchParams = searchForm.getValues();                
-                if (searchParams.cities != ""){
+                if (searchParams.cities !== ""){
                     store.baseParams.cities = searchParams.cities;                    
                 }
             },

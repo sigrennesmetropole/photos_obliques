@@ -30,6 +30,22 @@ GEOR.Addons.Photos_obliques.updateCartTitle = function(dataViewId, cartId) {
     }
 };
 
+/**
+ * Method to download zip or export in csv
+ */
+GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serviceName) {
+    var paramUrl = "";
+    var getService = "/"+serviceName+"?";
+    var fId = fieldId; 
+    for (i=0; i<dataArray.length ; i++){
+        if (i !== 0){                    
+            paramUrl = paramUrl+"&"+fieldId+"="+dataArray[i].data.photoId;
+        } else {
+            paramUrl = fieldId+"="+dataArray[i].data.photoId;
+        }
+    }            
+    document.location=GEOR.Addons.Photos_obliques.globalOptions.servicesUrl+getService+paramUrl; 
+};
 
 /**
  * Create toolbar to be insert in cart window
@@ -51,7 +67,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
                 for(var i=0;i<records.length;i++){
                     view.store.remove(records[i]); 
                 }
-            GEOR.Addons.Photos_obliques.updateCartTitle("phob_dataView","phob_win_cart");
+            //GEOR.Addons.Photos_obliques.updateCartTitle("phob_dataView","phob_win_cart");
 
             }
 
@@ -63,7 +79,10 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         iconCls: "phob-download-selection-icon",
         tooltip: "Télécharger la sélection",
         handler: function() {
-                            
+            var arrayItems  = dataView.getSelectedRecords();
+            var fieldId = "photoId";
+            var service = "createZip";
+            GEOR.Addons.Photos_obliques.result.getDocument(arrayItems, fieldId, service);                            
         }
     });
     
@@ -84,18 +103,21 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         tooltip: "Exporter en CSV",
         iconCls: "phob-csv-icon",
         handler: function() {
-            //document.location=GEOR.Addons.Photos_obliques.globalOptions.servicesUrls+"/createCSV"
-            
-            //TODO: replace by first
-            document.location=GEOR.Addons.Photos_obliques.globalOptions.servicesUrl+"/createCSV?photoId=00_5021"
-        }
+            var arrayItems  = dataView.getStore().data.items;
+            var fieldId = "photoId";
+            var service = "createCSV";
+            GEOR.Addons.Photos_obliques.result.getDocument(arrayItems, fieldId, service);          
+        }            
     });
     var downloadBtn = new Ext.Button({
         id: "phob_bnt_dwnlCartC",
         tooltip: "Télécharger le panier",
         iconCls: "phob-download-icon",
         handler: function() {
-            alert("clic");
+            var arrayItems  = dataView.getStore().data.items;
+            var fieldId = "photoId";
+            var service = "createZip";
+            GEOR.Addons.Photos_obliques.result.getDocument(arrayItems, fieldId, service);
         }
     });
 
@@ -221,7 +243,6 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         ],
         listeners:{
             "dblclick": function(val, index, node,e ){                
-                console.log(index);
                 var rowIndex = index;
                 var url = dataView.getStore().getAt(rowIndex) ? dataView.getStore().getAt(rowIndex).data.url : null;
                 var htmlImg = (url !== null) ?'<img src="' + url + '" borer="2" />' : "";
