@@ -513,7 +513,6 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                                     if (feature) {
                                         layer.addFeatures(feature);
                                         geometry = feature.geometry;
-                                        //map.zoomToExtent(feature.geometry.getBounds());
                                     }
                                 } else {
                                     console.log("Error ", request.responseText);
