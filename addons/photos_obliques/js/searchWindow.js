@@ -41,6 +41,7 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
 };
 
 GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
+    var epsg3948 = new OpenLayers.Projection("EPSG:3948");
     var formItems = [];
     var searchBtn = false;
     var cancelBtn;
@@ -115,24 +116,54 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
             disabled: searchBtn,
             listeners: {
                 "click": function() {
-                    var params;
-                    var nbResultMax = 100;
-                    var store;
-                    var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
-                    var searchParams = searchForm.getValues();
-                    var getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
-                    var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
-                    resultStore.baseParams = searchParams;
-                    if (getTitle === "Recherche attributaire"){
-                        searchParams.start = 0;
-                        searchParams.limit = 5
+                    if(GEOR.Addons.Photos_obliques.search.mainWindow.title === "Recherche attributaire"){
+                        var getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
+                        if (getTitle == "Recherche attributaire"){
+                            var params;
+                            var nbResultMax = 100;
+                            var store;
+                            var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
+                            var searchParams = searchForm.getValues();                            
+                            var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
+                            resultStore.baseParams = searchParams;
+                            searchParams.start = 0;
+                            searchParams.limit = 5
                         
-                        GEOR.Addons.Photos_obliques.result.resultStore.load({
-                            params:searchParams
-                        });
-                        GEOR.Addons.Photos_obliques.search.mainWindow.doLayout();                                                  
-                    } 
+                            GEOR.Addons.Photos_obliques.result.resultStore.load({
+                                params:searchParams
+                            });
+                            GEOR.Addons.Photos_obliques.search.mainWindow.doLayout();                                                                     
+                        }
+                    } else {
+                        if(GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg").length > 0){
+                            var feature = GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0].features.length == 1 ? GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0].features[0] : null ;
+                            if (feature !== null){
+                                var globalOptions = GEOR.Addons.Photos_obliques.globalOptions;
+                                var reprojGeom = feature.geometry.transform(new OpenLayers.Projection("EPSG:3857"),epsg3948);
+                                var featureCC =  new OpenLayers.Feature.Vector(reprojGeom);
+                                var geomInWkt = new OpenLayers.Format.WKT().write(featureCC);
+                                var settings  = globalOptions.WFSLayerSetting;                                                                
+                                var photosFieldGeom = "shape";
+                                settings.cql_filter = "WITHIN(" + photosFieldGeom +","+geomInWkt+")";
+                                var request = new OpenLayers.Request.GET({
+                                    url: globalOptions.WFSLayerUrl,
+                                    params: settings,
+                                    async: false,
+                                    callback: function(request) {
+                                        // read json and zoom to extent
+                                        if (request.responseText) {
+                                            console.log(geomInWkt);
+                                            console.log(request);
 
+                                        } else {
+                                            console.log("Error ", request.responseText);
+                                        }
+                                    }
+                                });
+                            }
+                            
+                        }                        
+                    } 
                 }
             }
         }, cancelBtn]

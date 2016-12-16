@@ -494,8 +494,8 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                     var rowIndex = gridPanel.getView().findRowIndex(f);
                     var recId = gridPanel.getStore().getAt(rowIndex) ? gridPanel.getStore().getAt(rowIndex).data.photoId : false;
                     if (recId) {
-                        // get and set WFS settings
                         
+                        // get and set WFS settings                        
                         var settings = globalOptions.WFSLayerSetting;                                              
                         settings.cql_filter = "" + "id" + "='" + recId + "'";
                         settings.typename = globalOptions.WFSLayerName;
