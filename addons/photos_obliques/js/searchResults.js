@@ -128,6 +128,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     var map = GeoExt.MapPanel.guess().map ? GeoExt.MapPanel.guess().map : null;
     var maxCartSize = globalOptions.cartSize;
     var maxCartNb = globalOptions.cartNb;
+    var geometry;
 
 
 
@@ -314,6 +315,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             xtype: "button",
             iconCls: "phob-clean-icon",
             id: "phob_btn_clRes",
+            tooltip: "Enlever le panier",
             handler: function() {
                 gridStore.removeAll();
                 gridPanel.collapse();
@@ -323,7 +325,11 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
         items.push({
             xtype: "button",
             id: "phob_btn_csvRes",
-            iconCls: "phob-csv-icon"
+            iconCls: "phob-csv-icon",
+            tooltip: "Exporter la liste en CSV",
+            handler: function(){
+                Ext.Msg.alert('Alert', 'Fonction en cours de développement');
+            }
         });
 
         return {
@@ -378,12 +384,10 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                         return "phob-zoom-icon";
                     },
                     handler: function(val, meta, rec) {
-                        var rowIndex = meta;
-                        var record = gridPanel.getStore().getAt(rowIndex);
-                        var geomCoord = record ? record.data.geom.coordinates[0] : null;
-
-                        var feature = createFeature(geomCoord, false);
-                        map.zoomToExtent(feature.geometry.getBounds());
+                        // zoom to geometry call by mouse over event
+                        if (geometry){
+                            map.zoomToExtent(geometry.getBounds());
+                        }
                     }
                 }]
             }, {
@@ -508,7 +512,8 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                                     var feature = geojson_format.read(featureJson)[0];
                                     if (feature) {
                                         layer.addFeatures(feature);
-                                        map.zoomToExtent(feature.geometry.getBounds());
+                                        geometry = feature.geometry;
+                                        //map.zoomToExtent(feature.geometry.getBounds());
                                     }
                                 } else {
                                     console.log("Error ", request.responseText);
