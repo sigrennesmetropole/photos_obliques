@@ -21,8 +21,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.georchestra.photooblique.configuration.POPlaceHolder;
+import org.georchestra.photooblique.exception.CityCodeFormatException;
+import org.georchestra.photooblique.exception.InputAttributException;
 import org.georchestra.photooblique.model.PhotoOblique;
 import org.georchestra.photooblique.repository.PORepository;
+import org.georchestra.photooblique.service.helper.POHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ public class ExportController {
 
 	@Autowired
 	PORepository poRepository;
+	
+	@Autowired
+	POHelper poHelper;
 
 	final static Logger logger = LoggerFactory.getLogger(ExportController.class);
 
@@ -127,7 +133,7 @@ public class ExportController {
 	}
 	
 	
-	@Path("/createCSV/")
+	@Path("/createCSVById/")
 	@GET
 	@Produces("text/csv")
 	public Response createCSV(@Context HttpHeaders headers, @QueryParam("photoId") List<String> photosIds) {
@@ -154,4 +160,52 @@ public class ExportController {
 	    return response.build();
 	}
 	
+	@Path("/createCSVByAttribute/")
+	@GET
+	@Produces("text/csv")
+	public Response createCSV(@Context HttpHeaders headers, 
+			@QueryParam("cities") List<String> cities,
+			@QueryParam("startPeriod")String StringStartPeriod, 
+			@QueryParam("endPeriod") String StringEndPeriod,
+			@QueryParam("owner") String owner) throws InputAttributException, CityCodeFormatException {
+
+		ResponseBuilder response = Response.noContent();
+		
+		int startPeriod = convertToInt(StringStartPeriod);
+		int endPeriod = convertToInt(StringEndPeriod);
+
+		logger.info("Create CSV with given ids");
+
+		//TODO use helper
+		List<PhotoOblique> photos = poHelper.getPOList(startPeriod, endPeriod, owner, cities);
+		
+		
+		CsvMapper mapper = new CsvMapper();
+		CsvSchema schema = mapper.schemaFor(PhotoOblique.class).withHeader();
+		try {
+			String csv = mapper.writer(schema).writeValueAsString(photos);
+			response = Response.ok((String) csv);
+			response.header("Content-Disposition", "attachment; filename=export.csv");
+		} catch (JsonProcessingException e) {
+			logger.error("Error while creatin CSV file : " + e.getMessage());
+		}
+			    
+	    return response.build();
+	}
+	
+	/**
+	 * 
+	 * @param stringToConvert
+	 * @return
+	 */
+	private int convertToInt(String stringToConvert) {
+		
+		int i = 0;
+		//Parse String to int to avoir numberformatexception
+		if(stringToConvert != null && !stringToConvert.isEmpty()){
+			i = Integer.parseInt(stringToConvert);
+		}
+		
+		return i;
+	}
 }
