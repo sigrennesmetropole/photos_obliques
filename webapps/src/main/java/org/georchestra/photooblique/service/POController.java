@@ -59,7 +59,7 @@ public class POController {
 		} else {
 
 			try {
-				results = poHelper.getPOList(startPeriod, endPeriod, owner, cities, pagingStart, elementByPage);		
+				results = poHelper.getPagedPOList(startPeriod, endPeriod, owner, cities, pagingStart, elementByPage);		
 				results.put("success", true);
 
 			}// Thrown if city code is wrong

@@ -72,8 +72,8 @@
 				<prop key="hibernate.default_schema">${schema.name}</prop>
 
 				<!-- dialect -->
-				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-				<!-- uncomment if use geom <prop key="hibernate.dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect</prop> -->
+				<!-- Add specific dialect to understand similar to function in hql -->
+				<prop key="hibernate.dialect">org.georchestra.hibernate.dialect.PostgreSQL94DialectSimilarTo</prop>
 				<prop key="hibernate.connection.useUnicode">true</prop>
 				<prop key="hibernate.connection.charSet">UTF-8</prop>
 

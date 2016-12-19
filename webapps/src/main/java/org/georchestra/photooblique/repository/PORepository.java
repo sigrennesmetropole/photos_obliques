@@ -1,6 +1,5 @@
 package org.georchestra.photooblique.repository;
 
-
 import java.util.List;
 
 import org.georchestra.photooblique.model.PhotoOblique;
@@ -32,29 +31,59 @@ public interface PORepository
 	
 	Page<PhotoOblique> findByYearBetweenAndOwner(int minYear, int maxYear, String owner, Pageable pageable);
 	
-	List<PhotoOblique> findByYearBetweenAndOwnerAndTownsContains(int minYear, int maxYear, String owner, String cities);
+	@Query("select p from PhotoOblique p where year between ?1 and ?2  and owner like %?3% and SIMILARTO(towns,?4)=1")
+	List<PhotoOblique> findByYearBetweenAndOwnerAndTownsSimilarTo(int minYear, int maxYear, String owner, String cities);
+	
+	List<PhotoOblique> findByYearBetweenAndOwnerAndTownsContains(int minYear, int maxYear, String owner, String citie);
 	
 	Page<PhotoOblique> findByYearBetweenAndOwnerAndTownsContains(int minYear, int maxYear, String owner, String cities, Pageable pageable);
 	
-	List<PhotoOblique> findByTownsContains(String cities);
+	@Query("select p from PhotoOblique p where year between ?1 and ?2  and owner like %?3% and SIMILARTO(towns,?4)=1")
+	Page<PhotoOblique> findByYearBetweenAndOwnerAndTownsSimilarTo(int minYear, int maxYear, String owner, String cities, Pageable pageable);
 	
-	Page<PhotoOblique> findByTownsContains(String cities, Pageable pageable);
+	@Query("select p from PhotoOblique p where SIMILARTO(towns,?1)=1")
+	List<PhotoOblique> findByTownsSimilarTo(String cities);
 	
+	List<PhotoOblique> findByTownsContains(String citie);
+	
+	Page<PhotoOblique> findByTownsContains(String citie, Pageable pageable);
+	
+	@Query("select p from PhotoOblique p where SIMILARTO(towns,?1)=1")
+	Page<PhotoOblique> findByTownsSimilarTo(String createCities, Pageable pageRequest);
+		
 	List<PhotoOblique> findByOwner(String owner);
 	
 	Page<PhotoOblique> findByOwner(String owner, Pageable pageable);
 
-	List<PhotoOblique> findByYearGreaterThanAndTownsContains(int minYear, String cities);
+	@Query("select p from PhotoOblique p where year > ?1 and SIMILARTO(towns,?2)=1")
+	List<PhotoOblique> findByYearGreaterThanAndTownsSimilarTo(int minYear, String cities);
 	
-	Page<PhotoOblique> findByYearGreaterThanAndTownsContains(int minYear, String cities, Pageable pageable);
+	List<PhotoOblique> findByYearGreaterThanAndTownsContains(int minYear, String citie);
 	
-	List<PhotoOblique> findByYearBetweenAndTownsContains(int startPeriod, int endPeriod, String cities);
+	Page<PhotoOblique> findByYearGreaterThanAndTownsContains(int minYear, String citie, Pageable pageable);
 	
-	Page<PhotoOblique> findByYearBetweenAndTownsContains(int startPeriod, int endPeriod, String cities, Pageable pageable);
+	@Query("select p from PhotoOblique p where year > ?1 and SIMILARTO(towns,?2)=1")
+	Page<PhotoOblique> findByYearGreaterThanAndTownsSimilarTo(int startPeriod, String cities, Pageable pageable);
 	
-	List<PhotoOblique> findByOwnerAndTownsContains(String owner, String cities);
+	@Query("select p from PhotoOblique p where year between ?1 and ?2  and SIMILARTO(towns,?3)=1")
+	List<PhotoOblique> findByYearBetweenAndTownsSimilarTo(int startPeriod, int endPeriod, String cities);
 	
-	Page<PhotoOblique> findByOwnerAndTownsContains(String owner, String cities, Pageable pageable);
+	List<PhotoOblique> findByYearBetweenAndTownsContains(int startPeriod, int endPeriod, String citie);
+	
+	Page<PhotoOblique> findByYearBetweenAndTownsContains(int startPeriod, int endPeriod, String citie, Pageable pageable);
+	
+	@Query("select p from PhotoOblique p where year between ?1 and ?2  and SIMILARTO(towns,?3)=1")
+	Page<PhotoOblique> findByYearBetweenAndTownsSimilarTo(int startPeriod, int endPeriod, String cities, Pageable pageable);
+	
+	@Query("select p from PhotoOblique p where owner like %?1% and SIMILARTO(towns,?2)=1")
+	List<PhotoOblique> findByOwnerAndTownsSimilarTo(String owner, String cities);
+	
+	List<PhotoOblique> findByOwnerAndTownsContains(String owner, String citie);
+	
+	Page<PhotoOblique> findByOwnerAndTownsContains(String owner, String citie, Pageable pageable);
+	
+	@Query("select p from PhotoOblique p where owner like %?1% and SIMILARTO(towns,?2)=1")
+	Page<PhotoOblique> findByOwnerAndTownsSimilarTo(String owner, String cities, Pageable pageable);
 	
 	List<PhotoOblique> findByPhotoIdIn(List<String> ids);
 	
@@ -64,8 +93,11 @@ public interface PORepository
 	@Query("select distinct year from PhotoOblique order by year")
 	List<Integer> selectDistinctYear();
 	
-	@Query("select distinct year from PhotoOblique where towns= ?1 order by year")
+	@Query("select distinct year from PhotoOblique where towns like %?1% order by year")
 	List<Integer> selectDistinctYearByCities(String cities);
+	
+	@Query("select distinct year from PhotoOblique where SIMILARTO(towns,?1)=1 order by year")
+	List<Integer> selectDistinctYearByCitiesLikeAny(String createCities);
 	
 	@Query("select distinct owner from PhotoOblique order by owner")
 	List<String> selectDistinctOwners();
@@ -93,6 +125,7 @@ public interface PORepository
 
 	@Query("select distinct towns from PhotoOblique where year > ?1 order by towns")
 	List<String> selectDistinctCommuneByYearGreaterThan(int startPeriod);
+
 
 
 }

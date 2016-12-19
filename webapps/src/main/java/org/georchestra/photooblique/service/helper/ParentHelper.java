@@ -54,7 +54,7 @@ public class ParentHelper {
 		
 		logger.debug("Create cities String");
 		
-		StringBuilder citiesSB = new StringBuilder();
+		StringBuilder citiesSB = new StringBuilder("%(");
 		
 		if(!StringUtils.isBlank(cities.get(0))) {
 		
@@ -80,6 +80,7 @@ public class ParentHelper {
 			}
 		}
 		
+		citiesSB.append("%)");
 		logger.debug("Cities String : " + citiesSB.toString());
 		return citiesSB.toString();
 	}
