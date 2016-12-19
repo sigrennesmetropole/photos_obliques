@@ -31,8 +31,10 @@ public class RechercheHelper extends ParentHelper{
 		
 		if(cities.isEmpty()){
 			yearsList = poRepository.selectDistinctYear();
+		}else if(cities.size()==1){
+			yearsList = poRepository.selectDistinctYearByCities(cities.get(0));
 		}else{
-			yearsList = poRepository.selectDistinctYearByCities(createCities(cities));
+			yearsList = poRepository.selectDistinctYearByCitiesLikeAny(createCities(cities));
 		}
 
 		return yearsList;
