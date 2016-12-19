@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.georchestra.photooblique.repository.PORepository;
@@ -53,9 +54,10 @@ public class CommuneHelper extends ParentHelper{
 					if(!StringUtils.isBlank(code)){
 						// if contains |
 						if (code.indexOf('|') != -1){
-							String[] codes = code.split("|");
+							String[] codes = code.split(Pattern.quote("|"));
 
 							for( String newCode : codes){
+								logger.debug("Code commune : " + newCode);
 								if(newCode.length()>4 && communes.get(newCode) != null){
 									communesMap.put(newCode, communes.get(newCode));
 								}
