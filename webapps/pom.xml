@@ -19,7 +19,7 @@
 		<geotools.version>11.0</geotools.version>
 		<spring.version>4.1.8.RELEASE</spring.version>
 		<spring.data.version>1.9.1.RELEASE</spring.data.version>
-		<hibernate-version>5.2.5.Final</hibernate-version>
+		<hibernate-version>5.0.3.Final</hibernate-version>
 		<jackson.version>1.9.13</jackson.version>
 		<cxf.version>3.0.4</cxf.version>
 	</properties>
