@@ -19,11 +19,14 @@
         "css/Ext.ux.form.LovCombo.css"
     ],
     "default_options": {
-    	"servicesUrl":"http://172.16.52.84:8080//photooblique/services/",
+    	"servicesUrl":"https://cadastrapp-qualif.asogfi.fr/photooblique/services/",
     	"photoUrl":"https://cadastrapp-qualif.asogfi.fr/photos/mini/",
     	"thumbUrl":"https://cadastrapp-qualif.asogfi.fr/photos/thumb/",
-    	"limitByPage":50,
-    	"limitResults":200,
+    	"cartSize": 6000,
+        "cartNb" : 10,
+    	"limitReturns":200,
+    	"limitByPage":5,
+    	"limitResults":5,
     	"adminMsgTooltip":"Téléchargement impossible, cliquer pour obtenir les coordonnées",
     	"adminMsgAlert":"Service à contacter : Service SIG - 0202020202' ",
         "target": "tbar_12",
@@ -31,7 +34,17 @@
             "fill": false,
             "strokeColor": "#00FFFF",
             "strokeOpacity": 0.7
-        }
+        },
+        "WFSLayerName":"test:photooblique_emprise",
+        "WFSLayerUrl":"https://cadastrapp-qualif.asogfi.fr/geoserver/wfs",
+        "WFSLayerId":"id",
+		"WFSLayerSetting": {
+			"request" : "getfeature",
+			"version" : "1.0.0",
+			"service" : "wfs",
+			"outputFormat" : "application/json",
+			"geometryField":"geom"
+		}
    },
     "i18n": {}
 }

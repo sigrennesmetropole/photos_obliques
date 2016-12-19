@@ -7,14 +7,15 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  */
 
 GEOR.Addons.Photos_obliques.onSearch = function(button) {
+    // Creation de la la fenetre si non existante
     if (GEOR.Addons.Photos_obliques.search.mainWindow == null || GEOR.Addons.Photos_obliques.search.mainWindow.isDestroyed == true) {
         GEOR.Addons.Photos_obliques.initSearchWindow(button.id);
-
+    // si l'outil demandé est déjà ouvert, le fermer
     } else if (GEOR.Addons.Photos_obliques.search.mainWindow.isVisible() && !button.checked) {
         GEOR.Addons.Photos_obliques.search.mainWindow.hide();
         button.toggle(false);
+    // sinon, ouverture de l'autre outil de recherche
     } else {
-        // TODO : manage attributes fieldSet if last search was not null
         if (button.id === "phob_btn_graph") {
             Ext.getCmp("phob_fst_mainSba").hide();
             Ext.getCmp("phob_fst_mainSbg").show();
@@ -22,7 +23,7 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
             Ext.getCmp("phob_fst_mainSbg").disable();
 
         } else if (button.id === "phob_btn_attribut") {
-            // on efface le dessin et on désactive le cpf
+            // on efface le dessin et on désactive le composite field
             var delBtn = Ext.getCmp("phob_btn_delSbg");
             delBtn.fireEvent("click", delBtn);
             Ext.getCmp("phob_fst_mainSbg").hide();
@@ -30,16 +31,22 @@ GEOR.Addons.Photos_obliques.onSearch = function(button) {
             Ext.getCmp("phob_btn_fire").enable();           
             
         }
-        GEOR.Addons.Photos_obliques.search.mainWindow.show();
+        GEOR.Addons.Photos_obliques.search.mainWindow.show();        
+    }
+    // dans tous les cas, nettoyer la liste de résultat
+    if(GEOR.Addons.Photos_obliques.result.gridPanel){
+        GEOR.Addons.Photos_obliques.result.gridPanel.getStore().removeAll();
+        GEOR.Addons.Photos_obliques.result.gridPanel.collapse();
     }
 };
 
 GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
+    var epsg3948 = new OpenLayers.Projection("EPSG:3948");
     var formItems = [];
     var searchBtn = false;
     var cancelBtn;
     
-    var winTitle = "Outils de recherche attributaire";
+    var winTitle = "Recherche attributaire";
 
     /**
      * Add panels to search window
@@ -66,7 +73,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
     });
 
     /**
-     * Manage items if window should display graphic research tools first
+     * Manage items for the first display
      */
 
     if (id === "phob_btn_graph") {
@@ -88,6 +95,7 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
         width: 500,
         autoHeight: true,
         minWidth: 280,
+        maxHeigth:500,
         closeAction: "hide",
         closable: true,
         items: [formPanel],
@@ -108,57 +116,54 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
             disabled: searchBtn,
             listeners: {
                 "click": function() {
-                    var params;
-                    var nbResultMax = 100;
-                    var store;
-                    var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
-                    var searchParams = searchForm.getValues();
-                    var getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
-                    var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
-                    console.log(resultStore);
-                    
-                    if (getTitle === "Outils de recherche attributaire"){
-                        delete searchParams["cities"];
-                        //searchParams.start= 0;
-                        //searchParams.limit= GEOR.Addons.Photos_obliques.globalOptions ? GEOR.Addons.Photos_obliques.globalOptions.limitResults : nbResultMax;
-                        Ext.Ajax.request({
-                            method: "GET",
-                            params:searchParams,
-                            url: "http://172.16.52.84:8080/photooblique/services/getPhotoByAttribute",
-                            success: function(response) {
-                                resultStore.loadData(Ext.util.JSON.decode(response.responseText));
-                            },
-                            failure: function(result) {
-                                Ext.MessageBox.alert("Alert","Echec de la requête");
-                            }
-                        });
-                                                  
-                    } 
-                    
-                    
-                    /*if (getTitle == "Recherche attributaire"){
-                    } else if (getTitle == "Recherche graphique"){
-                        if(Ext.getCmp("phob_fst_mainSbg").disabled){
-                            // requete à partir du dessin
-                            Ext.Ajax.request({
-                                method: "GET",
-                                //params:searchParams,
-                                url: "http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/graphResult.php",
-                                success: function(response) {
-                                    // on ajoute la réponse au resultGrid
-                                    var result = Ext.util.JSON.decode(response.responseText);
-                                    var records = new resultStore.recordType(result);
-                                    resultStore.insert(resultStore.data.length, records);
-                                    console.log(resultStore);
-                                    // TODO : si plusieurs résultats
-                                    Ext.getCmp("phob_fst_mainSbg").enable();
-                                },
-                                failure: function(result) {
-                                    Ext.MessageBox.alert("Alert","Echec de la requête");
-                                }
+                    if(GEOR.Addons.Photos_obliques.search.mainWindow.title === "Recherche attributaire"){
+                        var getTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
+                        if (getTitle == "Recherche attributaire"){
+                            var params;
+                            var nbResultMax = 100;
+                            var store;
+                            var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
+                            var searchParams = searchForm.getValues();                            
+                            var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
+                            resultStore.baseParams = searchParams;
+                            searchParams.start = 0;
+                            searchParams.limit = 5
+                        
+                            GEOR.Addons.Photos_obliques.result.resultStore.load({
+                                params:searchParams
                             });
+                            GEOR.Addons.Photos_obliques.search.mainWindow.doLayout();                                                                     
+                        }
+                    } else {
+                        if(GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg").length > 0){
+                            var feature = GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0].features.length == 1 ? GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0].features[0] : null ;
+                            if (feature !== null){
+                                var globalOptions = GEOR.Addons.Photos_obliques.globalOptions;
+                                var reprojGeom = feature.geometry.transform(new OpenLayers.Projection("EPSG:3857"),epsg3948);
+                                var featureCC =  new OpenLayers.Feature.Vector(reprojGeom);
+                                var geomInWkt = new OpenLayers.Format.WKT().write(featureCC);
+                                var settings  = globalOptions.WFSLayerSetting;                                                                
+                                var photosFieldGeom = "shape";
+                                settings.cql_filter = "WITHIN(" + photosFieldGeom +","+geomInWkt+")";
+                                var request = new OpenLayers.Request.GET({
+                                    url: globalOptions.WFSLayerUrl,
+                                    params: settings,
+                                    async: false,
+                                    callback: function(request) {
+                                        // read json and zoom to extent
+                                        if (request.responseText) {
+                                            console.log(geomInWkt);
+                                            console.log(request);
+
+                                        } else {
+                                            console.log("Error ", request.responseText);
+                                        }
+                                    }
+                                });
+                            }
+                            
                         }                        
-                    }*/
+                    } 
                 }
             }
         }, cancelBtn]

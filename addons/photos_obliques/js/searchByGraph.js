@@ -23,6 +23,25 @@ GEOR.Addons.Photos_obliques.search.comboStore = new Ext.data.JsonStore({
 });
 
 
+GEOR.Addons.Photos_obliques.search.createGraphlayer = function(map){
+    var epsg3948 = new OpenLayers.Projection("EPSG:3948");
+    var styleLayer = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleGraphLayer);
+    if (map) {
+        /**
+        *  Create layer
+        */
+        var layerOptions = OpenLayers.Util.applyDefaults(
+            this.layerOptions, {
+                displayInLayerSwitcher: false,
+                projection: map.getProjectionObject(),
+                styleMap: styleLayer,
+            }
+        );
+        layerGraph = new OpenLayers.Layer.Vector("phob_layer_sbg", layerOptions);
+        map.addLayer(layerGraph);
+        return map.addLayer(layerGraph);        
+    }    
+};
 GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     var layer, polygonControl, polygonControlOptions, map, layerOptions;
     var drawPolygon, deleteDraw;
@@ -33,15 +52,19 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     }
 
     /**
-     *  Create layer
+     *  Call layer
      */
-    var layerOptions = OpenLayers.Util.applyDefaults(
+    /*var layerOptions = OpenLayers.Util.applyDefaults(
         this.layerOptions, {
             displayInLayerSwitcher: false,
             projection: map.getProjectionObject()
         }
     );
-    layer = new OpenLayers.Layer.Vector("phob_layer_sbg", layerOptions);
+    layer = new OpenLayers.Layer.Vector("phob_layer_sbg", layerOptions);*/
+    
+    if(GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg").length == 1){
+        layer = GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0]
+    }
 
     /**
      *  Create draw control

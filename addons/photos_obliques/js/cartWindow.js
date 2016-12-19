@@ -6,6 +6,10 @@ Ext.namespace("GEOR.Addons.Photos_obliques.cart");
  * search by attribute in oblique photo addon
  */
 
+/**
+ * Method to managing the display of the dataviewer
+ */
+
 GEOR.Addons.Photos_obliques.onCart = function() {
     if (GEOR.Addons.Photos_obliques.cart.createCart == null || GEOR.Addons.Photos_obliques.cart.createCart.isDestroyed == true) {
         GEOR.Addons.Photos_obliques.initCart();
@@ -26,6 +30,22 @@ GEOR.Addons.Photos_obliques.updateCartTitle = function(dataViewId, cartId) {
     }
 };
 
+/**
+ * Method to download zip or export in csv
+ */
+GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serviceName) {
+    var paramUrl = "";
+    var getService = "/"+serviceName+"?";
+    var fId = fieldId; 
+    for (i=0; i<dataArray.length ; i++){
+        if (i !== 0){                    
+            paramUrl = paramUrl+"&"+fieldId+"="+dataArray[i].data.photoId;
+        } else {
+            paramUrl = fieldId+"="+dataArray[i].data.photoId;
+        }
+    }            
+    document.location=GEOR.Addons.Photos_obliques.globalOptions.servicesUrl+getService+paramUrl; 
+};
 
 /**
  * Create toolbar to be insert in cart window
@@ -47,7 +67,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
                 for(var i=0;i<records.length;i++){
                     view.store.remove(records[i]); 
                 }
-            GEOR.Addons.Photos_obliques.updateCartTitle("phob_dataView","phob_win_cart");
+            //GEOR.Addons.Photos_obliques.updateCartTitle("phob_dataView","phob_win_cart");
 
             }
 
@@ -59,7 +79,10 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         iconCls: "phob-download-selection-icon",
         tooltip: "Télécharger la sélection",
         handler: function() {
-                            
+            var arrayItems  = dataView.getSelectedRecords();
+            var fieldId = "photoId";
+            var service = "createZip";
+            GEOR.Addons.Photos_obliques.result.getDocument(arrayItems, fieldId, service);                            
         }
     });
     
@@ -80,15 +103,21 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         tooltip: "Exporter en CSV",
         iconCls: "phob-csv-icon",
         handler: function() {
-            alert("clic");
-        }
+            var arrayItems  = dataView.getStore().data.items;
+            var fieldId = "photoId";
+            var service = "createCSV";
+            GEOR.Addons.Photos_obliques.result.getDocument(arrayItems, fieldId, service);          
+        }            
     });
     var downloadBtn = new Ext.Button({
         id: "phob_bnt_dwnlCartC",
         tooltip: "Télécharger le panier",
         iconCls: "phob-download-icon",
         handler: function() {
-            alert("clic");
+            var arrayItems  = dataView.getStore().data.items;
+            var fieldId = "photoId";
+            var service = "createZip";
+            GEOR.Addons.Photos_obliques.result.getDocument(arrayItems, fieldId, service);
         }
     });
 
@@ -111,65 +140,82 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     return tbar;
 };
 
+/**
+ * Method to init dataview and parent window
+ */
 
 GEOR.Addons.Photos_obliques.initCart = function() {
+    
+    var maxCartNb = GEOR.Addons.Photos_obliques.globalOptions.cartNb;
+    var maxCartSize = GEOR.Addons.Photos_obliques.globalOptions.cartSize;        
+    
     var photoStore = new Ext.data.JsonStore({
-        url: 'http://172.16.52.84:8080/mapfishapp/ws/addons/photos_obliques/get-thumb.json',
         id: "phob_store_dataView",
-        root: 'images',
-        fields: ['name', 'url','id','date', {
-            name: 'size',
-            type: 'float'
-        }, {
-            name: 'tooltip',
-            convert:function(val,rec){
-                var textTip = "id: "+rec.id+"\n"+"date: "+rec.date; 
-                return textTip;
+        fields: ["photoId","size","url","tooltip",           
+            {
+                name:"date",
+                type:"timestamp",
+                dateFormat: ('Y-m-d')               
             }            
-        }],
+        ],
         listeners: {
+            "clear":function(){
+                GEOR.Addons.Photos_obliques.result.updateBar(0,0,maxCartNb,maxCartSize);
+            },
+            "remove": function(){
+                //update progress bar
+                var newSize = function(){
+                    var dtItems = Ext.getCmp("phob_dataView").getStore().data.items;
+                    var size = 0;
+                    for( i = 0 ; i < dtItems.length ; i++){
+                        size = size + dtItems[i].data.size;
+                    }
+                    return size;
+                };
+                GEOR.Addons.Photos_obliques.result.updateBar(this.getCount(),newSize(),maxCartNb,maxCartSize);
+            },
             "datachanged": function(){
                 GEOR.Addons.Photos_obliques.updateCartTitle("phob_dataView","phob_win_cart");
+                console.log("data change");
             }
         }
     });
     
-    photoStore.load();
-
+ 
     var tplArr = [];
     
     var tplMax = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMax"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );
         
     var tplMidlMax = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMidlMax"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );
     
     var tplMidlMin = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMidlMin"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );
     
     var tplMin = new Ext.XTemplate(
             '<tpl for=".">',
-            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb-wrap" id="{photoId}">',
             '<div class="thumbMin"><img src="{url}" title="{tooltip}"></div>', // Pour modifier l'infobulle
-            '<span class="x-editable">{name}</span></div>', // Pour modifier le titre sous les photos
+            '<span class="x-editable">{photoId}</span></div>', // Pour modifier le titre sous les photos
             '</tpl>',
             '<div class="x-clear"></div>'
     );
@@ -179,12 +225,13 @@ GEOR.Addons.Photos_obliques.initCart = function() {
     tplArr.push(tplMidlMax);
     tplArr.push(tplMax);
     
+    // create dataviewer to display air photos
     var dataView = new Ext.DataView({
         id:"phob_dataView",
         store: photoStore,
         width:535,
-        //autoHeight:true,
-        tpl: tplMax,
+        autoHeight:true,
+        tpl: tplMidlMin,
         multiSelect: true,
         simpleSelect:true,
         overClass:'x-view-over',
@@ -196,17 +243,16 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         ],
         listeners:{
             "dblclick": function(val, index, node,e ){                
-                console.log(index);
                 var rowIndex = index;
                 var url = dataView.getStore().getAt(rowIndex) ? dataView.getStore().getAt(rowIndex).data.url : null;
                 var htmlImg = (url !== null) ?'<img src="' + url + '" borer="2" />' : "";
-                GEOR.Addons.Photos_obliques.manageResulttWindow(htmlImg);
+                GEOR.Addons.Photos_obliques.manageResultWindow(htmlImg);
             }
         }
     });
     
 
-    
+    // create Panel to welcome dataview
     var dataViewPanel = new Ext.Panel({
         id:"phob_pan_dataView",
         autoHeight:true,
@@ -214,19 +260,20 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         items: [dataView]
     });
     
+    // create global window to welcome dataview panel and others items
     GEOR.Addons.Photos_obliques.cart.createCart = new Ext.Window({
         title: "Panier",
         id: "phob_win_cart",
         autoScroll: true,
         width: 300,
-        heigth:300,
+        //heigth:300,
         constrainHeader:true,
         closeAction: "hide",
         autoHeigth: true,
         tbar: GEOR.Addons.Photos_obliques.cartToolbar(dataView),
         items: [dataViewPanel],
         bbar:[
-            {xtype:"tbtext",text:"Vue Min"},
+            {xtype:"tbtext", text:"Vue Min"},
             {xtype:"tbspacer"},
             {
             xtype:"sliderfield",
@@ -239,7 +286,11 @@ GEOR.Addons.Photos_obliques.initCart = function() {
             listeners:{
                 "valid":function(){
                     dataView.tpl = tplArr[this.getValue()];
-                    dataView.refresh();                
+                    dataView.refresh();
+                    dataView.doLayout();
+                    GEOR.Addons.Photos_obliques.cart.createCart.doLayout();
+                    GEOR.Addons.Photos_obliques.cart.createCart.update();
+                    GEOR.Addons.Photos_obliques.cart.createCart.syncSize();
                 }
             }
         },{xtype:"tbtext",text:"Max"},],        
@@ -255,5 +306,5 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         }]
     });
     
-    GEOR.Addons.Photos_obliques.cart.createCart.show();   
+    return GEOR.Addons.Photos_obliques.cart.createCart;   
 };
