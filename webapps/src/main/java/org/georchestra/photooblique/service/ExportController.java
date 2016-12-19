@@ -174,7 +174,7 @@ public class ExportController {
 		int startPeriod = convertToInt(StringStartPeriod);
 		int endPeriod = convertToInt(StringEndPeriod);
 
-		logger.info("Create CSV with given ids");
+		logger.info("Create CSV with given attributes");
 
 		//TODO use helper
 		List<PhotoOblique> photos = poHelper.getPOList(startPeriod, endPeriod, owner, cities);
