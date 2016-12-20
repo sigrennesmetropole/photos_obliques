@@ -89,7 +89,7 @@ GEOR.Addons.Photos_obliques.result.updateBar = function(currentNb, currentSz, ma
 /**
  * Create window to display image
  */
-GEOR.Addons.Photos_obliques.createResulttWindow = function(htmlImg, name) {
+GEOR.Addons.Photos_obliques.createResultWindow = function(htmlImg, name) {
     var window = new Ext.Window({
         id: "phob_win_display",
         title: name,
@@ -106,9 +106,9 @@ GEOR.Addons.Photos_obliques.createResulttWindow = function(htmlImg, name) {
 GEOR.Addons.Photos_obliques.manageResultWindow = function(htmlImg, name) {
     if (Ext.getCmp("phob_win_display")) {
         Ext.getCmp("phob_win_display").destroy();
-        GEOR.Addons.Photos_obliques.createResulttWindow(htmlImg, name).show();
+        GEOR.Addons.Photos_obliques.createResultWindow(htmlImg, name).show();
     } else {
-        GEOR.Addons.Photos_obliques.createResulttWindow(htmlImg, name).show();
+        GEOR.Addons.Photos_obliques.createResultWindow(htmlImg, name).show();
     }
 }
 
@@ -186,7 +186,12 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             }, {
                 name: "url",
                 convert: function(v, rec) {
-                    var urlThumb = globalOptions.thumbUrl + (rec.photoId + ".jpg");
+                    if(rec.photoId){
+                        var urlThumb = globalOptions.thumbUrl + (rec.photoId + ".jpg");
+                    }
+                    if(rec.properties){
+                        var urlThumb = globalOptions.thumbUrl + (rec.properties.id + ".jpg");
+                    }                    
                     return urlThumb;
                 }
             }
@@ -204,7 +209,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 if (this.totalLength > limit) {
                     gridPanel.collapse();
                     gridPanel.getStore().removeAll();
-                    Ext.Msg.alert("Echec de la requête", "Résultat trop important, veuillez modifier vos critères de recherche");
+                    Ext.Msg.alert("Echec de la requête", globalOptions.adminLimitMsg);
                 } else {
                     gridPanel.expand();
 
@@ -327,8 +332,10 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
             id: "phob_btn_csvRes",
             iconCls: "phob-csv-icon",
             tooltip: "Exporter la liste en CSV",
-            handler: function(){
-                Ext.Msg.alert('Alert', 'Fonction en cours de développement');
+            handler: function(){                
+                var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
+                var searchParams = searchForm.getValues();
+                GEOR.Addons.Photos_obliques.result.getDocument(false,false,"createCSVByAttribute",searchParams);
             }
         });
 
@@ -448,7 +455,13 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
 
                                 // on vérifie que les capacités du panier ne sont pas atteintes
                                 if (sizeAfterAdd > maxCartSize || countAfterAdd > maxCartNb) {
-                                    Ext.MessageBox.alert("Limite du panier atteinte", "Impossible d'ajouter la sélection");
+                                    Ext.MessageBox.show({
+                                        title : "Limite du panier atteinte",
+                                        msg : globalOptions.adminLimitAlert,
+                                        maxWidth : 500,
+                                        buttons : Ext.MessageBox.OK,
+                                        icon : Ext.MessageBox.WARNING
+                                    });
                                 } else {
                                     var resultStore = Ext.getCmp("phob_dataView").getStore();
                                     var photoName = gridPanel.getStore().getAt(meta).data.photoId;
@@ -533,7 +546,6 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
     });
 
     var gridView = gridPanel.getView();
-    gridView.on("");
 
     GEOR.Addons.Photos_obliques.result.gridPanel = gridPanel;
 
