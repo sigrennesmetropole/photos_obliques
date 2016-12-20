@@ -124,10 +124,12 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                             var store;
                             var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
                             var searchParams = searchForm.getValues();                            
-                            var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;
+                            var resultStore = GEOR.Addons.Photos_obliques.result.resultStore;                            
                             resultStore.baseParams = searchParams;
                             searchParams.start = 0;
                             searchParams.limit = 5
+                            var citiesParams = searchParams.cities;
+                            searchParams.cities = citiesParams.split(/[,]/);
                         
                             GEOR.Addons.Photos_obliques.result.resultStore.load({
                                 params:searchParams
@@ -142,9 +144,13 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                                 var reprojGeom = feature.geometry.transform(new OpenLayers.Projection("EPSG:3857"),epsg3948);
                                 var featureCC =  new OpenLayers.Feature.Vector(reprojGeom);
                                 var geomInWkt = new OpenLayers.Format.WKT().write(featureCC);
-                                var settings  = globalOptions.WFSLayerSetting;                                                                
-                                var photosFieldGeom = "shape";
-                                settings.cql_filter = "WITHIN(" + photosFieldGeom +","+geomInWkt+")";
+                                
+                                // set request options
+                                var settings  = globalOptions.WFSLayerSetting;                                
+                                settings.maxfeatures = globalOptions.limitReturns;
+                                settings.cql_filter = "WITHIN(" + settings.geometryField +","+geomInWkt+")";
+
+                                // create request
                                 var request = new OpenLayers.Request.GET({
                                     url: globalOptions.WFSLayerUrl,
                                     params: settings,
@@ -152,9 +158,16 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                                     callback: function(request) {
                                         // read json and zoom to extent
                                         if (request.responseText) {
-                                            console.log(geomInWkt);
-                                            console.log(request);
-
+                                            var rep = request.responseText;                                            
+                                            var jsonData = Ext.util.JSON.decode(rep);
+                                            if (jsonData.totalFeatures > globalOptions.limitReturns){
+                                                Ext.Msg.alert("Echec de la requête", "Résultat trop important, veuillez modifier vos critères de recherche");
+                                            }/* else {
+                                                if(GEOR.Addons.Photos_obliques.result.resultStore){
+                                                    var resStore = GEOR.Addons.Photos_obliques.result.resultStore;
+                                                    
+                                                }
+                                            }*/                                           
                                         } else {
                                             console.log("Error ", request.responseText);
                                         }
