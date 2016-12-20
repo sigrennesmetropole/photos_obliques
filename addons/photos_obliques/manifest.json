@@ -23,27 +23,37 @@
     	"photoUrl":"https://cadastrapp-qualif.asogfi.fr/photos/mini/",
     	"thumbUrl":"https://cadastrapp-qualif.asogfi.fr/photos/thumb/",
     	"cartSize": 6000,
-        "cartNb" : 10,
+    	"cartNb" : 10,
     	"limitReturns":200,
     	"limitByPage":5,
     	"limitResults":5,
     	"adminMsgTooltip":"Téléchargement impossible, cliquer pour obtenir les coordonnées",
     	"adminMsgAlert":"Service à contacter : Service SIG - 0202020202' ",
+    	"adminLimitAlert":"Vous avez atteint la limite de stockage disponible, impossible d'ajouter la photo au panier.",
         "target": "tbar_12",
+        "downloadMsg":"Vous devez impérativement faire apparaître les mentions légales présentent dans le fichier text pour chaque utilisation !",
+        "adminLimitMsg": "Résultat trop important, veuillez modifier vos critèress de recherche",
         "styleMapOptions": {
             "fill": false,
             "strokeColor": "#00FFFF",
             "strokeOpacity": 0.7
         },
+        "styleGraphLayer": {
+            "fillColor": "#4285f4",
+            "fillOpacity":0.3,
+            "strokeColor": "#0e58ce",
+            "strokeOpacity": 0.6
+        },
         "WFSLayerName":"test:photooblique_emprise",
         "WFSLayerUrl":"https://cadastrapp-qualif.asogfi.fr/geoserver/wfs",
         "WFSLayerId":"id",
 		"WFSLayerSetting": {
+            "typename":"test:photooblique_emprise",
 			"request" : "getfeature",
 			"version" : "1.0.0",
 			"service" : "wfs",
 			"outputFormat" : "application/json",
-			"geometryField":"geom"
+			"geometryField":"shape"
 		}
    },
     "i18n": {}
