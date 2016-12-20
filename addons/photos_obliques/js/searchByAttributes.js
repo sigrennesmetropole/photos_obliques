@@ -29,16 +29,13 @@ GEOR.Addons.Photos_obliques.search.comStore = function (id,url) {
         }],
         proxy: new Ext.data.HttpProxy({
             url:url + "/getCommunes",
-            //url:"http://localhost:8080/mapfishapp/ws/addons/photos_obliques/communes.json",
             method: 'GET',
             autoLoad:true
         }),
         lsiteners:{
             "beforeload": function(){
-                console.log("beforeload");
                 var searchWinForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm(); 
                 var searchParams = searchWinForm.getValues();
-                console.log(searchParams);
                 if (searchParams.endPeriod != ""){
                     this.baseParams.endPeriod = searchParams.endPeriod;                    
                 }
@@ -84,7 +81,6 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
         assertValue : Ext.emptyFn,
         listeners:{
             "beforequery": function(){
-                console.log("beforeload");
                 var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm(); 
                 var searchParams = searchForm.getValues();                
                 if (searchParams.endPeriod != ""){
@@ -93,14 +89,6 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
                 if (searchParams.startPeriod !=""){
                     store.baseParams.startPeriod= searchParams.startPeriod;
                 }
-            },
-            "change": function(){                
-                // to do this, insert assert param in this lovBox or insert beforeBlur method in library
-                console.log(this.getRawValue());
-                var selectVal = this.getRawValue();
-                var splitVal = selectVal.split(/[,]/);
-               console.log(splitVal[1]);
-                
             }
         }
     });
@@ -265,7 +253,7 @@ GEOR.Addons.Photos_obliques.search.storeOwner = function(id,url){
         }),
         fields:[
             {
-                name:"owners",
+                name:"owner",
                 convert: function(value,record){
                     return record;
                 }
@@ -286,14 +274,14 @@ GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
     return  new Ext.form.ComboBox({        
         name:"proprietaire",
         id: id,
-        hiddenName:"owners",
+        hiddenName:"owner",
         store: store,
         anchor: "99%",
         fieldLabel: "Propriétaire ",
         emptyText:"Nom du propriétaire...",
         editable: true,
         selectOnFocus: true,
-        displayField: "owners",
+        displayField: "owner",
         minChars:5,
     });
 };
