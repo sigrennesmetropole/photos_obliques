@@ -402,7 +402,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 header: "Date",
                 sortable: true,
                 dataIndex: "date",
-                renderer: Ext.util.Format.dateRenderer("d-m-Y")
+                renderer: Ext.util.Format.dateRenderer("d/m/Y")
             }, {
                 id: "phob_col_IdRes",
                 header: "ID",
