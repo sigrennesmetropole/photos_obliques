@@ -50,19 +50,8 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     if (GeoExt.MapPanel.guess().map) {
         map = GeoExt.MapPanel.guess().map;
     }
-
-    /**
-     *  Call layer
-     */
-    /*var layerOptions = OpenLayers.Util.applyDefaults(
-        this.layerOptions, {
-            displayInLayerSwitcher: false,
-            projection: map.getProjectionObject()
-        }
-    );
-    layer = new OpenLayers.Layer.Vector("phob_layer_sbg", layerOptions);*/
     
-    if(GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg").length == 1){
+    if( map && map.getLayersByName("phob_layer_sbg").length == 1){
         layer = GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0]
     }
 
@@ -87,6 +76,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
             polygonControl.deactivate();
             drawPolygon.toggle(false);
             Ext.getCmp("phob_btn_fire").enable();
+            GEOR.Addons.Photos_obliques.drawnGeom = layer.features[0].geometry;
         },
         scope: this
     });

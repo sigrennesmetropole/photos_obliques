@@ -6,6 +6,51 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  * search by attribute in oblique photo addon
  */
 
+/**
+ * Function to parse json data and return all features id
+ */
+GEOR.Addons.Photos_obliques.getIdFromJson = function(jsonDecode, options) {    
+    var nbReturns = jsonDecode.totalFeatures;
+    if (nbReturns > 0){
+        var idArray =  [];
+        for (i=0; i < nbReturns; i++ ){
+            idArray.push(jsonDecode.features[i].properties.id);
+        }
+        return idArray;
+    } else {
+        return Ext.Msg.alert("Résultat vide", options.adminNoResult);
+    }
+};
+
+GEOR.Addons.Photos_obliques.cleanResultParams = function(store) {
+   var bp = store.baseParams; 
+   if(bp.endPeriod || bp.endPeriod == ""){
+       delete bp["endPeriod"];
+   }
+   if(bp.startPeriod || bp.startPeriod == ""){
+       delete bp["startPeriod"];
+   }
+   if(bp.cities || bp.cities == ""){
+       delete bp["cities"];
+   }
+   if(bp.owner || bp.owner == ""){
+       delete bp["owner"];
+   }
+};
+
+GEOR.Addons.Photos_obliques.getPeriodFromJson = function(jsonDecode, options) {    
+    var nbReturns = jsonDecode.totalFeatures;
+    if (nbReturns > 0){
+        var idArray =  [];
+        for (i=0; i < nbReturns; i++ ){
+            idArray.push(jsonDecode.features[i].properties.id);
+        }
+        return idArray;
+    } else {
+        return Ext.Msg.alert("Résultat vide", options.adminNoResult);
+    }
+};
+
 GEOR.Addons.Photos_obliques.onSearch = function(button) {
     // Creation de la la fenetre si non existante
     if (GEOR.Addons.Photos_obliques.search.mainWindow == null || GEOR.Addons.Photos_obliques.search.mainWindow.isDestroyed == true) {
@@ -138,43 +183,58 @@ GEOR.Addons.Photos_obliques.initSearchWindow = function(id) {
                         }
                     } else {
                         if(GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg").length > 0){
-                            var feature = GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0].features.length == 1 ? GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0].features[0] : null ;
-                            if (feature !== null){
+                            var geom = GEOR.Addons.Photos_obliques.drawnGeom ? GEOR.Addons.Photos_obliques.drawnGeom : null;
+                            if (geom !== null){
+                                // control if geometry if not already drawn to not transform geom already transform, 
+                                // else just search wkt and fire request
+                                if(!GEOR.Addons.Photos_obliques.lastGeom || GEOR.Addons.Photos_obliques.lastGeom.id !== geom.id ){
+                                    GEOR.Addons.Photos_obliques.lastGeom = geom;
+                                    var reprojGeom = geom.transform(new OpenLayers.Projection("EPSG:3857"),epsg3948);
+                                    var vec = new OpenLayers.Feature.Vector(reprojGeom);                                     
+                                } else if(GEOR.Addons.Photos_obliques.lastGeom.id == geom.id){
+                                    var vec = new OpenLayers.Feature.Vector(GEOR.Addons.Photos_obliques.lastGeom);
+                                }
+                                var geomInWkt = new OpenLayers.Format.WKT().write(vec);
                                 var globalOptions = GEOR.Addons.Photos_obliques.globalOptions;
-                                var reprojGeom = feature.geometry.transform(new OpenLayers.Projection("EPSG:3857"),epsg3948);
-                                var featureCC =  new OpenLayers.Feature.Vector(reprojGeom);
-                                var geomInWkt = new OpenLayers.Format.WKT().write(featureCC);
                                 
                                 // set request options
                                 var settings  = globalOptions.WFSLayerSetting;                                
                                 settings.maxfeatures = globalOptions.limitReturns;
-                                settings.cql_filter = "WITHIN(" + settings.geometryField +","+geomInWkt+")";
+                                settings.cql_filter = "CONTAINS(" + settings.geometryField +","+geomInWkt+")";
 
-                                // create request
+                                // create requests
                                 var request = new OpenLayers.Request.GET({
                                     url: globalOptions.WFSLayerUrl,
                                     params: settings,
                                     async: false,
                                     callback: function(request) {
-                                        // read json and zoom to extent
+                                        
+                                        // read json in request callback
                                         if (request.responseText) {
                                             var rep = request.responseText;                                            
                                             var jsonData = Ext.util.JSON.decode(rep);
+                                            
+                                            // control limit of result
                                             if (jsonData.totalFeatures > globalOptions.limitReturns){
-                                                Ext.Msg.alert("Echec de la requête", "Résultat trop important, veuillez modifier vos critères de recherche");
-                                            }/* else {
-                                                if(GEOR.Addons.Photos_obliques.result.resultStore){
-                                                    var resStore = GEOR.Addons.Photos_obliques.result.resultStore;
-                                                    
-                                                }
-                                            }*/                                           
+                                                Ext.Msg.alert("Echec de la requête", globalOptions.adminLimitAlert);
+                                            } else {
+                                                
+                                                // clean params
+                                                GEOR.Addons.Photos_obliques.cleanResultParams(GEOR.Addons.Photos_obliques.result.resultStore);
+                                                // get all features id and load them to result store param to get data with good format
+                                                var arrayId = GEOR.Addons.Photos_obliques.getIdFromJson(jsonData, globalOptions);
+                                                GEOR.Addons.Photos_obliques.result.resultStore.load({
+                                                    params:{
+                                                        id:arrayId
+                                                    }
+                                                });                                                
+                                            }                                           
                                         } else {
                                             console.log("Error ", request.responseText);
                                         }
                                     }
-                                });
-                            }
-                            
+                                });                                                               
+                            }                            
                         }                        
                     } 
                 }

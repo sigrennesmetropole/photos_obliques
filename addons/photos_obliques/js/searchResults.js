@@ -213,7 +213,7 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                 } else {
                     gridPanel.expand();
 
-                    // ------------------ zoom sur l'étendue de la couche
+                    // zoom on layer extent
 
                     if (map) {
                         var layer = map.getLayersByName("phob_extendResultLayer")[0];                        
@@ -462,6 +462,8 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                                         buttons : Ext.MessageBox.OK,
                                         icon : Ext.MessageBox.WARNING
                                     });
+                                
+                                // si la limite est ok on ajoute la photo au panier
                                 } else {
                                     var resultStore = Ext.getCmp("phob_dataView").getStore();
                                     var photoName = gridPanel.getStore().getAt(meta).data.photoId;
@@ -471,6 +473,8 @@ GEOR.Addons.Photos_obliques.result.gridPanel = function() {
                                     var dateStr = gridPanel.getStore().getAt(meta).data.date;
                                     var dateFormat = new Date(dateStr).getDate() + "/" + (new Date(dateStr).getMonth()+1) + "/" +new Date(dateStr).getFullYear();
                                     data.tooltip = "id : "+photoName+"\n"+"date : "+dateFormat;
+                                    
+                                    // delete useless params
                                     delete data["downloadable"];
                                     delete data["geom"];
                                     delete data["origin"];
