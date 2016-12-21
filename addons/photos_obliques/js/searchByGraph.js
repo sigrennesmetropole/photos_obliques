@@ -75,6 +75,9 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
         iconAlign: "top",
         listeners:{ 
             "click":function() {
+                if(!Ext.getCmp("phob_fst_mainSbg").disabled){
+                    Ext.getCmp("phob_fst_mainSbg").disable();
+                }
                 if (layer && layer.features.length > 0) {
                     layer.removeAllFeatures();
                 }
@@ -98,6 +101,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
         iconAlign: "top",
         listeners: {
             "click": function() {
+                
                 if (!polygonControl.active) {
                     map.addControl(polygonControl);
                     polygonControl.activate();
