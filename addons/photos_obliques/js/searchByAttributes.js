@@ -58,7 +58,20 @@ GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod = new Ext.form.ComboBox({
     hiddenName:"startPeriod",
     maskRe:/[0-9]/,
     maxLength:4,
-    emptyText:"Début de période..."        
+    emptyText:"Début de période...",
+    listeners:{
+        "select": function(combo, record) {
+            // control value for end period
+            var val = combo.getValue();
+            var endCb = GEOR.Addons.Photos_obliques.search.cbGraphEndPeriod;
+            var cbTo = endCb ? endCb : null;
+            if (cbTo !== null) {
+                if (cbTo.getValue() !== 0 && (val > cbTo.getValue())) {
+                    cbTo.setValue(val);
+                }
+            }
+        }
+    }
 });
 
 
@@ -92,7 +105,20 @@ GEOR.Addons.Photos_obliques.search.cbGraphEndPeriod = new Ext.form.ComboBox({
     hiddenName:"endPeriod",
     maskRe:/[0-9]/,
     maxLength:4,
-    emptyText:"Début de période..."        
+    emptyText:"Début de période...",
+    listeners:{
+        "select": function(combo, record) {
+            // control value for end period
+            var val = combo.getValue();
+            var endCb = GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod;
+            var cbTo = endCb ? endCb : null;
+            if (cbTo !== null) {
+                if (cbTo.getValue() !== 0 && (val < cbTo.getValue())) {
+                    cbTo.setValue(val);
+                }
+            }
+        }
+    }    
 });
 
 
