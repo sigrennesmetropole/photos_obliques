@@ -1,16 +1,109 @@
 Ext.namespace("GEOR.Addons.Photos_obliques.search");
 
 /**
- * Store and ComboBox to select town
- * Could change if town selected is not included in the period selected  
- * 
+ *  Create store and owner combo for graph tool
+ *  Params: store receive array from a first selection
  */
 
-/* Create store*/
+GEOR.Addons.Photos_obliques.search.cbGraphOwner = new Ext.form.ComboBox({
+    id: "phob_cb_ownerSbg",
+    triggerAction: 'all',
+    mode:"local",
+    editable: true,
+    store:new Ext.data.ArrayStore({
+        id:"phob_store_ownerSbg",
+        sortInfo: {
+            field: "owner",
+            direction: "ASC"
+        },
+        fields: [{
+            name:"owner",                
+            convert : function(val,rec){
+                return rec;
+            }
+        }]
+    }),
+    anchor: "99%",
+    displayField: "owner",
+    fieldLabel:"Propriétaire ",
+    hiddenName:"owner",
+    emptyText:"propriétaire"        
+});
+
+/**
+ *  Create store and start period combo for graph tool
+ *  Params: store receive array from a first selection
+ */
+
+GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod = new Ext.form.ComboBox({
+    id: "phob_cb_startSbg",
+    triggerAction: 'all',
+    mode:"local",
+    editable: true,
+    store:new Ext.data.ArrayStore({
+        id:"phob_store_startSbg",
+        sortInfo: {
+            field: "annee",
+            direction: "ASC"
+        },
+        fields: [{
+            name:"annee",                
+            convert : function(val,rec){
+                return rec;
+            }
+        }]
+    }),
+    anchor: "50%",
+    displayField: "annee",
+    hiddenName:"startPeriod",
+    maskRe:/[0-9]/,
+    maxLength:4,
+    emptyText:"Début de période..."        
+});
+
+
+
+
+/**
+ *  Create store and end period combo for graph tool
+ *  Params: store array from a first selection
+ */
+
+GEOR.Addons.Photos_obliques.search.cbGraphEndPeriod = new Ext.form.ComboBox({
+    id: "phob_cb_endSbg",
+    triggerAction: 'all',
+    mode:"local",
+    editable: true,
+    store:new Ext.data.ArrayStore({
+        id:"phob_store_endSbg",
+        sortInfo: {
+            field: "annee",
+            direction: "ASC"
+        },
+        fields: [{
+            name:"annee",                
+            convert : function(val,rec){
+                return rec;
+            }
+        }]
+    }),
+    anchor: "50%",
+    displayField: "annee",
+    hiddenName:"endPeriod",
+    maskRe:/[0-9]/,
+    maxLength:4,
+    emptyText:"Début de période..."        
+});
+
+
+/**
+ * Create end period combo store to search by attributes filter
+ * Param : store receive json from services
+ */
 
 GEOR.Addons.Photos_obliques.search.comStore = function (id,url) {   
     var comStore = new Ext.data.JsonStore({
-        id: "phob_store_com",
+        id: id,
         root: "communes",
         fields: [{
             name:"code",
@@ -32,7 +125,7 @@ GEOR.Addons.Photos_obliques.search.comStore = function (id,url) {
             method: 'GET',
             autoLoad:true
         }),
-        lsiteners:{
+        listeners:{
             "beforeload": function(){
                 var searchWinForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm(); 
                 var searchParams = searchWinForm.getValues();
@@ -57,15 +150,15 @@ GEOR.Addons.Photos_obliques.search.comStore = function (id,url) {
     return comStore;
 };
 
-/* Create combo*/
+/**
+ * Create combo for set attributes filters
+ */
 
 GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
-    var store;
-    if(id === "phob_cb_comSba"){
-        var storeId = id+"Store"
-        var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl; 
-        var store = GEOR.Addons.Photos_obliques.search.comStore(storeId,storeUrl);
-    }
+    var storeId = id+"Store"
+    var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl; 
+    var store = GEOR.Addons.Photos_obliques.search.comStore(storeId,storeUrl);
+
     return new Ext.ux.form.LovCombo({
         store:store,
         id: id,
@@ -97,7 +190,7 @@ GEOR.Addons.Photos_obliques.search.comboAttributesCom = function(id){
 
 /**
  * Store and comboBox to select included start period
- *    
+ * Param : store receive json    
  */
 
 /* Create store*/
@@ -125,12 +218,9 @@ GEOR.Addons.Photos_obliques.search.storePeriodFrom = function(id, url){
 /* Create combo*/
 
 GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
-    var store;
-    if(id === "phob_cb_fromSba"){
-        var storeId = id+"Store"
-        var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl; 
-        var store = GEOR.Addons.Photos_obliques.search.storePeriodFrom(storeId,storeUrl);
-    }
+    var storeId = id+"Store"
+    var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl; 
+    var store = GEOR.Addons.Photos_obliques.search.storePeriodFrom(storeId,storeUrl);
     return  new Ext.form.ComboBox({
         id: id,        
         editable: true,
@@ -141,6 +231,7 @@ GEOR.Addons.Photos_obliques.search.comboPeriodFrom = function(id){
         maskRe:/[0-9]/,
         maxLength:4,
         emptyText:"Début de période...",
+        triggerAction: 'all',
         minchar:4,
         listeners: {            
             scope: this,
@@ -197,18 +288,16 @@ GEOR.Addons.Photos_obliques.search.storePeriodTo = function(id,url){
 /* Create combo*/
 
 GEOR.Addons.Photos_obliques.search.comboPeriodTo = function(id){
-    var store;
-    if(id === "phob_cb_toSba"){       
-        var storeId = id+"Store"
-        var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl;
-        var store = GEOR.Addons.Photos_obliques.search.storePeriodTo(storeId,storeUrl);        
-    }
+    var storeId = id+"Store";
+    var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl;
+    var store = GEOR.Addons.Photos_obliques.search.storePeriodTo(storeId,storeUrl);        
     return  new Ext.form.ComboBox({
         id: id,
         editable: true,
         hiddenName:"endPeriod",
         store: store,
         anchor: "50%",
+        triggerAction: 'all',
         selectOnFocus: true,
         displayField: "annee",
         emptyText:"Fin de période...",
@@ -265,12 +354,9 @@ GEOR.Addons.Photos_obliques.search.storeOwner = function(id,url){
 /* Create combo */
 
 GEOR.Addons.Photos_obliques.search.comboOwner = function(id){
-    var store;
-    if(id === "phob_cb_ownerSba"){       
-        var storeId = id+"Store"
-        var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl;
-        var store = GEOR.Addons.Photos_obliques.search.storeOwner(storeId,storeUrl);        
-    }
+    var storeId = id+"Store"              
+    var storeUrl= GEOR.Addons.Photos_obliques.globalOptions.servicesUrl;
+    var store = GEOR.Addons.Photos_obliques.search.storeOwner(storeId,storeUrl);        
     return  new Ext.form.ComboBox({        
         name:"proprietaire",
         id: id,
@@ -306,9 +392,7 @@ GEOR.Addons.Photos_obliques.search.cpField = function(id) {
             defaults: {
                 flex: 1
             },
-            items: [
-                nameSpace.comboPeriodFrom("phob_cb_fromSba"),
-                nameSpace.comboPeriodTo("phob_cb_toSba")]
+            items: [nameSpace.comboPeriodFrom("phob_cb_fromSba"), nameSpace.comboPeriodTo("phob_cb_toSba")]
         },
         nameSpace.comboAttributesCom("phob_cb_comSba"),
         nameSpace.comboOwner("phob_cb_ownerSba")
@@ -323,12 +407,10 @@ GEOR.Addons.Photos_obliques.search.cpField = function(id) {
             defaults: {
                 flex: 1
             },
-            items: [
-                nameSpace.comboPeriodFrom("phob_cb_fromSbg"), 
-                nameSpace.comboPeriodTo("phob_cb_toSbg")]
+            items: [nameSpace.cbGraphStartPeriod, nameSpace.cbGraphEndPeriod]
         },
         nameSpace.comboAttributesCom("phob_cb_comSbg"),
-        nameSpace.comboOwner("phob_cb_ownerSbg")
+        nameSpace.cbGraphOwner
     ];
     
     

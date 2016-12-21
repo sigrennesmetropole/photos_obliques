@@ -6,23 +6,6 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  * search by attribute in oblique photo addon
  */
 
-/**
- *  create combo period for search by graph tool
- */
-
-GEOR.Addons.Photos_obliques.search.comboStore = new Ext.data.JsonStore({
-    id: "phob_store_cbGraph",
-    root: "features",
-    fields: ["id",            
-        {name:"proprio",
-            convert: function(v,rec){
-                return rec.proprio;
-            }
-        }
-    ]
-});
-
-
 GEOR.Addons.Photos_obliques.search.createGraphlayer = function(map){
     var epsg3948 = new OpenLayers.Projection("EPSG:3948");
     var styleLayer = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleGraphLayer);
