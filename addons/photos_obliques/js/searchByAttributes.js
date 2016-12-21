@@ -1,6 +1,31 @@
 Ext.namespace("GEOR.Addons.Photos_obliques.search");
 
 /**
+ * Methode to control if end period is not inferior than start period
+ */
+GEOR.Addons.Photos_obliques.search.ControlEndPeriod = function(startCb,val){
+    var cbFrom = startCb ? startCb : null;
+    if (cbFrom !== null) {
+        if (cbFrom.getValue() !== 0 && (val < cbFrom.getValue())) {
+            cbFrom.setValue(val);
+        }
+    }
+};
+
+/**
+ * Methode to control if start period is not inferior than end period
+ */
+
+GEOR.Addons.Photos_obliques.search.ControlStartPeriod = function(endCb,val){
+    var cbTo = endCb ? endCb : null;
+    if (cbTo !== null) {
+        if (cbTo.getValue() !== 0 && (val > cbTo.getValue())) {
+            cbTo.setValue(val);
+        }
+    }
+};
+
+/**
  *  Create store and owner combo for graph tool
  *  Params: store receive array from a first selection
  */
@@ -62,14 +87,8 @@ GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod = new Ext.form.ComboBox({
     listeners:{
         "select": function(combo, record) {
             // control value for end period
-            var val = combo.getValue();
             var endCb = GEOR.Addons.Photos_obliques.search.cbGraphEndPeriod;
-            var cbTo = endCb ? endCb : null;
-            if (cbTo !== null) {
-                if (cbTo.getValue() !== 0 && (val > cbTo.getValue())) {
-                    cbTo.setValue(val);
-                }
-            }
+            GEOR.Addons.Photos_obliques.search.ControlStartPeriod(endCb,combo.getValue());
         }
     }
 });
@@ -81,6 +100,7 @@ GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod = new Ext.form.ComboBox({
  *  Create store and end period combo for graph tool
  *  Params: store array from a first selection
  */
+
 
 GEOR.Addons.Photos_obliques.search.cbGraphEndPeriod = new Ext.form.ComboBox({
     id: "phob_cb_endSbg",
@@ -109,14 +129,8 @@ GEOR.Addons.Photos_obliques.search.cbGraphEndPeriod = new Ext.form.ComboBox({
     listeners:{
         "select": function(combo, record) {
             // control value for end period
-            var val = combo.getValue();
-            var endCb = GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod;
-            var cbTo = endCb ? endCb : null;
-            if (cbTo !== null) {
-                if (cbTo.getValue() !== 0 && (val < cbTo.getValue())) {
-                    cbTo.setValue(val);
-                }
-            }
+            var startCb = GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod;
+            GEOR.Addons.Photos_obliques.search.ControlEndPeriod(startCb,combo.getValue());
         }
     }    
 });
