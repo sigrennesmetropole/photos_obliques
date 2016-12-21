@@ -32,7 +32,7 @@ GEOR.Addons.Photos_obliques.loadInfosFromJson = function(jsonDecode, options) {
         
         GEOR.Addons.Photos_obliques.result.resultStore.load({
             params:{
-                id:getInfos.id
+                id:getInfos[1][1]
             }
         });
         
