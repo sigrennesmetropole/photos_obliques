@@ -32,7 +32,7 @@
     	"adminLimitAlert":"Vous avez atteint la limite de stockage disponible, impossible d'ajouter la photo au panier.",
         "target": "tbar_12",
         "downloadMsg":"Vous devez impérativement faire apparaître les mentions légales présentent dans le fichier text pour chaque utilisation !",
-        "adminLimitMsg": "Résultat trop important, veuillez modifier vos critèress de recherche",
+        "adminLimitMsg": "Résultat trop important, veuillez modifier vos critères de recherche",
         "styleMapOptions": {
             "fill": false,
             "strokeColor": "#00FFFF",
