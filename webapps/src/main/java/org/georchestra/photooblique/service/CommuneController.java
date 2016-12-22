@@ -1,5 +1,6 @@
 package org.georchestra.photooblique.service;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -41,21 +42,22 @@ public class CommuneController {
      * 
      * @throws SQLException
      */
-    public Map<String,Object> getCommuneByDate(
+    public Map<String,Object> getCommunes(
     			@Context HttpHeaders headers,
     			@QueryParam("startPeriod") String stringStartPeriod,
-    			@QueryParam("endPeriod") String stringEndPeriod){
+    			@QueryParam("endPeriod") String stringEndPeriod,
+    			@QueryParam("id") List<String> ids){
     	
 		int startPeriod = convertToInt(stringStartPeriod);
 		int endPeriod = convertToInt(stringEndPeriod);
 				
-    	Map<String,Object> communes = communeHelper.getCommunes(startPeriod, endPeriod);
+    	Map<String,Object> communes = communeHelper.getCommunes(ids, startPeriod, endPeriod);
     	
     	// Return value providers will convert to JSON
         return communes;
     }
+		
 	
-
 	/**
 	 * 
 	 * @param stringToConvert
