@@ -79,14 +79,12 @@ public class CommuneHelper extends ParentHelper{
 
 				Map<String, Object> communesMapTemp = new HashMap<String, Object>();
 				for(String id:ids){
-					if(StringUtils.isNotEmpty(id)){
+					if(StringUtils.isNotEmpty(id) && communesMap.get(id) != null){
 						logger.debug("Filter on : " + id);
 						communesMapTemp.put(id, communesMap.get(id));
 					}
 				}
-				if(communesMapTemp.size()>0){
-					communesMap = communesMapTemp;	
-				}				
+				communesMap = communesMapTemp;			
 			}
 			
 			// Convert Map to Array to fit with ExtJs LoveCombo Store
