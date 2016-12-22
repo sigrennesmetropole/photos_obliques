@@ -35,6 +35,7 @@ public class POController {
 	@GET
 	@Produces("application/json")
 	public Map<String, Object> getPOList(@Context HttpHeaders headers, 
+			@QueryParam("id") List<String> ids,
 			@QueryParam("cities") List<String> cities,
 			@QueryParam("startPeriod")String StringStartPeriod, 
 			@QueryParam("endPeriod") String StringEndPeriod,
@@ -59,7 +60,7 @@ public class POController {
 		} else {
 
 			try {
-				results = poHelper.getPagedPOList(startPeriod, endPeriod, owner, cities, pagingStart, elementByPage);		
+				results = poHelper.getPagedPOList(ids, startPeriod, endPeriod, owner, cities, pagingStart, elementByPage);		
 				results.put("success", true);
 
 			}// Thrown if city code is wrong
