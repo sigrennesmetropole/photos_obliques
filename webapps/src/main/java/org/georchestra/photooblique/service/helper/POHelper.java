@@ -38,7 +38,7 @@ public class POHelper extends ParentHelper{
 		boolean filterOnPhotoId = isEmptyOrContainsNullList(ids);
 		
 		// If all parameters are empty
-		if(cities.isEmpty() && startPeriod ==0 && endPeriod ==0 && StringUtils.isBlank(owner)){
+		if(!filterOnPhotoId && cities.isEmpty() && startPeriod ==0 && endPeriod ==0 && StringUtils.isBlank(owner)){
 			throw new InputAttributException("Missing input argument");
 		}
 		// search with list of Ids + attributes
