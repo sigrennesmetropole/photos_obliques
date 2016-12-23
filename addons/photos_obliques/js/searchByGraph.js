@@ -60,6 +60,8 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
             drawPolygon.toggle(false);
             Ext.getCmp("phob_btn_fire").enable();
             GEOR.Addons.Photos_obliques.drawnGeom = layer.features[0].geometry;
+            var formParams = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm().getValues();
+            GEOR.Addons.Photos_obliques.cleanParams(formParams,false)
         },
         scope: this
     });
@@ -71,19 +73,31 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     var deleteDraw = new Ext.Button({
         iconCls: "phob-clean-icon",
         id: "phob_btn_delSbg",
-        text: "Effacer",
+        text: OpenLayers.i18n("photooblique.graphique.boutton.texteffacer"),
         iconAlign: "top",
         listeners:{ 
             "click":function() {
+                
+                // remove all layer features
                 if (layer && layer.features.length > 0) {
                     layer.removeAllFeatures();
                 }
+                
+                // disable form
                 if(!Ext.getCmp("phob_fst_mainSbg").disabled){
                     Ext.getCmp("phob_fst_mainSbg").disable();
                 }
                 polygonControl.deactivate();
                 drawPolygon.toggle(false);
-                Ext.getCmp("phob_btn_fire").disable();        
+                
+                // clean result list
+                Ext.getCmp("phob_btn_fire").disable();
+                var clBtn = Ext.getCmp("phob_btn_clRes");
+                clBtn.fireEvent("click", clBtn)
+                
+                // clean form params
+                var formParams = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm().getValues();
+                GEOR.Addons.Photos_obliques.cleanParams(formParams,false)
             }, scope:this
         }
     });
@@ -91,7 +105,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     var drawPolygon = new Ext.Button({
         iconCls: "phob-draw-icon",
         id: "phob_btn_drawSbg",
-        text: "Polygon",
+        text: OpenLayers.i18n("photooblique.graphique.boutton.textdessiner"),
         enableToggle:true,
         pressed: false,
         checked:false,
@@ -102,6 +116,8 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
                     Ext.getCmp("phob_fst_mainSbg").disable();
                 }
                 if (!polygonControl.active) {
+                    var clBtn = Ext.getCmp("phob_btn_clRes");
+                    clBtn.fireEvent("click", clBtn)
                     map.addControl(polygonControl);
                     polygonControl.activate();
                 } else {

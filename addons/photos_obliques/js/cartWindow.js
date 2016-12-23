@@ -31,7 +31,7 @@ GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serv
     var getService = "/"+serviceName+"?";
     // Set params with ID from data array
     if(dataArray && dataArray.length > 0){
-        for (i=0; i<dataArray.length ; i++){
+        for (var i=0; i<dataArray.length ; i++){
             if (i !== 0){                    
                 paramUrl += "&"+fieldId+"="+dataArray[i].data.photoId;
             } else {
@@ -39,7 +39,10 @@ GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serv
             }
         }
     } else {
-        var valCities = paramRequest.cities ? paramRequest.cities : "";
+        if (Array.isArray(paramRequest) && fieldId == "id"){
+            paramUrl += paramRequest;
+        }
+        var valCities = (paramRequest.cities !== "" && paramRequest.cities !== undefined )  ? paramRequest.cities : "";
         var valOwner = paramRequest.owner ?  paramRequest.owner : "";
         var valStartPeriod = paramRequest.startPeriod ? paramRequest.startPeriod : "";
         var valEndPeriod = paramRequest.endPeriod ? paramRequest.endPeriod : "" ;
@@ -47,10 +50,15 @@ GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serv
             "&owner="+valOwner+
             "&startPeriod="+valStartPeriod+
             "&endPeriod"+"="+valEndPeriod;
+        
         if(valCities !== ""){
-            var splitCities = valCities.split(/[,]/);
-            for (i=0; i< splitCities.length; i++){
-                paramUrl += "&cities="+splitCities[i];
+            var arrCities = valCities;
+            // control if it's array to split or not
+            if(!Array.isArray(valCities)){
+                arrCities = valCities.split(/[,]/);
+            }            
+            for (var i=0; i< arrCities.length; i++){
+                paramUrl += "&cities="+arrCities[i];
             }
         }        
     }
@@ -62,20 +70,13 @@ GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serv
         };
         
         Ext.MessageBox.show({
-            title : "Mentions légales",
+            title : OpenLayers.i18n("photooblique.panier.titre.messagemention"),
             msg : addonOptions.downloadMsg,
             maxWidth : 500,
             buttons : Ext.MessageBox.OK,
             fn : triggerDl,
             icon : Ext.MessageBox.INFO
         });
-        
-        /*Ext.Msg.alert(
-            "Mentions légales",
-            addonOptions.downloadMsg, function () {
-                document.location=addonOptions.servicesUrl+getService+paramUrl;
-            }
-        );*/
     } else {
         document.location=addonOptions.servicesUrl+getService+paramUrl;
     }    
@@ -92,14 +93,14 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
         id: "phob_bnt_unitCl",
         
         iconCls: "phob-clean-selection-icon",
-        tooltip: "Supprimer la sélection",
+        tooltip: OpenLayers.i18n("photooblique.panier.bouton.retirerselection"),
         handler: function(){            
             var view = Ext.getCmp("phob_dataView") ? Ext.getCmp("phob_dataView") : null;
             if(view != null){
                 var records = view.getSelectedRecords();
                 for(var i=0;i<records.length;i++){
                     view.store.remove(records[i]); 
-                }            
+                }
             }
 
         }
@@ -108,7 +109,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     var unitDownloadBtn = new Ext.Button({
         id: "phob_bnt_unitGet",
         iconCls: "phob-download-selection-icon",
-        tooltip: "Télécharger la sélection",
+        tooltip: OpenLayers.i18n("photooblique.panier.bouton.telechargementunitaire"),
         handler: function() {
             var arrayItems  = dataView.getSelectedRecords();
             var fieldId = "photoId";
@@ -120,7 +121,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     var cleanCartBtn = new Ext.Button({
         id: "phob_bnt_emptyCartA",
         iconCls: "phob-clean-icon",
-        tooltip: "Vider le panier",
+        tooltip: OpenLayers.i18n("photooblique.panier.bouton.retirerselection"),
         handler: function() {
             if(Ext.getCmp("phob_dataView")){
                 Ext.getCmp("phob_dataView").getStore().removeAll();                
@@ -129,7 +130,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     });
     var exportCsvBtn = new Ext.Button({
         id: "phob_bnt_csvCartB",
-        tooltip: "Exporter en CSV",
+        tooltip: OpenLayers.i18n("photooblique.panier.bouton.exportercsv"),
         iconCls: "phob-csv-icon",
         handler: function() {
             var arrayItems  = dataView.getStore().data.items;
@@ -140,7 +141,7 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     });
     var downloadBtn = new Ext.Button({
         id: "phob_bnt_dwnlCartC",
-        tooltip: "Télécharger le panier",
+        tooltip: OpenLayers.i18n("photooblique.panier.bouton.telechargerpanier"),
         iconCls: "phob-download-icon",
         handler: function() {
             var arrayItems  = dataView.getStore().data.items;
@@ -202,9 +203,6 @@ GEOR.Addons.Photos_obliques.initCart = function() {
                     return size;
                 };
                 GEOR.Addons.Photos_obliques.result.updateBar(this.getCount(),newSize(),maxCartNb,maxCartSize);
-            },
-            "datachanged": function(){
-                console.log("data change");
             }
         }
     });
@@ -264,7 +262,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         simpleSelect:true,
         overClass:'x-view-over',
         itemSelector:'div.thumb-wrap',
-        emptyText: "Aucune image à afficher",
+        emptyText: OpenLayers.i18n("photooblique.dataview.textevide"),
         plugins: [
             new Ext.DataView.DragSelector(),
             new Ext.DataView.LabelEditor({dataIndex: 'name'})
@@ -298,7 +296,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
     
     // create global window to welcome dataview panel and others items
     GEOR.Addons.Photos_obliques.cart.createCart = new Ext.Window({
-        title: "Panier",
+        title: OpenLayers.i18n("photooblique.panier.titre"),
         id: "phob_win_cart",
         autoScroll: true,
         width: 300,
@@ -309,7 +307,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         tbar: GEOR.Addons.Photos_obliques.cartToolbar(dataView),
         items: [dataViewPanel],
         bbar:[
-            {xtype:"tbtext", text:"Vue -"},
+            {xtype:"tbtext", text:OpenLayers.i18n("photooblique.panier.slidertext")},
             {xtype:"tbspacer"},
             {
             xtype:"sliderfield",
@@ -331,7 +329,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         buttons: [{
             labelAlign: "center",
             id: "phob_btn_cartClose",
-            text: "Fermer",
+            text: OpenLayers.i18n("photooblique.panier.boutonfermer"),
             handler: function(){
                 if(GEOR.Addons.Photos_obliques.cart.createCart){
                     GEOR.Addons.Photos_obliques.cart.createCart.hide();

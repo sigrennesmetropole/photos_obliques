@@ -17,7 +17,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      * @param: record - {Ext.data.record} a record with the addon parameters
      */
     init: function(record) {
-        
+        var tr = OpenLayers.i18n();
         // Set map object or create it
         if (this.map instanceof GeoExt.MapPanel) {
             this.map = this.map.map;
@@ -26,11 +26,15 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         if (!this.map) {
             this.map = GeoExt.MapPanel.guess().map;
         }
-               
+        
         GEOR.Addons.Photos_obliques.globalOptions = this.options;
-        GEOR.Addons.Photos_obliques.result.createResultLayers(this.map);
+        GEOR.Addons.Photos_obliques.initResultUtils();
+        GEOR.Addons.Photos_obliques.initUtils();
+        GEOR.Addons.Photos_obliques.initMainWindow();
+        GEOR.Addons.Photos_obliques.createResultLayers(this.map);
         GEOR.Addons.Photos_obliques.search.createGraphlayer(this.map);
         GEOR.Addons.Photos_obliques.initCart();
+        GEOR.Addons.Photos_obliques.params = {};
 
         // Call non visible airphotos WFS 
 
@@ -44,11 +48,13 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             checked: false,
             toggleGroup: "phob_menuBtn",
             iconCls: "phob-att-icon",
-            text: "Attributaire",
+            text: OpenLayers.i18n("photooblique.menu.bouton.attributaire"),
             iconAlign: "top",
             handler: function() {
                 if (Ext.getCmp("phob_win_search")) {
-                    Ext.getCmp("phob_win_search").setTitle("Recherche attributaire");
+                    Ext.getCmp("phob_win_search").setTitle(
+                            OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire")
+                            );
                 }
                 if (Ext.getCmp("phob_form_mainSbg") && !Ext.getCmp("phob_form_mainSbg").hidden) {
                     Ext.getCmp("phob_form_mainSbg").hide();
@@ -68,11 +74,13 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             pressed: false,
             toggleGroup: "phob_menuBtn",
             iconCls: "phob-graph-icon",
-            text: "Graphique",
+            text: OpenLayers.i18n("photooblique.menu.bouton.graphique"),
             iconAlign: "top",
             handler: function() {
                 if (Ext.getCmp("phob_win_search")) {
-                    Ext.getCmp("phob_win_search").setTitle("Recherche graphique");
+                    Ext.getCmp("phob_win_search").setTitle(
+                            OpenLayers.i18n("photooblique.fenetre.titre.recherchegraphique")
+                            );
                 }
                 if (Ext.getCmp("phob_form_mainSbg") && Ext.getCmp("phob_form_mainSbg").hidden) {
                     Ext.getCmp("phob_form_mainSbg").show();
@@ -90,7 +98,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         var basketAction = new Ext.Button({
             id: "phob_btn_basket",
             iconCls: "phob-cart-icon",
-            text: "Panier",
+            text: OpenLayers.i18n("photooblique.menu.bouton.panier"),
             iconAlign: "top",
             handler: GEOR.Addons.Photos_obliques.onCart
         });
@@ -102,7 +110,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         actionItems.push(basketAction);
 
         this.window = new Ext.Window({
-            title: "Outils pour photos obliques",
+            title: OpenLayers.i18n("photooblique.fenetre.titre.principal"),
             id: "phob_win_menu",
             closable: true,
             autoWidth: true,
