@@ -64,17 +64,16 @@ public class ParentHelper {
 			citiesSB.append(cities.get(0));
 		}
 			
-		//TODO check witch rules create |
 		if (cities.size()>1){
 	
 			for (int i = 1; i < cities.size(); i++) {
 				
-				if(!StringUtils.isBlank(cities.get(0))) {
+				if(!StringUtils.isBlank(cities.get(i))) {
 					if (cities.get(i).length() != 5){
 						throw new CityCodeFormatException(cities.get(i));
 					}
 					
-					citiesSB.append('|');
+					citiesSB.append("%|%");
 					citiesSB.append(cities.get(i));
 				}
 			}
