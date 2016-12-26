@@ -135,13 +135,13 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         /**
          * Create grid panel store
          **/
+        var extension = globalOptions.imgExtension;
 
         GEOR.Addons.Photos_obliques.result.resultStore = new Ext.data.JsonStore({
             id: "phob_store_",
             proxy: new Ext.data.HttpProxy({
                 url: globalOptions.servicesUrl + "/getPhotoByAttribute",
                 method: 'GET',
-                //autoLoad: true
             }),
             root: "rows",
             sortInfo: {
@@ -159,10 +159,10 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                     name: "url",
                     convert: function(v, rec) {
                         if (rec.photoId) {
-                            var urlThumb = globalOptions.thumbUrl + (rec.photoId + globalOptions.imgExtentsion);
+                            var urlThumb = globalOptions.thumbUrl + (rec.photoId + extension);
                         }
                         if (rec.properties) {
-                            var urlThumb = globalOptions.thumbUrl + (rec.properties.id + globalOptions.imgExtentsion);
+                            var urlThumb = globalOptions.thumbUrl + (rec.properties.id + extension);
                         }
                         return urlThumb;
                     }
