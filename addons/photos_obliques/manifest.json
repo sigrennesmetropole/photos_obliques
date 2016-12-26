@@ -31,6 +31,7 @@
     	"adminMsgAlert":"Service à contacter : Service SIG - 0202020202' ",
     	"adminLimitAlert":"Vous avez atteint la limite de stockage disponible, impossible d'ajouter la photo au panier.",
         "target": "",
+        "imgExtension":".jpg",
         "downloadMsg":"Vous devez impérativement faire apparaître les mentions légales présentent dans le fichier text pour chaque utilisation !",
         "adminLimitMsg": "Résultat trop important, veuillez modifier vos critères de recherche",
         "styleMapOptions": {

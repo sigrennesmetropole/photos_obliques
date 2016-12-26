@@ -182,17 +182,17 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                 "photoId", "owner", "origin", "size", "downloadable", "geom", {
                     name: "date",
                     convert: function(v, rec) {
-                        var dt = rec.date !== null ? new Date(rec.date) : "";
+                        var dt = rec.date != null ? new Date(rec.date) : "";
                         return dt;
                     }
                 }, {
                     name: "url",
                     convert: function(v, rec) {
                         if(rec.photoId){
-                            var urlThumb = globalOptions.thumbUrl + (rec.photoId + ".jpg");
+                            var urlThumb = globalOptions.thumbUrl + (rec.photoId + globalOptions.imgExtentsion);
                         }
                         if(rec.properties){
-                            var urlThumb = globalOptions.thumbUrl + (rec.properties.id + ".jpg");
+                            var urlThumb = globalOptions.thumbUrl + (rec.properties.id + globalOptions.imgExtentsion);
                         }                    
                         return urlThumb;
                     }
@@ -405,10 +405,11 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                     },
                     listeners: {
                         "click": function(val, meta, rec) {
+                            var options = GEOR.Addons.Photos_obliques.globalOptions;
                             var rowIndex = rec;
                             var record = gridPanel.getStore().getAt(rowIndex);
                             var photoName = record ? record.data.photoId : null;
-                            var url = GEOR.Addons.Photos_obliques.globalOptions.photoUrl + photoName + ".jpg";
+                            var url = options + photoName + options.imgExtentsion;
                             var htmlImg = '<img src="' + url + '" borer="2" />';
                             GEOR.Addons.Photos_obliques.manageResultWindow(htmlImg, photoName);
                         }
@@ -500,7 +501,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                                     } else {
                                         var resultStore = Ext.getCmp("phob_dataView").getStore();
                                         var photoName = gridPanel.getStore().getAt(meta).data.photoId;
-                                        var urlMini = globalOptions.photoUrl + photoName + ".jpg";
+                                        var urlMini = globalOptions.photoUrl + photoName + globalOptions.imgExtentsion;
                                         var data = gridPanel.getStore().getAt(meta).data;
                                         data.url = urlMini;
                                         var dateStr = gridPanel.getStore().getAt(meta).data.date;
