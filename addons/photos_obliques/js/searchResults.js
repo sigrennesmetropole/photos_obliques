@@ -1,6 +1,6 @@
 Ext.namespace("GEOR.Addons.Photos_obliques.result");
 
-GEOR.Addons.Photos_obliques.initResultUtils = function (){
+GEOR.Addons.Photos_obliques.initResultUtils = function() {
 
     // create layer 
     GEOR.Addons.Photos_obliques.createResultLayers = function(map) {
@@ -158,12 +158,12 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                 }, {
                     name: "url",
                     convert: function(v, rec) {
-                        if(rec.photoId){
+                        if (rec.photoId) {
                             var urlThumb = globalOptions.thumbUrl + (rec.photoId + globalOptions.imgExtentsion);
                         }
-                        if(rec.properties){
+                        if (rec.properties) {
                             var urlThumb = globalOptions.thumbUrl + (rec.properties.id + globalOptions.imgExtentsion);
-                        }                    
+                        }
                         return urlThumb;
                     }
                 }
@@ -188,24 +188,24 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                         // zoom on layer extent
 
                         if (map) {
-                            var layer = map.getLayersByName("phob_extendResultLayer")[0];                        
+                            var layer = map.getLayersByName("phob_extendResultLayer")[0];
                             var arrId = [];
-                            var filter = ""; 
+                            var filter = "";
 
                             // On créer le filtre CQL en paramètre de la requete à partir des id  des features dans le gridStore
                             for (b = 0; b < gridStore.data.items.length; b++) {
                                 var id = gridStore.data.items[b].data.photoId;
                                 arrId.push(id);
-                                if (b == (gridStore.data.items.length-1)){
-                                    var filterArg = " id LIKE "+"'"+"%"+id+"%"+"'";
+                                if (b == (gridStore.data.items.length - 1)) {
+                                    var filterArg = " id LIKE " + "'" + "%" + id + "%" + "'";
                                 } else {
-                                    var filterArg = " id LIKE "+"'"+"%"+id+"%"+"'"+" or";
-                                }                                                            
+                                    var filterArg = " id LIKE " + "'" + "%" + id + "%" + "'" + " or";
+                                }
                                 filter = filter + filterArg;
                             }
 
                             // on prend les paramètre du WFS
-                            var WFSsettings = globalOptions.WFSLayerSetting;                                              
+                            var WFSsettings = globalOptions.WFSLayerSetting;
                             WFSsettings.cql_filter = filter;
                             WFSsettings.typename = globalOptions.WFSLayerName;
                             // On réalise la requête WFS
@@ -219,7 +219,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                                         var featureJson = request.responseText;
                                         var geojson_format = new OpenLayers.Format.GeoJSON();
                                         var readJson = geojson_format.read(featureJson);
-                                        for(var c=0; c<readJson.length; c++){
+                                        for (var c = 0; c < readJson.length; c++) {
                                             layer.addFeatures(readJson[c]);
                                         }
                                         map.zoomToExtent(layer.getDataExtent());
@@ -229,7 +229,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                                     }
                                 }
                             });
-                        }                    
+                        }
                     }
                 }
             },
@@ -294,17 +294,18 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                 iconCls: "phob-clean-icon",
                 id: "phob_btn_clRes",
                 tooltip: OpenLayers.i18n("photooblique.resultat.boutton.effacerliste"),
-                listeners:{
-                    "click":function(){
+                listeners: {
+                    "click": function() {
                         gridStore.removeAll();
                         gridPanel.collapse();
                         var windowTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
                         var attributeWinTitle = OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire");
-                        if(windowTitle == attributeWinTitle){
+                        if (windowTitle == attributeWinTitle) {
                             GEOR.Addons.Photos_obliques.cleanCombo(true);
                         }
                         GEOR.Addons.Photos_obliques.cleanCombo(false);
-                    },scope:this
+                    },
+                    scope: this
                 }
             });
 
@@ -313,32 +314,32 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                 id: "phob_btn_csvRes",
                 iconCls: "phob-csv-icon",
                 tooltip: OpenLayers.i18n("photooblique.resultat.boutton.exportercsv"),
-                handler: function(){                
+                handler: function() {
                     //var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
                     //var searchParams = searchForm.getValues();
                     var csvParams = {};
                     var windowTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
                     var attributeWinTitle = OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire");
-                    if(windowTitle !== attributeWinTitle) { // if it's graph tool
+                    if (windowTitle !== attributeWinTitle) { // if it's graph tool
                         var resultStoreData = GEOR.Addons.Photos_obliques.result.resultStore.data.items;
-                        GEOR.Addons.Photos_obliques.result.getDocument(resultStoreData,"photoId","createCSVById",false);                        
+                        GEOR.Addons.Photos_obliques.result.getDocument(resultStoreData, "photoId", "createCSVById", false);
                     } else {
                         // on a besoin des valeurs dans chacune des combo
                         csvParams.endPeriod = Ext.getCmp("phob_cb_toSba").getValue();
-                        csvParams.startPeriod = Ext.getCmp("phob_cb_fromSba").getValue(); 
+                        csvParams.startPeriod = Ext.getCmp("phob_cb_fromSba").getValue();
                         csvParams.owner = Ext.getCmp("phob_cb_ownerSba").getValue();
-                        
+
                         // pour les communes de la combo on change le format si le séparateur est une virgule
                         var citiesVal = Ext.getCmp("phob_cb_comSba").getValue();
-                        if(citiesVal !== undefined || citiesVal !== ""){
-                            if(!Array.isArray(citiesVal)){
+                        if (citiesVal !== undefined || citiesVal !== "") {
+                            if (!Array.isArray(citiesVal)) {
                                 csvParams.cities = citiesVal.split(/[,]/);
-                            }else {
+                            } else {
                                 csvParams.cities = citiesVal;
                             }
                         }
-                        GEOR.Addons.Photos_obliques.result.getDocument(false,false,"createCSVByAttribute",csvParams);
-                    }                    
+                        GEOR.Addons.Photos_obliques.result.getDocument(false, false, "createCSVByAttribute", csvParams);
+                    }
                 }
             });
 
@@ -396,7 +397,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                         },
                         handler: function(val, meta, rec) {
                             // zoom to geometry call by mouse over event
-                            if (geometry){
+                            if (geometry) {
                                 map.zoomToExtent(geometry.getBounds());
                             }
                         }
@@ -460,14 +461,14 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                                     // on vérifie que les capacités du panier ne sont pas atteintes
                                     if (sizeAfterAdd > maxCartSize || countAfterAdd > maxCartNb) {
                                         Ext.MessageBox.show({
-                                            title : OpenLayers.i18n("photooblique.resultat.limiteatteinte"),
-                                            msg : globalOptions.adminLimitAlert,
-                                            maxWidth : 500,
-                                            buttons : Ext.MessageBox.OK,
-                                            icon : Ext.MessageBox.WARNING
+                                            title: OpenLayers.i18n("photooblique.resultat.limiteatteinte"),
+                                            msg: globalOptions.adminLimitAlert,
+                                            maxWidth: 500,
+                                            buttons: Ext.MessageBox.OK,
+                                            icon: Ext.MessageBox.WARNING
                                         });
 
-                                    // si la limite est ok on ajoute la photo au panier
+                                        // si la limite est ok on ajoute la photo au panier
                                     } else {
                                         var resultStore = Ext.getCmp("phob_dataView").getStore();
                                         var photoName = gridPanel.getStore().getAt(meta).data.photoId;
@@ -475,8 +476,8 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                                         var data = gridPanel.getStore().getAt(meta).data;
                                         data.url = urlMini;
                                         var dateStr = gridPanel.getStore().getAt(meta).data.date;
-                                        var dateFormat = new Date(dateStr).getDate() + "/" + (new Date(dateStr).getMonth()+1) + "/" +new Date(dateStr).getFullYear();
-                                        data.tooltip = "id : "+photoName+"\n"+"date : "+dateFormat;
+                                        var dateFormat = new Date(dateStr).getDate() + "/" + (new Date(dateStr).getMonth() + 1) + "/" + new Date(dateStr).getFullYear();
+                                        data.tooltip = "id : " + photoName + "\n" + "date : " + dateFormat;
 
                                         // delete useless params
                                         delete data["downloadable"];
@@ -517,7 +518,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                         if (recId) {
 
                             // get and set WFS settings                        
-                            var settings = globalOptions.WFSLayerSetting;                                              
+                            var settings = globalOptions.WFSLayerSetting;
                             settings.cql_filter = "" + "id" + "='" + recId + "'";
                             settings.typename = globalOptions.WFSLayerName;
 

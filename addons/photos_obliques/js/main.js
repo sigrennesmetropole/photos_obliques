@@ -26,7 +26,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         if (!this.map) {
             this.map = GeoExt.MapPanel.guess().map;
         }
-        
+
         GEOR.Addons.Photos_obliques.globalOptions = this.options;
         GEOR.Addons.Photos_obliques.initResultUtils();
         GEOR.Addons.Photos_obliques.initUtils();
@@ -53,8 +53,8 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             handler: function() {
                 if (Ext.getCmp("phob_win_search")) {
                     Ext.getCmp("phob_win_search").setTitle(
-                            OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire")
-                            );
+                        OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire")
+                    );
                 }
                 if (Ext.getCmp("phob_form_mainSbg") && !Ext.getCmp("phob_form_mainSbg").hidden) {
                     Ext.getCmp("phob_form_mainSbg").hide();
@@ -64,7 +64,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                 } else {
                     this.checked = false;
                 }
-                return GEOR.Addons.Photos_obliques.onSearch(this,this.id, this.checked); //false to not show graphic search tools
+                return GEOR.Addons.Photos_obliques.onSearch(this, this.id, this.checked); //false to not show graphic search tools
             }
         });
 
@@ -79,8 +79,8 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             handler: function() {
                 if (Ext.getCmp("phob_win_search")) {
                     Ext.getCmp("phob_win_search").setTitle(
-                            OpenLayers.i18n("photooblique.fenetre.titre.recherchegraphique")
-                            );
+                        OpenLayers.i18n("photooblique.fenetre.titre.recherchegraphique")
+                    );
                 }
                 if (Ext.getCmp("phob_form_mainSbg") && Ext.getCmp("phob_form_mainSbg").hidden) {
                     Ext.getCmp("phob_form_mainSbg").show();
@@ -120,14 +120,14 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             border: false,
             constrainHeader: true,
             tbar: actionItems,
-            listeners:{
-                "hide":function(){
-                if(Ext.getCmp("phob_win_cart")){
-                    Ext.getCmp("phob_win_cart").hide();
-                }
-                if(Ext.getCmp("phob_win_search")){
-                    Ext.getCmp("phob_win_search").hide();
-                }
+            listeners: {
+                "hide": function() {
+                    if (Ext.getCmp("phob_win_cart")) {
+                        Ext.getCmp("phob_win_cart").hide();
+                    }
+                    if (Ext.getCmp("phob_win_search")) {
+                        Ext.getCmp("phob_win_search").hide();
+                    }
                 }
             }
         });
@@ -156,7 +156,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
                 qtip: this.getQtip(record),
                 iconCls: "phob-tool-menu-icon",
                 handler: this._onCheckchange,
-                scope:this
+                scope: this
             });
         }
     },
@@ -169,10 +169,10 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             this.window.show();
         } else {
             this.window.hide();
-            if(Ext.getCmp("phob_win_cart")){
+            if (Ext.getCmp("phob_win_cart")) {
                 Ext.getCmp("phob_win_cart").hide();
             }
-            if(Ext.getCmp("phob_win_search")){
+            if (Ext.getCmp("phob_win_search")) {
                 Ext.getCmp("phob_win_search").hide();
             }
         }
@@ -184,12 +184,12 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
     destroy: function() {
         if (this.window) {
             this.window.destroy();
-            
+
             // remove all window
-            if(Ext.getCmp("phob_win_cart")){
+            if (Ext.getCmp("phob_win_cart")) {
                 Ext.getCmp("phob_win_cart").close();
             }
-            if(Ext.getCmp("phob_win_search")){
+            if (Ext.getCmp("phob_win_search")) {
                 Ext.getCmp("phob_win_search").close();
             }
         }

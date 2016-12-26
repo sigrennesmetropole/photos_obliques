@@ -1,10 +1,10 @@
 Ext.namespace("GEOR.Addons.Photos_obliques.search");
 
-GEOR.Addons.Photos_obliques.initUtils = function (){
+GEOR.Addons.Photos_obliques.initUtils = function() {
     /**
      * Methode to control if end period is not inferior than start period
      */
-    GEOR.Addons.Photos_obliques.search.ControlEndPeriod = function(startCb, val) {
+    GEOR.Addons.Photos_obliques.search.controlEndPeriod = function(startCb, val) {
         var cbFrom = startCb ? startCb : null;
         if (cbFrom !== null) {
             if (cbFrom.getValue() !== 0 && (val < cbFrom.getValue())) {
@@ -17,7 +17,7 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
      * Methode to control if start period is not inferior than end period
      */
 
-    GEOR.Addons.Photos_obliques.search.ControlStartPeriod = function(endCb, val) {
+    GEOR.Addons.Photos_obliques.search.controlStartPeriod = function(endCb, val) {
         var cbTo = endCb ? endCb : null;
         if (cbTo !== null) {
             if (cbTo.getValue() !== 0 && (val > cbTo.getValue())) {
@@ -90,7 +90,7 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
                 GEOR.Addons.Photos_obliques.params.startPeriod = combo.value;
                 // control value for end period
                 var endCb = GEOR.Addons.Photos_obliques.search.cbGraphEndPeriod;
-                GEOR.Addons.Photos_obliques.search.ControlStartPeriod(endCb, combo.getValue());
+                GEOR.Addons.Photos_obliques.search.controlStartPeriod(endCb, combo.getValue());
             }
         }
     });
@@ -133,7 +133,7 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
                 GEOR.Addons.Photos_obliques.params.endPeriod = combo.value;
                 // control value for end period
                 var startCb = GEOR.Addons.Photos_obliques.search.cbGraphStartPeriod;
-                GEOR.Addons.Photos_obliques.search.ControlEndPeriod(startCb, combo.getValue());
+                GEOR.Addons.Photos_obliques.search.controlEndPeriod(startCb, combo.getValue());
             }
         }
     });
@@ -204,15 +204,15 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
             },
             "select": function() {
                 GEOR.Addons.Photos_obliques.params.cities = this.value.split(/[,]/);
-                var citiesValues = this.value.split(/[,]/); 
+                var citiesValues = this.value.split(/[,]/);
                 Ext.getCmp("phob_cb_fromSba").getStore().load({
-                    params:{
-                        cities:citiesValues
+                    params: {
+                        cities: citiesValues
                     }
                 });
                 Ext.getCmp("phob_cb_toSba").getStore().load({
-                    params:{
-                        cities:citiesValues
+                    params: {
+                        cities: citiesValues
                     }
                 });
             }
@@ -237,7 +237,7 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
         hiddenName: "cities",
         assertValue: Ext.emptyFn,
         listeners: {
-            "select": function(){
+            "select": function() {
                 GEOR.Addons.Photos_obliques.params.cities = this.value.split(/[,]/);
             },
             "beforequery": function() {
@@ -246,7 +246,7 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
                 var attributeWinTitle = OpenLayers.i18n("photooblique.fenetre.titre.recherchegraphique");
                 if (windowTitle == attributeWinTitle && GEOR.Addons.Photos_obliques.search.citiesFromJson[1].length > 0) {
                     this.getStore().baseParams.id = GEOR.Addons.Photos_obliques.search.citiesFromJson[1];
-                }                
+                }
             }
         }
     });
@@ -279,7 +279,7 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
     GEOR.Addons.Photos_obliques.search.comboPeriodFrom = new Ext.form.ComboBox({
         id: "phob_cb_fromSba",
         editable: true,
-        store:  GEOR.Addons.Photos_obliques.search.storePeriodFrom,
+        store: GEOR.Addons.Photos_obliques.search.storePeriodFrom,
         anchor: "50%",
         displayField: "annee",
         hiddenName: "startPeriod",
@@ -291,20 +291,20 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
         listeners: {
             scope: this,
             "select": function(combo) {
-                GEOR.Addons.Photos_obliques.params.startPeriod = combo.getValue(); 
-                if(combo.id == "phob_cb_fromSba"){
+                GEOR.Addons.Photos_obliques.params.startPeriod = combo.getValue();
+                if (combo.id == "phob_cb_fromSba") {
                     var cbTo = Ext.getCmp("phob_cb_toSba") ? Ext.getCmp("phob_cb_toSba") : null;
-                    GEOR.Addons.Photos_obliques.search.ControlStartPeriod(cbTo, combo.getValue());
+                    GEOR.Addons.Photos_obliques.search.controlStartPeriod(cbTo, combo.getValue());
                     Ext.getCmp("phob_cb_comSba").getStore().load({
-                        params:{
-                            startPeriod:combo.getValue()
+                        params: {
+                            startPeriod: combo.getValue()
                         }
-                    });                    
+                    });
                 }
 
             },
             "beforequery": function(combo) {
-                if(combo.id == "phob_cb_fromSba"){
+                if (combo.id == "phob_cb_fromSba") {
                     var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
                     var searchParams = searchForm.getValues();
                     if (searchParams.cities !== "") {
@@ -358,19 +358,19 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
         listeners: {
             "select": function(combo, record) {
                 GEOR.Addons.Photos_obliques.params.endPeriod = combo.getValue();
-                if(combo.id == "phob_cb_toSba"){
+                if (combo.id == "phob_cb_toSba") {
                     // control value for start period
                     var cbFrom = Ext.getCmp("phob_cb_fromSba") ? Ext.getCmp("phob_cb_fromSba") : null;
-                    GEOR.Addons.Photos_obliques.search.ControlEndPeriod(cbFrom, combo.getValue());
+                    GEOR.Addons.Photos_obliques.search.controlEndPeriod(cbFrom, combo.getValue());
                     Ext.getCmp("phob_cb_comSba").getStore().load({
-                        params:{
-                            endPeriod:combo.getValue()
+                        params: {
+                            endPeriod: combo.getValue()
                         }
                     });
                 }
             },
             "beforequery": function(combo) {
-                if(combo.id == "phob_cb_toSba"){                    
+                if (combo.id == "phob_cb_toSba") {
                     var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
                     var searchParams = searchForm.getValues();
                     if (searchParams.cities !== "") {
@@ -418,7 +418,7 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
             id: id,
             hiddenName: "owner",
             store: store,
-            triggerAction:"all",
+            triggerAction: "all",
             anchor: "99%",
             fieldLabel: OpenLayers.i18n("photooblique.combo.labelproprietaire"),
             emptyText: OpenLayers.i18n("photooblique.combo.proprietairevide"),
@@ -426,8 +426,8 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
             selectOnFocus: true,
             displayField: "owner",
             minChars: 5,
-            listeners:{
-                "select": function(){
+            listeners: {
+                "select": function() {
                     GEOR.Addons.Photos_obliques.params.owner = this.value;
                 }
             }
