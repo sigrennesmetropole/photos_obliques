@@ -119,11 +119,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             closeAction: "hide",
             border: false,
             constrainHeader: true,
-            tbar: actionItems,
-            listeners: {
-                "hide": function() {console.log("hide");},
-                "show": function() {}
-            }
+            tbar: actionItems
         });
 
         if (this.target) {
@@ -142,17 +138,15 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
 
             this.target.doLayout();
 
+        } else {
             // create a menu item for the "tools" menu
             this.item = new Ext.menu.CheckItem({
                 id: "phot_chck_toolsMenu",
                 text: this.getText(record),
                 qtip: this.getQtip(record),
                 iconCls: "phob-tool-menu-icon",
-                checked: false,
-                listeners: {
-                    "checkchange": this._onCheckchange,
-                    scope: this
-                }
+                handler: this._onCheckchange,
+                scope:this
             });
         }
     },
@@ -161,7 +155,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      * Method: _onCheckchange Callback on checkbox state changed
      */
     _onCheckchange: function(item, checked) {
-        if (checked && !this.window.isVisible()) {
+        if (!this.window.isVisible()) {
             this.window.show();
         } else {
             this.window.hide();
@@ -173,7 +167,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      */
     destroy: function() {
         if (this.window) {
-            this.window.hide();
+            this.window.destroy();
         }
         GEOR.Addons.Base.prototype.destroy.call(this);
     }
