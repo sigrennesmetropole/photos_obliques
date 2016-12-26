@@ -11,6 +11,21 @@ This repository contains :
 - script folder contains all necessary shell to build and install database
 - cadastrapp folder contains webapplication distributing webservice
 
+## Installation
+This module contains two parts :
+
+1. One client-side with installation and administration [documentation](https://github.com/sigrennesmetropole/photos_obliques/tree/master/addons/photos_obliques)
+
+2. One server-side with installation documentation
+
+
+This application has been developed in the form of webapp + addon (geOrchestra 15.12).
+
+## Configuration
+All the addon's configuration is set by options in ```manifest.json``` file (more informations in [README.MD](https://github.com/sigrennesmetropole/photos_obliques/tree/master/addons/photos_obliques))
+
+ 
+
 This project has been funded by :
  
 <table>
