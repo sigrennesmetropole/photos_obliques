@@ -119,7 +119,17 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             closeAction: "hide",
             border: false,
             constrainHeader: true,
-            tbar: actionItems
+            tbar: actionItems,
+            listeners:{
+                "hide":function(){
+                if(Ext.getCmp("phob_win_cart")){
+                    Ext.getCmp("phob_win_cart").hide();
+                }
+                if(Ext.getCmp("phob_win_search")){
+                    Ext.getCmp("phob_win_search").hide();
+                }
+                }
+            }
         });
 
         if (this.target) {
@@ -155,10 +165,16 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      * Method: _onCheckchange Callback on checkbox state changed
      */
     _onCheckchange: function(item, checked) {
-        if (!this.window.isVisible()) {
+        if (checked && !this.window.isVisible()) {
             this.window.show();
         } else {
             this.window.hide();
+            if(Ext.getCmp("phob_win_cart")){
+                Ext.getCmp("phob_win_cart").hide();
+            }
+            if(Ext.getCmp("phob_win_search")){
+                Ext.getCmp("phob_win_search").hide();
+            }
         }
     },
 
@@ -168,6 +184,14 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
     destroy: function() {
         if (this.window) {
             this.window.destroy();
+            
+            // remove all window
+            if(Ext.getCmp("phob_win_cart")){
+                Ext.getCmp("phob_win_cart").close();
+            }
+            if(Ext.getCmp("phob_win_search")){
+                Ext.getCmp("phob_win_search").close();
+            }
         }
         GEOR.Addons.Base.prototype.destroy.call(this);
     }
