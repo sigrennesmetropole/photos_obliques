@@ -96,11 +96,11 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
                 // clean result list
                 Ext.getCmp("phob_btn_fire").disable();
                 var clBtn = Ext.getCmp("phob_btn_clRes");
-                clBtn.fireEvent("click", clBtn)
+                clBtn.fireEvent("click", clBtn);
 
                 // clean form params
                 var formParams = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm().getValues();
-                GEOR.Addons.Photos_obliques.cleanParams(formParams, false)
+                GEOR.Addons.Photos_obliques.cleanParams(formParams, false);
             },
             scope: this
         }
