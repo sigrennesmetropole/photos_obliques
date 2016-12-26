@@ -73,7 +73,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     /**
      *  Create buttons
      */
-    var deleteDraw = new Ext.Button({
+    deleteDraw = new Ext.Button({
         iconCls: "phob-clean-icon",
         id: "phob_btn_delSbg",
         text: OpenLayers.i18n("photooblique.graphique.boutton.texteffacer"),
@@ -105,7 +105,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
         }
     });
 
-    var drawPolygon = new Ext.Button({
+    drawPolygon = new Ext.Button({
         iconCls: "phob-draw-icon",
         id: "phob_btn_drawSbg",
         text: OpenLayers.i18n("photooblique.graphique.boutton.textdessiner"),

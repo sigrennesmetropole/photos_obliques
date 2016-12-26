@@ -194,10 +194,10 @@ GEOR.Addons.Photos_obliques.initUtils = function (){
             "beforequery": function() {
                 var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
                 var searchParams = searchForm.getValues();
-                if (searchParams.endPeriod != "") {
+                if (searchParams.endPeriod !== "") {
                     this.store.baseParams.endPeriod = searchParams.endPeriod;
                 }
-                if (searchParams.startPeriod != "") {
+                if (searchParams.startPeriod !== "") {
                     this.store.baseParams.startPeriod = searchParams.startPeriod;
                 }
 

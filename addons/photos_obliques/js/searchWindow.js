@@ -72,13 +72,7 @@ GEOR.Addons.Photos_obliques.initMainWindow = function (){
         var nbReturns = jsonDecode.totalFeatures;
         if (nbReturns > 0){
             var getInfos =  [ ["id",[]], ["annee",[]], ["proprio",[]],["commune",[]] ];
-
-            // parse json and return feature attributes corresponding to "getInfos" array index
-            for (var idx=0; idx < nbReturns; idx++ ){
-                var featureProp = jsonDecode.features[idx].properties;
-                db(featureProp, getInfos);
-            }
-
+            
             // search for each index of array, search properties with same name and return value           
             function db (properties,array){
                 // ex : take "id" array and search "id" properties. Next, return value of id
@@ -104,7 +98,14 @@ GEOR.Addons.Photos_obliques.initMainWindow = function (){
                         }
                     }
                 }
-            } 
+            }
+
+            // parse json and return feature attributes corresponding to "getInfos" array index
+            for (var idx=0; idx < nbReturns; idx++ ){
+                var featureProp = jsonDecode.features[idx].properties;
+                db(featureProp, getInfos);
+            }
+ 
             // create global addons list to share id find in json
             GEOR.Addons.Photos_obliques.search.idFromJson = getInfos[0];
 
@@ -238,17 +239,8 @@ GEOR.Addons.Photos_obliques.initMainWindow = function (){
      */
 
     GEOR.Addons.Photos_obliques.onSearch = function(button) {
-        // Creation de la la fenetre si non existante
-        if (GEOR.Addons.Photos_obliques.search.mainWindow == null || GEOR.Addons.Photos_obliques.search.mainWindow.isDestroyed == true) {
-            GEOR.Addons.Photos_obliques.initSearchWindow(button.id);
-        // si l'outil demandé est déjà ouvert, le fermer
-        } else if (GEOR.Addons.Photos_obliques.search.mainWindow.isVisible() && !button.checked) {
-            GEOR.Addons.Photos_obliques.search.mainWindow.hide();
-            button.toggle(false);
-        // sinon, ouverture de l'autre outil de recherche
-        } else {
-            var formParams = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm().getValues();
-            GEOR.Addons.Photos_obliques.cleanParams(formParams,false)
+        
+        function displaySearchTools (){
             if (button.id === "phob_btn_graph") {
                 GEOR.Addons.Photos_obliques.cleanCombo(false);
                 Ext.getCmp("phob_fst_mainSba").hide();
@@ -265,6 +257,24 @@ GEOR.Addons.Photos_obliques.initMainWindow = function (){
                 Ext.getCmp("phob_btn_fire").enable();           
 
             }
+        }
+        // Creation de la la fenetre si non existante
+        if (GEOR.Addons.Photos_obliques.search.mainWindow == null || GEOR.Addons.Photos_obliques.search.mainWindow.isDestroyed == true) {
+            GEOR.Addons.Photos_obliques.initSearchWindow(button.id);
+
+        // si l'outil demandé est déjà ouvert, le fermer
+        } else if (GEOR.Addons.Photos_obliques.search.mainWindow.isVisible() && !button.checked) {
+            GEOR.Addons.Photos_obliques.search.mainWindow.hide();
+            button.toggle(false);
+        
+        // sinon, ouverture de l'autre outil de recherche
+        } else {
+            var formParams = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm().getValues();
+            GEOR.Addons.Photos_obliques.cleanParams(formParams,false);
+
+            // display good form and combo
+            displaySearchTools();
+
             GEOR.Addons.Photos_obliques.search.mainWindow.show();        
         }
         // dans tous les cas, nettoyer la liste de résultat

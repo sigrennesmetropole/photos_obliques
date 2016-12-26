@@ -132,36 +132,6 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
         var maxCartNb = globalOptions.cartNb;
         var geometry;
 
-
-
-        var createFeature = function(coordinates, layer) {
-            var vertices = [];
-            // if value exist create polygon from reproject coordinates and add to layer 
-            if (coordinates != null) {
-                for (i = 0; i < coordinates.length; i++) {
-                    var point = new OpenLayers.Geometry.Point(coordinates[i][0], coordinates[i][1]);
-                    vertices.push(point);
-                }
-                var ring = new OpenLayers.Geometry.LinearRing(vertices);
-                var createPolygon = new OpenLayers.Geometry.Polygon([ring]);
-                var feature = new OpenLayers.Feature.Vector(createPolygon);
-                if (layer) {
-                    layer.addFeatures(feature);
-                } else {
-                    var getVertices = feature.geometry.getVertices();
-                    var transformedVertices = [];
-                    for (var i = 0; i < getVertices.length; i++) {
-                        transformedVertices.push(getVertices[i].transform(epsg3948, map.getProjectionObject()));
-                    }
-                    var ringProj = new OpenLayers.Geometry.LinearRing(transformedVertices);
-                    var createPolygonProj = new OpenLayers.Geometry.Polygon([ringProj]);
-                    var featureProj = new OpenLayers.Feature.Vector(createPolygonProj);
-                    return featureProj;
-                }
-            }
-        };
-
-
         /**
          * Create grid panel store
          **/
@@ -249,8 +219,8 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                                         var featureJson = request.responseText;
                                         var geojson_format = new OpenLayers.Format.GeoJSON();
                                         var readJson = geojson_format.read(featureJson);
-                                        for(i=0; i<readJson.length; i++){
-                                            layer.addFeatures(readJson[i]);
+                                        for(var c=0; c<readJson.length; c++){
+                                            layer.addFeatures(readJson[c]);
                                         }
                                         map.zoomToExtent(layer.getDataExtent());
 

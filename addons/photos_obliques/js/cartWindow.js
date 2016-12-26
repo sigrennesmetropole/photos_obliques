@@ -89,7 +89,7 @@ GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serv
  */
 
 GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
-    var tbar = [];
+    var tbarArr = [];
     
     var unitClearBtn = new Ext.Button({
         id: "phob_bnt_unitCl",
@@ -154,19 +154,19 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
     });
 
 
-    tbar.push(unitClearBtn);
-    tbar.push(unitDownloadBtn);
-    tbar.push("->");
-    tbar.push(cleanCartBtn);
-    tbar.push("-");
-    tbar.push(exportCsvBtn);
-    tbar.push(downloadBtn);
+    tbarArr.push(unitClearBtn);
+    tbarArr.push(unitDownloadBtn);
+    tbarArr.push("->");
+    tbarArr.push(cleanCartBtn);
+    tbarArr.push("-");
+    tbarArr.push(exportCsvBtn);
+    tbarArr.push(downloadBtn);
     
     var tbar =  new Ext.Toolbar({
         id: "phob_tbar_winCart",
         anchor: "30%",
         buttonAlign:"center",
-        items: [tbar]
+        items: [tbarArr]
     });
 
     return tbar;
