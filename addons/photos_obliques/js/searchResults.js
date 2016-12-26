@@ -131,6 +131,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         var maxCartSize = globalOptions.cartSize;
         var maxCartNb = globalOptions.cartNb;
         var geometry;
+        var urlThumb;
 
         /**
          * Create grid panel store
@@ -159,10 +160,10 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                     name: "url",
                     convert: function(v, rec) {
                         if (rec.photoId) {
-                            var urlThumb = globalOptions.thumbUrl + (rec.photoId + extension);
+                            urlThumb = globalOptions.thumbUrl + (rec.photoId + extension);
                         }
                         if (rec.properties) {
-                            var urlThumb = globalOptions.thumbUrl + (rec.properties.id + extension);
+                            urlThumb = globalOptions.thumbUrl + (rec.properties.id + extension);
                         }
                         return urlThumb;
                     }
