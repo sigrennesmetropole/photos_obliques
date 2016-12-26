@@ -74,7 +74,7 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
      *  Create buttons
      */
     deleteDraw = new Ext.Button({
-        iconCls: "phob-clean-icon",
+        iconCls: "phob-erase-icon",
         id: "phob_btn_delSbg",
         text: OpenLayers.i18n("photooblique.graphique.boutton.texteffacer"),
         iconAlign: "top",
