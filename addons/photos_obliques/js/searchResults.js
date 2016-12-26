@@ -182,7 +182,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function (){
                 "photoId", "owner", "origin", "size", "downloadable", "geom", {
                     name: "date",
                     convert: function(v, rec) {
-                        var dt = new Date(rec.date);
+                        var dt = rec.date !== null ? new Date(rec.date) : "";
                         return dt;
                     }
                 }, {
