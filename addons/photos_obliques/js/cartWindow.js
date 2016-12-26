@@ -31,13 +31,15 @@ GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serv
     var getService = "/"+serviceName+"?";
     // Set params with ID from data array
     if(dataArray && dataArray.length > 0){
-        for (var i=0; i<dataArray.length ; i++){
-            if (i !== 0){                    
-                paramUrl += "&"+fieldId+"="+dataArray[i].data.photoId;
+        
+        for (var t=0 ; t<dataArray.length ; t++){
+            if (t !== 0){                    
+                paramUrl += "&"+fieldId+"="+dataArray[t].data.photoId;
             } else {
-                paramUrl = fieldId+"="+dataArray[i].data.photoId;
+                paramUrl = fieldId+"="+dataArray[t].data.photoId;
             }
         }
+        
     } else {
         if (Array.isArray(paramRequest) && fieldId == "id"){
             paramUrl += paramRequest;
@@ -57,8 +59,8 @@ GEOR.Addons.Photos_obliques.result.getDocument = function(dataArray,fieldId,serv
             if(!Array.isArray(valCities)){
                 arrCities = valCities.split(/[,]/);
             }            
-            for (var i=0; i< arrCities.length; i++){
-                paramUrl += "&cities="+arrCities[i];
+            for (var r=0; r < arrCities.length; r++){
+                paramUrl += "&cities="+arrCities[r];
             }
         }        
     }
@@ -98,8 +100,8 @@ GEOR.Addons.Photos_obliques.cartToolbar = function(dataView) {
             var view = Ext.getCmp("phob_dataView") ? Ext.getCmp("phob_dataView") : null;
             if(view != null){
                 var records = view.getSelectedRecords();
-                for(var i=0;i<records.length;i++){
-                    view.store.remove(records[i]); 
+                for(var y=0;y<records.length;y++){
+                    view.store.remove(records[y]); 
                 }
             }
 
