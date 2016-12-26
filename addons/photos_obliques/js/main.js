@@ -16,7 +16,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      * 
      * @param: record - {Ext.data.record} a record with the addon parameters
      */
-    init: function(record) {
+    init(record) {
         var tr = OpenLayers.i18n();
         // Set map object or create it
         if (this.map instanceof GeoExt.MapPanel) {
@@ -50,7 +50,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             iconCls: "phob-att-icon",
             text: OpenLayers.i18n("photooblique.menu.bouton.attributaire"),
             iconAlign: "top",
-            handler: function() {
+            handler() {
                 if (Ext.getCmp("phob_win_search")) {
                     Ext.getCmp("phob_win_search").setTitle(
                         OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire")
@@ -76,7 +76,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             iconCls: "phob-graph-icon",
             text: OpenLayers.i18n("photooblique.menu.bouton.graphique"),
             iconAlign: "top",
-            handler: function() {
+            handler() {
                 if (Ext.getCmp("phob_win_search")) {
                     Ext.getCmp("phob_win_search").setTitle(
                         OpenLayers.i18n("photooblique.fenetre.titre.recherchegraphique")
@@ -121,7 +121,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             constrainHeader: true,
             tbar: actionItems,
             listeners: {
-                "hide": function() {
+                "hide"() {
                     if (Ext.getCmp("phob_win_cart")) {
                         Ext.getCmp("phob_win_cart").hide();
                     }
@@ -164,7 +164,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
     /**
      * Method: _onCheckchange Callback on checkbox state changed
      */
-    _onCheckchange: function(item, checked) {
+    _onCheckchange(item, checked) {
         if (checked && !this.window.isVisible()) {
             this.window.show();
         } else {
@@ -181,7 +181,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
     /**
      * Method: destroy Called by GEOR_tools when deselecting this addon
      */
-    destroy: function() {
+    destroy() {
         if (this.window) {
             this.window.destroy();
 
