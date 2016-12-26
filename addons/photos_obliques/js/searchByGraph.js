@@ -26,6 +26,7 @@ GEOR.Addons.Photos_obliques.search.createGraphlayer = function(map){
     }    
 };
 GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
+     var epsg3948 = new OpenLayers.Projection("EPSG:3948");
     var layer, polygonControl, polygonControlOptions, map, layerOptions;
     var drawPolygon, deleteDraw;
     var buttonSbg = [];
@@ -57,11 +58,13 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     polygonControl.events.on({
         "featureadded": function(){
             polygonControl.deactivate();
-            drawPolygon.toggle(false);
-            Ext.getCmp("phob_btn_fire").enable();
+            drawPolygon.toggle(false);            
             GEOR.Addons.Photos_obliques.drawnGeom = layer.features[0].geometry;
             var formParams = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm().getValues();
-            GEOR.Addons.Photos_obliques.cleanParams(formParams,false)
+            GEOR.Addons.Photos_obliques.cleanParams(formParams,false);
+            // fire research
+            GEOR.Addons.Photos_obliques.searchFromGeom(epsg3948);
+            Ext.getCmp("phob_btn_fire").enable();
         },
         scope: this
     });

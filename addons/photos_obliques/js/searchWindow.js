@@ -354,20 +354,12 @@ GEOR.Addons.Photos_obliques.initMainWindow = function (){
                 listeners: {
                     "click": function() {
                         var windowTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
-                        // TODO: i18n trad
                         var attributeWinTitle = OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire");
-                        if(windowTitle !== attributeWinTitle && Ext.getCmp("phob_fst_mainSbg").disabled){
-                            // load stores of comboBox and get list of id from json
-                            GEOR.Addons.Photos_obliques.searchFromGeom(epsg3948);                        
-
-                        }else{
                             if(windowTitle == attributeWinTitle){
                                 GEOR.Addons.Photos_obliques.searchListResult(true,false);
                             }else{                                            
                                 GEOR.Addons.Photos_obliques.searchListResult(true,true);
                             }
-
-                        }                                                 
                     }
                 }
             }, cancelBtn]
