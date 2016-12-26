@@ -49,9 +49,14 @@ A partir de la version 15.06 de geOrchestra, les addons sont dynamiquement ajout
 * "WFSLayerId": Nom de l'attribut d'identitifaction (ID) des objets dans la couche WFS,
 * "WFSLayerSetting": Paramètres d'appel de la couche WFS
 
+### Remarque : Le SRC de la couche WFS est en EPSG:3948. 
+Une reprojection permet d'afficher les données vers le SRC configuré dans Mapfishapp.
 
-## Modification des icônes
-Toutes les icônes sont dans le répertoire ```img/icons``` de l'addon.
+
+## Modification des icônes et images
+L'image ```img/thumbnail.png```  affichées dans le menu "Outils" est remplaçable à condition de conserver son nom et son format.
+
+Toutes les autres icônes sont dans le répertoire ```img/icons``` de l'addon.
 
 Pour modifier une icône, il faut conserver le nom des icônes ainsi que leur emplacement. Sinon, il est nécessaire de réaliser des modifications dans le fichier  ```css/photos_obliques.css``` de l'addon.
 
