@@ -1,8 +1,7 @@
 [{
 	"id": "photosobliques_0",
 	"name": "Photos_obliques",
-	"preloaded": "true",
-	"enabled": "true",
+	"preloaded": "false",
 	"title": {
 		"fr": "Photos obliques",
 		"en": "Oblique photos",
