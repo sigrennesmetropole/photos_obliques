@@ -18,12 +18,20 @@ Pour modifier une option par défaut, il est conseiller de copier d'insérer l'o
 
 ### Version geOrchestra < = 15.06
 
-Pour activer l'addon photos obliques avec geOrchestra < = 15.06, il faut modifier le fichier de configuration de mapfishapp (GEOR_custom.js) et ajouter dans la partie ADDONS le contenu du fichier ```config.json``` fourni avec l'addon.
+* Pour activer l'addon photos obliques avec geOrchestra < = 15.06, il faut modifier le fichier de configuration de mapfishapp (GEOR_custom.js) et ajouter dans la partie ADDONS le contenu du fichier ```config.json``` fourni avec l'addon.
+
+* Pour charger l'addon automatiquement dès l'ouverture de Mapfishapp, modifer dans ```GEOR_custom```  la valeur:
+	 ```preloaded: false```
 
 ### Version geOrchestra > 15.06
 A partir de la version 15.06 de geOrchestra, les addons sont dynamiquement ajoutés à Mapfishapp à l'aide d'un service coté-serveur. Pour cela : 
+
 * placer l'addon dans le répertoire ```Addons``` de Mapfishapp. 
+
 * ou lier le répertoire de l'addon Photos obliques au répertoire ```Addons``̀  de Mapfishapp.
+
+* Pour activer l'addon avec le chargement de Mapfishapp, modifier ```config.json``` la valeur:
+	```preloaded: false```
 
 
 
@@ -54,7 +62,7 @@ Une reprojection permet d'afficher les données vers le SRC configuré dans Mapf
 
 
 ## Modification des icônes et images
-L'image ```img/thumbnail.png```  affichées dans le menu "Outils" est remplaçable à condition de conserver son nom et son format.
+L'image ```img/thumbnail.png```  affichées dans le menu "Outils" est remplaçable. Conserver seulement le nom et le format de fichier / taille (48 x 48 pixels) .
 
 Toutes les autres icônes sont dans le répertoire ```img/icons``` de l'addon.
 
