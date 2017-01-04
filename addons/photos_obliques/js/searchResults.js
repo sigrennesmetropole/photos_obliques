@@ -381,7 +381,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                             var rowIndex = rec;
                             var record = gridPanel.getStore().getAt(rowIndex);
                             var photoName = record ? record.data.photoId : null;
-                            var url = options + photoName + options.imgExtentsion;
+                            var url = options.photoUrl + photoName + options.imgExtension;
                             var htmlImg = '<img src="' + url + '" borer="2" />';
                             GEOR.Addons.Photos_obliques.manageResultWindow(htmlImg, photoName);
                         }
