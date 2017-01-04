@@ -20,8 +20,8 @@
     ],
     "default_options": {
     	"servicesUrl":"https://cadastrapp-qualif.asogfi.fr/photooblique/services/",
-    	"photoUrl":"https://carto.rennesmetropole.fr/applicarto_docs_photosobliques/apercus/",
-    	"thumbUrl":"https://carto.rennesmetropole.fr/applicarto_docs_photosobliques/vignettes/",
+    	"photoUrl":"http://carto.rennesmetropole.fr/applicarto_docs_photosobliques/apercus/",
+    	"thumbUrl":"http://carto.rennesmetropole.fr/applicarto_docs_photosobliques/vignettes/",
     	"cartSize": 6000,
     	"cartNb" : 10,
     	"limitReturns":200,
