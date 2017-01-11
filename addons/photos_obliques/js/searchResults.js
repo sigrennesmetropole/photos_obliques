@@ -473,7 +473,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                     } else {
                                         var resultStore = Ext.getCmp("phob_dataView").getStore();
                                         var photoName = gridPanel.getStore().getAt(meta).data.photoId;
-                                        var urlMini = globalOptions.photoUrl + photoName + globalOptions.imgExtentsion;
+                                        var urlMini = globalOptions.photoUrl + photoName + globalOptions.imgExtension;
                                         var data = gridPanel.getStore().getAt(meta).data;
                                         data.url = urlMini;
                                         var dateStr = gridPanel.getStore().getAt(meta).data.date;
