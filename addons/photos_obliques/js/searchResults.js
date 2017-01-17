@@ -373,7 +373,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                     header: OpenLayers.i18n("photooblique.resultat.colonnephoto"),
                     dataIndex: 'url',
                     renderer: function(value) {
-                        return '<img src="' + value + '" width="50" height="50" borer="0" />';
+                        return '<img src="' + value + '" borer="0" />';
                     },
                     listeners: {
                         "click": function(val, meta, rec) {
