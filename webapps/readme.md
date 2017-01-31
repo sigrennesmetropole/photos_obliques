@@ -88,10 +88,10 @@ To be able to connect to postgresql database, tomcat will have to get postgresql
 ```
 sudo insserv tomcat-photos
 sudo service tomcat-photos start
-Add proxy-cas information
 ```
+### Add proxy-cas information
 
-### Configure proxy-cas and apache reverse proxy to let client part comunicate with server side :
+Configure proxy-cas and apache reverse proxy to let client part comunicate with server side :
 
 See manifest.json for client side
 
@@ -99,6 +99,7 @@ See manifest.json for client side
     	"servicesUrl":"https://georcehstra-vm/photooblique/services/",
 
 In ``` /var/www/georchestra/conf``` and an new file ``` photooblique.conf``` and set this inside
+
 ```
 RewriteRule ^/photooblique$ /photooblique/ [R]
 <Proxy http://localhost:8180/photooblique/*>
@@ -119,26 +120,32 @@ Before 15.12  ``` /var/lib/tomcat-proxycas/webapps/ROOT/WEB-INF/proxy-servlet.xm
 ```
 <entry key="photooblique"  value="http://localhost:8580/photooblique/" />
 ```
+
 Since 15.12 with dataDIR or ```$DATADIR\security-proxy\targets-mapping.properties``` 
 ```
 photooblique=http://localhost:8580/photooblique/
 ```
-Then restart proxy-cas instance
-sudo service tomcat-proxycas restart
 
+Then restart proxy-cas instance
+
+```
+sudo service tomcat-proxycas restart
+```
 
 ##  Configure application : 
 
-Only two files can be configure :
+Only two files can be configure 
 
-The spring configuration file
-```src/main/webapp/WEB-INF/beans.xml``` 
+The spring configuration file :
 
+     src/main/webapp/WEB-INF/beans.xml
+     
 The application configuration file (can be in datadir as well) :
-```src/main/resources/photooblique.properties```
+
+    src/main/resources/photooblique.properties
 
 In this file replace schema.name depending on server script installation option
-for exemple : ```schema.name=phototheque```
+for exemple : ``` schema.name=phototheque```
 
 ##  Build application : 
 
