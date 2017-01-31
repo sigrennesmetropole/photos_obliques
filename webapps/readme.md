@@ -143,6 +143,8 @@ The spring configuration file :
 The application configuration file (can be in datadir as well) :
 
     src/main/resources/photooblique.properties
+    
+    If you have a datadir please create a folder name photooblique and put photoblique.properties inside
 
 In this file replace schema.name depending on server script installation option
 for exemple : ``` schema.name=phototheque```
