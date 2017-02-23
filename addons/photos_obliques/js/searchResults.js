@@ -478,7 +478,9 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                         data.url = urlMini;
                                         var dateStr = gridPanel.getStore().getAt(meta).data.date;
                                         var dateFormat = new Date(dateStr).getDate() + "/" + (new Date(dateStr).getMonth() + 1) + "/" + new Date(dateStr).getFullYear();
-                                        data.tooltip = "id : " + photoName + "\n" + "date : " + dateFormat;
+
+                                        var tipName = "id : " + photoName;                                        
+                                        data.tooltip = dateStr == "" ? tipName : tipName + "\n" + "date : " + dateFormat ;
 
                                         // delete useless params
                                         delete data["downloadable"];
