@@ -58,7 +58,7 @@ public class PhotoOblique implements Serializable{
 	private int objectid;
 	
 	@Column(name="taille_fichier")
-	private int size;
+	private Integer size;
 	
 	public PhotoOblique(){
 	}
@@ -107,13 +107,15 @@ public class PhotoOblique implements Serializable{
 		return objectid;
 	}
 
-	/** Geometry is not well given via GeoJSON  do not get it use WFS for geoserver
-	 * 	public Geometry getGeometry() {
-		return geometry;
-	}
-	*/
-
-	public int getSize() {
+	/**
+	 * Size is store as octet in database, MegaOctet are require
+	 * 
+	 * @return int size of the pictures in Mo
+	 */
+	public Integer getSize() {
+		if(size != null && size != 0){
+			size = size/1000000;
+		}
 		return size;
 	}
 

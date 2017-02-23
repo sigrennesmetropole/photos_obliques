@@ -20,12 +20,12 @@
 	<jpa:repositories base-package="org.georchestra.photooblique.repository" />
 
 	<!-- Only to load default_schema name in hibernate connection -->
-	<bean id="cadastrappProperties"
+	<bean id="photoobliqueProperties"
 		class="org.georchestra.photooblique.configuration.POPlaceHolder">
 		<property name="locations">
 			<list>
 				<value>classpath:photooblique.properties</value>
-				<value>file:#{systemProperties['georchestra.datadir']}/photooblique/photoblique.properties
+				<value>file:#{systemProperties['georchestra.datadir']}/photooblique/photooblique.properties
 				</value>
 			</list>
 		</property>
