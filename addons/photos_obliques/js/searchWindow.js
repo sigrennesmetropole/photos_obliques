@@ -8,6 +8,8 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
 
 GEOR.Addons.Photos_obliques.initMainWindow = function() {
 
+    var globalOptions = GEOR.Addons.Photos_obliques.globalOptions;
+
 
 
     /**
@@ -55,7 +57,7 @@ GEOR.Addons.Photos_obliques.initMainWindow = function() {
         // add params for pagging
         if (isResultList) {
             searchParams.start = 0;
-            searchParams.limit = 5
+            searchParams.limit = globalOptions.limitByPage;
         }
 
         // load params, result store and refresh window to display new info
@@ -151,7 +153,7 @@ GEOR.Addons.Photos_obliques.initMainWindow = function() {
                     var vec = new OpenLayers.Feature.Vector(GEOR.Addons.Photos_obliques.lastGeom);
                 }
                 var geomInWkt = new OpenLayers.Format.WKT().write(vec);
-                var globalOptions = GEOR.Addons.Photos_obliques.globalOptions;
+                //var globalOptions = GEOR.Addons.Photos_obliques.globalOptions;
 
                 // set request options
                 var settings = globalOptions.WFSLayerSetting;
