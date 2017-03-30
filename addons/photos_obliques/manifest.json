@@ -106,7 +106,7 @@
         "photooblique.resultat.titrealerteaucunresultat":"No result",
         "photooblique.resultat.echecrequete":"Request failure",
         "photooblique.fenetreprincipale.bouton.annuler":"Cancel",
-        "photooblique.panier.bouton.retirerselection":"Remove selection",
+        "photooblique.panier.bouton.retirerselection":"Remove the selected image from cart",
         "photooblique.fenetreprincipale.bouton.rechercher":"Search",
         "photooblique.resultat.colonneproprietaire":"Owner",
         "photooblique.resultat.doublontitrealert":"Duplicate"
@@ -121,7 +121,7 @@
         "photooblique.panier.titre.messagemention":"Mentions légales",
         "photooblique.panier.bouton.telechargementunitaire":"Télécharger la sélection",
         "photooblique.panier.bouton.viderpanier":"Vider le panier",
-        "photooblique.panier.bouton.retirerselection":"Vider le panier",
+        "photooblique.panier.bouton.retirerselection":"Retirer la photo sélectionnée du panier",
         "photooblique.panier.bouton.telechargerpanier":"Télécharger le panier",
         "photooblique.panier.bouton.exportercsv":"Exporter en CSV",
         "photooblique.panier.titre":"Panier",
