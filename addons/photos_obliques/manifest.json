@@ -22,7 +22,7 @@
     	"servicesUrl":"https://cadastrapp-qualif.asogfi.fr/photooblique/services/",
     	"photoUrl":"http://carto.rennesmetropole.fr/applicarto_docs_photosobliques/apercus/",
     	"thumbUrl":"http://carto.rennesmetropole.fr/applicarto_docs_photosobliques/vignettes/",
-    	"cartSize": 6000,
+    	"cartSize": 500,
     	"cartNb" : 10,
     	"limitReturns":200,
     	"limitByPage":5,
@@ -32,7 +32,7 @@
     	"adminLimitAlert":"Vous avez atteint la limite de stockage disponible, impossible d'ajouter la photo au panier.",
         "target": "",
         "imgExtension":".jpg",
-        "downloadMsg":"Vous devez impérativement faire apparaître les mentions légales présentent dans le fichier text pour chaque utilisation !",
+        "downloadMsg":"Vous devez impérativement faire apparaître les mentions légales présentes dans le fichier texte joint à chaque photo téléchargée lors de son utilisation",
         "adminLimitMsg": "Résultat trop important, veuillez modifier vos critères de recherche",
         "styleMapOptions": {
             "fill": false,
@@ -45,6 +45,8 @@
             "strokeColor": "#0e58ce",
             "strokeOpacity": 0.6
         },
+        "displayResultLayer": false,
+        "displayGraph":false,
         "WFSLayerName":"test:photooblique_emprise",
         "WFSLayerUrl":"https://cadastrapp-qualif.asogfi.fr/geoserver/wfs",
         "WFSLayerId":"id",

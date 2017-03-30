@@ -7,15 +7,19 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  */
 
 GEOR.Addons.Photos_obliques.search.createGraphlayer = function(map) {
-    var epsg3948 = new OpenLayers.Projection("EPSG:3948");
-    var styleLayer = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleGraphLayer);
+    // get options
+    var o = GEOR.Addons.Photos_obliques.globalOptions;
+    
+    // get default layer style option
+    var styleLayer = new OpenLayers.StyleMap(o.styleGraphLayer);
+
     if (map) {
         /**
          *  Create layer
          */
         var layerOptions = OpenLayers.Util.applyDefaults(
             this.layerOptions, {
-                displayInLayerSwitcher: false,
+                displayInLayerSwitcher: o.displayGraph,
                 projection: map.getProjectionObject(),
                 styleMap: styleLayer,
             }

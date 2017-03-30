@@ -12,7 +12,9 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
             // if layer already exit, remove it
             if (map.getLayersByName("phob_tempResultLayer").length == 0 && map.getLayersByName("phob_extendResultLayer").length == 0) {
                 // create layer and add to map
-                var styleMap = new OpenLayers.StyleMap(GEOR.Addons.Photos_obliques.globalOptions.styleMapOptions);
+                var addonOptions = GEOR.Addons.Photos_obliques.globalOptions;
+                var styleMap = new OpenLayers.StyleMap(addonOptions.styleMapOptions);
+                var displayResultLayer = addonOptions.displaylayer;
                 var templayerOptions = OpenLayers.Util.applyDefaults(
                     this.layerOptions, {
                         displayInLayerSwitcher: false,
@@ -246,7 +248,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
             }
         }
 
-        // Déclaration de la bottom bar (50 images par page)
+        // Déclaration de la bottom bar ( n images par page)
         var bbar = new Ext.PagingToolbar({
             pageSize: globalOptions ? globalOptions.limitByPage : nbElementByPage,
             store: gridStore,
