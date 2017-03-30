@@ -367,13 +367,12 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         gridPanel = new Ext.grid.GridPanel({
             id: "phob_grid_resultPan",
             store: gridStore,
-            collapsible: true,
+            collapsible: false,
             title: OpenLayers.i18n("photooblique.resultat.gridpanel.titre"),
             stripeRows: true,
             tbar: new Ext.Toolbar(createBbar()),
-            maxHeigth: 400,
-            minHeigth: 200,
             autoHeigth: true,
+            autoWidth: true,
             collapsed: true,
             colModel: new Ext.grid.ColumnModel({
                 defaults: {
