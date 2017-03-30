@@ -50,6 +50,17 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                     extendLayer.styleMap.styles.default.defaultStyle.strokeOpacity = 0;
                     map.addLayer(extendLayer);
                 };
+                
+                // add listener GEOR.wmc to up layer if context is restore                
+                if(GEOR.wmc){
+                    GEOR.wmc.events.on("aftercontextrestore", function(){
+                        if(tempLayer){
+                            tempLayer.setZIndex(1000);
+                        }
+                    }); 
+                }
+
+                
                 return addLayers(map, tempLayer, extendLayer);
             }
 

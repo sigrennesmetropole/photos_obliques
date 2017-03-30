@@ -26,6 +26,18 @@ GEOR.Addons.Photos_obliques.search.createGraphlayer = function(map) {
         );
         layerGraph = new OpenLayers.Layer.Vector("phob_layer_sbg", layerOptions);
         map.addLayer(layerGraph);
+        
+        /**
+         * add listener GEOR.wmc to up layer if context is restore
+         */                 
+        if(GEOR.wmc){
+            GEOR.wmc.events.on("aftercontextrestore", function(){
+                if(layerGraph){
+                    layerGraph.setZIndex(1000);
+                }
+            }); 
+        }
+        
         return map.addLayer(layerGraph);
     }
 };
