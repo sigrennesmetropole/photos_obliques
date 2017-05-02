@@ -483,7 +483,8 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
 
                                         // si la limite est ok on ajoute la photo au panier
                                     } else {
-                                        var resultStore = Ext.getCmp("phob_dataView").getStore();
+                                        var cart = Ext.getCmp("phob_dataView");
+                                        var resultStore = cart.getStore();
                                         var photoName = gridPanel.getStore().getAt(meta).data.photoId;
                                         var urlMini = globalOptions.photoUrl + photoName + globalOptions.imgExtension;
                                         var data = gridPanel.getStore().getAt(meta).data;
@@ -491,8 +492,8 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                         var dateStr = gridPanel.getStore().getAt(meta).data.date;
                                         var dateFormat = new Date(dateStr).getDate() + "/" + (new Date(dateStr).getMonth() + 1) + "/" + new Date(dateStr).getFullYear();
 
-                                        var tipName = "id : " + photoName;                                        
-                                        data.tooltip = dateStr == "" ? tipName : tipName + "\n" + "date : " + dateFormat ;
+                                        var tipName = "id : " + photoName;
+                                        data.tooltip = dateStr == "" ? tipName : tipName + "\n" + "date : " + dateFormat;
 
                                         // delete useless params
                                         delete data["downloadable"];
@@ -501,6 +502,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                         delete data["owner"];
                                         var newRecord = new resultStore.recordType(data);
                                         resultStore.insert(resultStore.data.length, newRecord);
+                                        cart.refresh();
 
                                         //update progress bar
                                         GEOR.Addons.Photos_obliques.result.updateBar(countAfterAdd, sizeAfterAdd, maxCartNb, maxCartSize);
