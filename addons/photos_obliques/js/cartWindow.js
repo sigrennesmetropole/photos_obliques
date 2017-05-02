@@ -288,6 +288,11 @@ GEOR.Addons.Photos_obliques.initCart = function() {
                 Ext.getCmp("phob_slid_cart").setValue(1);
             }
         }
+        updateTitle(dataView);
+    });
+
+    dataView.store.on("remove", function() {
+        updateTitle(dataView);
     });
 
     // create Panel to welcome dataview
