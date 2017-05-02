@@ -281,7 +281,15 @@ GEOR.Addons.Photos_obliques.initCart = function() {
             }
         }
     });
-
+    
+    function updateTitle (el){
+        var parentWin = el.findParentByType("window");
+        var count = el.getStore().getCount();        
+        if(count > -1){
+            parentWin.setTitle(OpenLayers.i18n("photooblique.panier.titre") + " ("+count+" photos"+")");
+        }        
+    }
+    
     dataView.store.on("add", function() {
         if (dataView.store.data.length == 1) {
             if (Ext.getCmp("phob_slid_cart")) {
@@ -290,7 +298,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
         }
         updateTitle(dataView);
     });
-
+    
     dataView.store.on("remove", function() {
         updateTitle(dataView);
     });
@@ -334,7 +342,6 @@ GEOR.Addons.Photos_obliques.initCart = function() {
                     "valid": function() {
                         if (dataView.isVisible()) {
                             dataView.tpl = tplArr[this.getValue()];
-                            dataView.refresh();
                         }
                     }
                 }
