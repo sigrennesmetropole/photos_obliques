@@ -3,15 +3,14 @@ Ext.namespace("GEOR.Addons.Photos_obliques.result");
 GEOR.Addons.Photos_obliques.initResultUtils = function() {
 
     // create layer 
-    GEOR.Addons.Photos_obliques.createResultLayers = function(addon) {
-        var tr = OpenLayers.i18n;
+    GEOR.Addons.Photos_obliques.createResultLayers = function(map) {
         var epsg3948 = new OpenLayers.Projection("EPSG:3948");
         var tempLayer, extendLayer;
 
-        if (addon.map) {
-            if(addon.templayer && addon.extentLayer){
-                return;
-            } else {
+        if (map) {
+
+            // if layer already exit, remove it
+            if (map.getLayersByName("phob_tempResultLayer").length == 0 && map.getLayersByName("phob_extendResultLayer").length == 0) {
                 // create layer and add to map
                 var addonOptions = GEOR.Addons.Photos_obliques.globalOptions;
                 var styleMap = new OpenLayers.StyleMap(addonOptions.styleMapOptions);
@@ -28,63 +27,41 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                 );
                 tempLayer = new OpenLayers.Layer.Vector("phob_tempResultLayer", templayerOptions);
 
-                var extentStyleMap = new OpenLayers.StyleMap({
+                var extendStyleMap = new OpenLayers.StyleMap({
                     "fill": false,
                     "stroke": false
                 });
                 // reprojection is automatic with add layer
-                var extentlayerOptions = OpenLayers.Util.applyDefaults(
+                var extendlayerOptions = OpenLayers.Util.applyDefaults(
                     this.layerOptions, {
                         displayInLayerSwitcher: false,
                         projection: map.getProjectionObject(),
-                        styleMap: extentStyleMap,
+                        styleMap: extendStyleMap,
                         preFeatureInsert: function(feature) {
                             feature.geometry.transform(epsg3948, map.getProjectionObject());
                         }
                     }
                 );
-                extentLayer = new OpenLayers.Layer.Vector("phob_extendResultLayer", extendlayerOptions);
+                extendLayer = new OpenLayers.Layer.Vector("phob_extendResultLayer", extendlayerOptions);
 
                 // add layer to map
-                function addLayers (addon, tempLayer, extentLayer) {
-                    addon.map.addLayer(tempLayer);
-                    extentLayer.styleMap.styles.default.defaultStyle.strokeOpacity = 0;
-                    addon.map.addLayer(extendLayer);                    
-                    addon.extentLayer = extentLayer;
-                    addon.templayer = tempLayer;                    
+                var addLayers = function(map, tempLayer, extendLayer) {
+                    map.addLayer(tempLayer)
+                    extendLayer.styleMap.styles.default.defaultStyle.strokeOpacity = 0;
+                    map.addLayer(extendLayer);
                 };
                 
-                // add listener GEOR.wmc to up layer if context is restore     
-                
-                
-                function upLayer (layer){
-                    if(layer){
-                        var l = GeoExt.MapPanel.guess().map.layers;
-                        if(l && layer){
-                            l.forEach(function(el){
-                                // transform string layer z index to integer
-                                var index = parseInt(el.getZIndex());
-                                // up layer only if other layer is front of annotation
-                                if(index > parseInt(layer.getZIndex()) ){
-                                    layer.setZIndex(index + 1);
-                                } 
-                            });
-                        }                        
-                    }
-                }
-                
-                if(GEOR.wmc && GEOR.wmc.events){
+                // add listener GEOR.wmc to up layer if context is restore                
+                if(GEOR.wmc){
                     GEOR.wmc.events.on("aftercontextrestore", function(){
                         if(tempLayer){
-                            upLayer(tempLayer);
-                        }
-                        if(extendLayer){
-                            upLayer(extendLayer);
+                            tempLayer.setZIndex(1000);
                         }
                     }); 
                 }
+
                 
-                return addLayers(addon, tempLayer, extendLayer);
+                return addLayers(map, tempLayer, extendLayer);
             }
 
         }
@@ -136,7 +113,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
             autoWidth: true,
             autoScroll: true,
             closable: true,
-            html: htmlImg ||  (htmlImg !== null) ? htmlImg : ""
+            html: htmlImg ||  (htmlImg !== null) ? htmlImg : ""
         });
         return window;
     };
@@ -156,7 +133,6 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
      */
 
     GEOR.Addons.Photos_obliques.result.gridPanel = function() {
-        var tr = OpenLayers.i18n;
         var epsg3948 = new OpenLayers.Projection("EPSG:3948");
         var gridStore, gridPanel;
         var nbElementByPage = 10;
@@ -175,7 +151,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
          **/
         var extension = globalOptions.imgExtension;
 
-        GEOR.Addons.Photos_obliques.result.resultStore = new Ext.data.JsonStore({            
+        GEOR.Addons.Photos_obliques.result.resultStore = new Ext.data.JsonStore({
             id: "phob_store_",
             proxy: new Ext.data.HttpProxy({
                 url: globalOptions.servicesUrl + "/getPhotoByAttribute",
@@ -219,7 +195,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                     if (this.totalLength > limit) {
                         gridPanel.collapse();
                         gridPanel.getStore().removeAll();
-                        Ext.Msg.alert(tr("photooblique.resultat.echecrequete"), globalOptions.adminLimitMsg);
+                        Ext.Msg.alert(OpenLayers.i18n("photooblique.resultat.echecrequete"), globalOptions.adminLimitMsg);
                     } else {
                         gridPanel.expand();
 
@@ -289,7 +265,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
             store: gridStore,
             displayInfo: true,
             displayMsg: 'Affichage {0} - {1} of {2}',
-            emptyMsg: tr("photooblique.resultat.paginationvide"),
+            emptyMsg: OpenLayers.i18n("photooblique.resultat.paginationvide"),
         });
 
         var sizeBar = new Ext.ProgressBar({
@@ -298,7 +274,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         });
 
         var nbBar = new Ext.ProgressBar({
-            text: tr("photooblique.resultat.textbardeprogression"),
+            text: OpenLayers.i18n("photooblique.resultat.textbardeprogression"),
             id: "phob_nb_pbar",
             width: 100,
             maxWidth: 100
@@ -331,13 +307,13 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                 xtype: "button",
                 iconCls: "phob-clean-icon",
                 id: "phob_btn_clRes",
-                tooltip: tr("photooblique.resultat.boutton.effacerliste"),
+                tooltip: OpenLayers.i18n("photooblique.resultat.boutton.effacerliste"),
                 listeners: {
                     "click": function() {
                         gridStore.removeAll();
                         gridPanel.collapse();
                         var windowTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
-                        var attributeWinTitle = tr("photooblique.fenetre.titre.rechercheattributaire");
+                        var attributeWinTitle = OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire");
                         if (windowTitle == attributeWinTitle) {
                             GEOR.Addons.Photos_obliques.cleanCombo(true);
                         }
@@ -351,13 +327,13 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                 xtype: "button",
                 id: "phob_btn_csvRes",
                 iconCls: "phob-csv-icon",
-                tooltip: tr("photooblique.resultat.boutton.exportercsv"),
+                tooltip: OpenLayers.i18n("photooblique.resultat.boutton.exportercsv"),
                 handler: function() {
                     //var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
                     //var searchParams = searchForm.getValues();
                     var csvParams = {};
                     var windowTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
-                    var attributeWinTitle = tr("photooblique.fenetre.titre.rechercheattributaire");
+                    var attributeWinTitle = OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire");
                     if (windowTitle !== attributeWinTitle) { // if it's graph tool
                         var resultStoreData = GEOR.Addons.Photos_obliques.result.resultStore.data.items;
                         GEOR.Addons.Photos_obliques.result.getDocument(resultStoreData, "photoId", "createCSVById", false);
@@ -392,7 +368,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
             id: "phob_grid_resultPan",
             store: gridStore,
             collapsible: false,
-            title: tr("photooblique.resultat.gridpanel.titre"),
+            title: OpenLayers.i18n("photooblique.resultat.gridpanel.titre"),
             stripeRows: true,
             tbar: new Ext.Toolbar(createBbar()),
             autoHeigth: true,
@@ -406,7 +382,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                 columns: [{
                     xtype: "actioncolumn",
                     id: "phob_col_photoRes",
-                    header: tr("photooblique.resultat.colonnephoto"),
+                    header: OpenLayers.i18n("photooblique.resultat.colonnephoto"),
                     dataIndex: 'url',
                     renderer: function(value) {
                         return '<img src="' + value + '" borer="0" />';
@@ -425,10 +401,10 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                 }, {
                     xtype: "actioncolumn",
                     id: "phob_col_zoomRes",
-                    header: tr("photooblique.resultat.colonnerecentrer"),
+                    header: OpenLayers.i18n("photooblique.resultat.colonnerecentrer"),
                     dataIndex: 'geometry',
                     items: [{
-                        tooltip: tr("photooblique.resultat.colonnerecentrerinfobulle"),
+                        tooltip: OpenLayers.i18n("photooblique.resultat.colonnerecentrerinfobulle"),
                         getClass: function(val, meta, rec) {
                             return "phob-zoom-icon";
                         },
@@ -441,13 +417,13 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                     }]
                 }, {
                     id: "phob_col_dateRes",
-                    header: tr("photooblique.resultat.colonnedate"),
+                    header: OpenLayers.i18n("photooblique.resultat.colonnedate"),
                     sortable: true,
                     dataIndex: "date",
                     renderer: Ext.util.Format.dateRenderer("d/m/Y")
                 }, {
                     id: "phob_col_IdRes",
-                    header: tr("photooblique.resultat.colonneid"),
+                    header: OpenLayers.i18n("photooblique.resultat.colonneid"),
                     dataIndex: "photoId"
                 }, {
                     id: "phob_col_ownerRes",
@@ -456,28 +432,28 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                     dataIndex: "owner"
                 }, {
                     id: "phob_col_sizeRes",
-                    header: tr("photooblique.resultat.colonnetaille"),
+                    header: OpenLayers.i18n("photooblique.resultat.colonnetaille"),
                     sortable: true,
                     dataIndex: "size"
                 }, {
                     id: "phob_col_prestRes",
-                    header: tr("photooblique.resultat.colonneproprietaire"),
+                    header: OpenLayers.i18n("photooblique.resultat.colonneproprietaire"),
                     sortable: true,
                     dataIndex: "origin"
                 }, {
                     xtype: "actioncolumn",
                     id: "phob_col_cartRes",
-                    tooltip: tr("photooblique.resultat.colonnepanierinfobulle"),
-                    header: tr("photooblique.resultat.colonnepanier"),
+                    tooltip: OpenLayers.i18n("photooblique.resultat.colonnepanierinfobulle"),
+                    header: OpenLayers.i18n("photooblique.resultat.colonnepanier"),
                     getClass: function(val, meta, rec) {
                         if (rec.get("downloadable") !== 1) {
                             this.tooltip = globalOptions.adminMsgTooltip;
                             this.handler = function() {
-                                Ext.MessageBox.alert(tr("photooblique.resultat.colonnepaniertitrealerte"), globalOptions.adminMsgAlert);
+                                Ext.MessageBox.alert(OpenLayers.i18n("photooblique.resultat.colonnepaniertitrealerte"), globalOptions.adminMsgAlert);
                             };
                             return "phob-call-icon";
                         } else {
-                            this.tooltip = tr("photooblique.resultat.colonnepanierinfobulle");
+                            this.tooltip = OpenLayers.i18n("photooblique.resultat.colonnepanierinfobulle");
                             this.handler = function(val, meta, rec) {
                                 // control size of cart
                                 var photoDt = gridPanel.getStore().getAt(meta).data;
@@ -498,7 +474,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                     // on vérifie que les capacités du panier ne sont pas atteintes
                                     if (sizeAfterAdd > maxCartSize || countAfterAdd > maxCartNb) {
                                         Ext.MessageBox.show({
-                                            title: tr("photooblique.resultat.limiteatteinte"),
+                                            title: OpenLayers.i18n("photooblique.resultat.limiteatteinte"),
                                             msg: globalOptions.adminLimitAlert,
                                             maxWidth: 500,
                                             buttons: Ext.MessageBox.OK,
@@ -533,7 +509,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
 
                                     }
                                 } else {
-                                    Ext.MessageBox.alert(tr("photooblique.resultat.doublontitrealert"), tr("photooblique.resultat.doublon"));
+                                    Ext.MessageBox.alert(OpenLayers.i18n("photooblique.resultat.doublontitrealert"), OpenLayers.i18n("photooblique.resultat.doublon"));
                                 }
 
                             };
