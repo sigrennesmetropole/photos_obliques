@@ -6,17 +6,17 @@ Ext.namespace("GEOR.Addons.Photos_obliques.search");
  * search by attribute in oblique photo addon
  */
 
-GEOR.Addons.Photos_obliques.search.createGraphlayer = function(map) {
+GEOR.Addons.Photos_obliques.search.createGraphlayer = function() {
+    var layerGraph;
+    var map = GeoExt.MapPanel.guess().map;
+    if (map.getLayersByName("phob_layer_sbg").length > 0) {
+        map.getLayersByName("phob_layer_sbg").destroy();
+    }
     // get options
     var o = GEOR.Addons.Photos_obliques.globalOptions;
-    
     // get default layer style option
     var styleLayer = new OpenLayers.StyleMap(o.styleGraphLayer);
-
     if (map) {
-        /**
-         *  Create layer
-         */
         var layerOptions = OpenLayers.Util.applyDefaults(
             this.layerOptions, {
                 displayInLayerSwitcher: o.displayGraph,
@@ -26,19 +26,7 @@ GEOR.Addons.Photos_obliques.search.createGraphlayer = function(map) {
         );
         layerGraph = new OpenLayers.Layer.Vector("phob_layer_sbg", layerOptions);
         map.addLayer(layerGraph);
-        
-        /**
-         * add listener GEOR.wmc to up layer if context is restore
-         */                 
-        if(GEOR.wmc){
-            GEOR.wmc.events.on("aftercontextrestore", function(){
-                if(layerGraph){
-                    layerGraph.setZIndex(1000);
-                }
-            }); 
-        }
-        
-        return map.addLayer(layerGraph);
+        return layerGraph;
     }
 };
 GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
@@ -50,8 +38,9 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
     if (GeoExt.MapPanel.guess().map) {
         map = GeoExt.MapPanel.guess().map;
     }
-
-    if (map && map.getLayersByName("phob_layer_sbg").length == 1) {
+    if (map.getLayersByName("phob_layer_sbg").length < 1) {
+        layer = GEOR.Addons.Photos_obliques.search.createGraphlayer();
+    } else {
         layer = GeoExt.MapPanel.guess().map.getLayersByName("phob_layer_sbg")[0]
     }
 

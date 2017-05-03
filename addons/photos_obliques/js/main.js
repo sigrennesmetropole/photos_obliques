@@ -18,6 +18,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
      */
     init(record) {
         var tr = OpenLayers.i18n();
+        var addon = this;
         // Set map object or create it
         if (this.map instanceof GeoExt.MapPanel) {
             this.map = this.map.map;
@@ -28,15 +29,14 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
         }
 
         GEOR.Addons.Photos_obliques.globalOptions = this.options;
-        GEOR.Addons.Photos_obliques.initResultUtils();
+        GEOR.Addons.Photos_obliques.initResultUtils(addon);
         GEOR.Addons.Photos_obliques.initUtils();
         GEOR.Addons.Photos_obliques.initMainWindow();
-        GEOR.Addons.Photos_obliques.createResultLayers(this.map);
+        GEOR.Addons.Photos_obliques.tempLayer()
+        GEOR.Addons.Photos_obliques.extendLayer()
         GEOR.Addons.Photos_obliques.search.createGraphlayer(this.map);
         GEOR.Addons.Photos_obliques.initCart();
         GEOR.Addons.Photos_obliques.params = {};
-
-        // Call non visible airphotos WFS 
 
         // Create main addon menu with actions
         var actionItems = [];
@@ -121,7 +121,7 @@ GEOR.Addons.Photos_obliques = Ext.extend(GEOR.Addons.Base, {
             constrainHeader: true,
             tbar: actionItems,
             listeners: {
-                "hide"() {
+                "hide" () {
                     if (Ext.getCmp("phob_win_cart")) {
                         Ext.getCmp("phob_win_cart").hide();
                     }
