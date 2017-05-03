@@ -1,7 +1,9 @@
 Ext.namespace("GEOR.Addons.Photos_obliques.result");
 
 GEOR.Addons.Photos_obliques.initResultUtils = function() {
-
+    /**
+     * Create layer to contains results geom on mouseover 
+     */
     GEOR.Addons.Photos_obliques.tempLayer = function() {
         var map = GeoExt.MapPanel.guess().map;
         if (map && map.getLayersByName("phob_tempResultLayer").length > 0) {
@@ -26,7 +28,10 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         map.addLayer(tempLayer);
         return tempLayer;
     };
-
+    
+    /**
+     * Create layer to contains global result extent
+     */
     GEOR.Addons.Photos_obliques.extendLayer = function() {
         var map = GeoExt.MapPanel.guess().map;
         if (map && map.getLayersByName("phob_extendResultLayer").length > 0) {
