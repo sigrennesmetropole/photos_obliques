@@ -409,7 +409,7 @@ GEOR.Addons.Photos_obliques.initUtils = function() {
 
     /* Create combo */
 
-    GEOR.Addons.Photos_obliques.search.comboOwner = function(id) {
+    /*GEOR.Addons.Photos_obliques.search.comboOwner = function(id) {
         var storeId = id + "Store"
         var storeUrl = GEOR.Addons.Photos_obliques.globalOptions.servicesUrl;
         var store = GEOR.Addons.Photos_obliques.search.storeOwner(storeId, storeUrl);
@@ -432,7 +432,26 @@ GEOR.Addons.Photos_obliques.initUtils = function() {
                 }
             }
         });
-    };
+    };*/
+    GEOR.Addons.Photos_obliques.search.comboOwner = new Ext.form.ComboBox({
+        name: "proprietaire",
+        id: "phob_cb_ownerSba",
+        hiddenName: "owner",
+        store: GEOR.Addons.Photos_obliques.search.storeOwner("phob_cb_ownerSbaStore", GEOR.Addons.Photos_obliques.globalOptions.servicesUrl),
+        triggerAction: "all",
+        anchor: "99%",
+        fieldLabel: OpenLayers.i18n("photooblique.combo.labelproprietaire"),
+        emptyText: OpenLayers.i18n("photooblique.combo.proprietairevide"),
+        editable: true,
+        selectOnFocus: true,
+        displayField: "owner",
+        minChars: 5,
+        listeners: {
+            "select": function() {
+                GEOR.Addons.Photos_obliques.params.owner = this.value;
+            }
+        }
+    });
 
     /**
      *  Create fieldset to be include in the main search window
@@ -455,9 +474,9 @@ GEOR.Addons.Photos_obliques.initUtils = function() {
                 },
                 items: [nameSpace.comboPeriodFrom, nameSpace.comboPeriodTo]
             },
-            nameSpace.comboComSba,
-            nameSpace.comboOwner("phob_cb_ownerSba")
+            nameSpace.comboComSba, nameSpace.comboOwner
         ];
+
 
         var graphItems = [{
                 xtype: "compositefield",
