@@ -319,8 +319,6 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                 iconCls: "phob-csv-icon",
                 tooltip: OpenLayers.i18n("photooblique.resultat.boutton.exportercsv"),
                 handler: function() {
-                    //var searchForm = GEOR.Addons.Photos_obliques.search.mainWindow.items.items[0].getForm();
-                    //var searchParams = searchForm.getValues();
                     var csvParams = {};
                     var windowTitle = GEOR.Addons.Photos_obliques.search.mainWindow.title;
                     var attributeWinTitle = OpenLayers.i18n("photooblique.fenetre.titre.rechercheattributaire");

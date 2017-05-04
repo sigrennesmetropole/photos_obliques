@@ -408,31 +408,6 @@ GEOR.Addons.Photos_obliques.initUtils = function() {
     };
 
     /* Create combo */
-
-    /*GEOR.Addons.Photos_obliques.search.comboOwner = function(id) {
-        var storeId = id + "Store"
-        var storeUrl = GEOR.Addons.Photos_obliques.globalOptions.servicesUrl;
-        var store = GEOR.Addons.Photos_obliques.search.storeOwner(storeId, storeUrl);
-        return new Ext.form.ComboBox({
-            name: "proprietaire",
-            id: id,
-            hiddenName: "owner",
-            store: store,
-            triggerAction: "all",
-            anchor: "99%",
-            fieldLabel: OpenLayers.i18n("photooblique.combo.labelproprietaire"),
-            emptyText: OpenLayers.i18n("photooblique.combo.proprietairevide"),
-            editable: true,
-            selectOnFocus: true,
-            displayField: "owner",
-            minChars: 5,
-            listeners: {
-                "select": function() {
-                    GEOR.Addons.Photos_obliques.params.owner = this.value;
-                }
-            }
-        });
-    };*/
     GEOR.Addons.Photos_obliques.search.comboOwner = new Ext.form.ComboBox({
         name: "proprietaire",
         id: "phob_cb_ownerSba",
@@ -460,10 +435,7 @@ GEOR.Addons.Photos_obliques.initUtils = function() {
     GEOR.Addons.Photos_obliques.search.cpField = function(id) {
         var nameSpace = GEOR.Addons.Photos_obliques.search;
         var items;
-
-
         // create items to be insert in panel
-        // TODO : could be better with simple array
         var attributesItems = [{
                 xtype: "compositefield",
                 id: "phob_cpf_fstSba",
