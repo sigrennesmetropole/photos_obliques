@@ -76,17 +76,8 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         var szProgressTo = xNbWidth * (currentSz / maxCartSize);
 
         // udpate progress bars 
-        //for(i=nbProgress; i<nbProgressTo; i=i+1){
-        if (i < xNbWidth) {
-            document.getElementById("phob_nbBarProg").style.width = nbProgressTo + "px";
-        }
-        //}
-
-        //for(i=szProgress; i<szProgressTo; i = i + 1){
-        if (i < xSzWidth) {
-            document.getElementById("phob_sizeBarProg").style.width = szProgressTo + "px";
-        }
-        //}
+        document.getElementById("phob_nbBarProg").style.width = nbProgressTo + "px";
+        document.getElementById("phob_sizeBarProg").style.width = szProgressTo + "px";
 
         // udpate labels
         document.getElementById("phob_nbBarLabel").innerHTML = currentNb + " / " + maxCartNb;
@@ -460,7 +451,9 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                 var sumSize = 0;
                                 var list = cartStore.data.items;
                                 list.forEach(function(el) {
-                                    if (el.data.photoId == photoDt.photoId) {
+                                    var dt = el.data;
+                                    sumSize = sumSize + dt.size;
+                                    if (dt.photoId == photoDt.photoId) {
                                         return exist = true;
                                     }
                                 });
@@ -501,7 +494,10 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                         delete data["owner"];
                                         var newRecord = new resultStore.recordType(data);
                                         resultStore.insert(resultStore.data.length, newRecord);
-                                        cart.refresh();
+                                        if (cart.isVisible()) {
+                                            cart.refresh();
+                                        }
+
 
                                         //update progress bar
                                         GEOR.Addons.Photos_obliques.result.updateBar(countAfterAdd, sizeAfterAdd, maxCartNb, maxCartSize);
