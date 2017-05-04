@@ -342,6 +342,7 @@ GEOR.Addons.Photos_obliques.initCart = function() {
                     "valid": function() {
                         if (dataView.isVisible()) {
                             dataView.tpl = tplArr[this.getValue()];
+                            dataView.refresh();
                         }
                     }
                 }
