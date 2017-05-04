@@ -10,7 +10,7 @@ GEOR.Addons.Photos_obliques.search.createGraphlayer = function() {
     var layerGraph;
     var map = GeoExt.MapPanel.guess().map;
     if (map.getLayersByName("phob_layer_sbg").length > 0) {
-        map.getLayersByName("phob_layer_sbg").destroy();
+        map.getLayersByName("phob_layer_sbg")[0].destroy();
     }
     // get options
     var o = GEOR.Addons.Photos_obliques.globalOptions;
