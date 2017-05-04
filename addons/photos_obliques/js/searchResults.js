@@ -28,7 +28,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         map.addLayer(tempLayer);
         return tempLayer;
     };
-    
+
     /**
      * Create layer to contains global result extent
      */
@@ -456,16 +456,17 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                 // control size of cart
                                 var photoDt = gridPanel.getStore().getAt(meta).data;
                                 var cartStore = Ext.getCmp("phob_dataView").getStore();
-                                var dbl;
+                                var exist = false;
                                 var sumSize = 0;
-                                for (i = 0; i < cartStore.data.items.length; i++) {
-                                    var dt = cartStore.data.items[i].data;
-                                    sumSize = sumSize + dt.size;
-                                    dbl = (photoDt.photoId !== dt.photoId) ? false : true;
-                                }
+                                var list = cartStore.data.items;
+                                list.forEach(function(el) {
+                                    if (el.data.photoId == photoDt.photoId) {
+                                        return exist = true;
+                                    }
+                                });
 
                                 // on vérifie que l'image n'est pas déjà dans le panier
-                                if (!dbl) {
+                                if (!exist) {
                                     var sizeAfterAdd = sumSize + photoDt.size;
                                     var countAfterAdd = cartStore.getCount() + 1;
 
