@@ -244,6 +244,7 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
         // Correction d'anomalie : forcer la mise à jour de l'ombre de la fenêtre
         function updateShadow() {
             if (Ext.getCmp("phob_win_search")) {
+                Ext.getCmp("phob_win_search").doLayout();
                 return Ext.getCmp("phob_win_search").syncShadow();
             }
         }
