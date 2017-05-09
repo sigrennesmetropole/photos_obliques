@@ -171,7 +171,9 @@ GEOR.Addons.Photos_obliques.search.sbgPanel = function() {
             },
             "beforehide": function() {
                 if (map) {
-                    map.removeLayer(layer);
+                    if(map.getLayersByName(layer.name).length > 0){
+                        map.removeLayer(layer);    
+                    }
                     if (polygonControl.active) {
                         polygonControl.deactivate()
                         drawPolygon.toggle(false);
