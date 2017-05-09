@@ -32,11 +32,9 @@ public class CommuneController {
      *  
      *  Will return list of communes 
      *  
-     * @param libcom, should be the n first characters of a libcom
-     * 			n first characters are defined with the minNbCharForSearch from cadastrapp.properties
-     * @param cgocommune, from n to six characters
-     * 			cgocommune for Code Geographique Officile Commune
-     * 			cgocommune = code departement + code arrondissement + code commune
+     * @param startPeriod - search in commun which have photos since startPeriod
+     * @param endPeriod - search in commune which have photos beetween startPeriod and enPeriod
+     * @param id - list id commune
      * 
      * @return JSON 
      * 

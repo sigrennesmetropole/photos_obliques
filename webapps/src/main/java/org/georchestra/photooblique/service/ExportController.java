@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -59,7 +60,10 @@ public class ExportController {
 		if (!photosIds.isEmpty()) {
 
 			String zipTempFolder = POPlaceHolder.getProperty("temp.folder");
-			String zipFileName = "zipTest.zip";
+			String zipFileNamePrefix = POPlaceHolder.getProperty("zip.prefix.name");
+
+			final String zipFileName = zipTempFolder + File.separator + zipFileNamePrefix + "-" + new Date().getTime() + ".zip";
+			
 			String photoFolder = POPlaceHolder.getProperty("photo.folder");
 			boolean atLeastOneFileAdded = false;
 
@@ -67,7 +71,7 @@ public class ExportController {
 
 			byte[] buffer = new byte[1024];
 
-			File finalZip = new File(zipTempFolder + zipFileName);
+			File finalZip = new File(zipFileName);
 			finalZip.deleteOnExit();
 
 			FileOutputStream StreamZip;
