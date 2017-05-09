@@ -538,6 +538,8 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                             settings.cql_filter = "" + "id" + "='" + recId + "'";
                             settings.typename = globalOptions.WFSLayerName;
 
+
+
                             var requestFeature = new OpenLayers.Request.GET({
                                 url: globalOptions.WFSLayerUrl,
                                 params: settings,
@@ -551,6 +553,17 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                                         if (feature) {
                                             layer.addFeatures(feature);
                                             geometry = feature.geometry;
+                                            if (!layer.displayInLayerSwitcher) {
+                                                var maxIndex = layer.getZIndex();
+                                                // up layer to front
+                                                map.layers.forEach(function(el) {
+                                                    var i = el.getZIndex() ? el.getZIndex() : false;
+                                                    if (i && i > maxIndex) {
+                                                        maxIndex = i;
+                                                        layer.setZIndex(maxIndex + 1);
+                                                    }
+                                                });
+                                            }
                                         }
                                     } else {
                                         console.log("Error ", request.responseText);
