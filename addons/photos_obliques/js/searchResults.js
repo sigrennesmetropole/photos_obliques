@@ -404,30 +404,30 @@ GEOR.Addons.Photos_obliques.initResultUtils = function() {
                         }
                     }]
                 }, {
+                    id: "phob_col_IdRes",
+                    header: OpenLayers.i18n("photooblique.resultat.colonneid"),
+                    dataIndex: "photoId"                                    
+                },{
                     id: "phob_col_dateRes",
                     header: OpenLayers.i18n("photooblique.resultat.colonnedate"),
                     sortable: true,
                     dataIndex: "date",
                     renderer: Ext.util.Format.dateRenderer("d/m/Y")
                 }, {
-                    id: "phob_col_IdRes",
-                    header: OpenLayers.i18n("photooblique.resultat.colonneid"),
-                    dataIndex: "photoId"
-                }, {
                     id: "phob_col_ownerRes",
-                    header: "Propriétaire",
+                    header: OpenLayers.i18n("photooblique.resultat.colonneproprietaire"),
                     sortable: true,
                     dataIndex: "owner"
+                }, {
+                    id: "phob_col_prestRes",
+                    header: OpenLayers.i18n("photooblique.resultat.colonneprestataire"),
+                    sortable: true,
+                    dataIndex: "origin"
                 }, {
                     id: "phob_col_sizeRes",
                     header: OpenLayers.i18n("photooblique.resultat.colonnetaille"),
                     sortable: true,
-                    dataIndex: "size"
-                }, {
-                    id: "phob_col_prestRes",
-                    header: OpenLayers.i18n("photooblique.resultat.colonneproprietaire"),
-                    sortable: true,
-                    dataIndex: "origin"
+                    dataIndex: "size"                                    
                 }, {
                     xtype: "actioncolumn",
                     id: "phob_col_cartRes",
