@@ -28,7 +28,7 @@
     	"limitByPage":5,
     	"limitResults":5,
     	"adminMsgTooltip":"Téléchargement impossible, cliquer pour obtenir les coordonnées",
-    	"adminMsgAlert":"Service à contacter : Service SIG - 0202020202' ",
+    	"adminMsgAlert":"Service à contacter : Service SIG - 02 23 66 22 702' ",
     	"adminLimitAlert":"Vous avez atteint la limite de stockage disponible, impossible d'ajouter la photo au panier.",
         "target": "",
         "imgExtension":".jpg",
@@ -158,7 +158,7 @@
         "photooblique.resultat.doublon":"Cette image a déjà été ajoutée",
         "photooblique.resultat.doublontitrealert":"Doublon",
         "photooblique.resultat.titrealerteaucunresultat":"Résultat vide",
-        "photooblique.resultat.echecrequete":"Echeque de la requête",
+        "photooblique.resultat.echecrequete":"Échec de la requête",
         "photooblique.fenetreprincipale.bouton.annuler":"Annuler",
         "photooblique.fenetreprincipale.bouton.rechercher":"Rechercher"
       }
