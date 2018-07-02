@@ -28,7 +28,7 @@
     	"limitByPage":5,
     	"limitResults":5,
     	"adminMsgTooltip":"Téléchargement impossible, cliquer pour obtenir les coordonnées",
-    	"adminMsgAlert":"Service à contacter : Service SIG - 02 23 66 22 702' ",
+    	"adminMsgAlert":"Service à contacter : Service SIG - 02 23 66 22 70' ",
     	"adminLimitAlert":"Vous avez atteint la limite de stockage disponible, impossible d'ajouter la photo au panier.",
         "target": "",
         "imgExtension":".jpg",
